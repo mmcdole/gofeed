@@ -13,19 +13,15 @@ const (
 	FeedTypeRSS
 )
 
+// Performs a simple check on the feed to determine
+// the feed type.
 func DetectFeedType(feed string) FeedType {
 	decoder := xml.NewDecoder(strings.NewReader(feed))
 	decoder.Strict = false
-
 	for {
-
 		token, err := decoder.Token()
 
-		if err != nil {
-			return FeedTypeUnknown
-		}
-
-		if token == nil {
+		if err != nil || token == nil {
 			return FeedTypeUnknown
 		}
 
@@ -39,8 +35,6 @@ func DetectFeedType(feed string) FeedType {
 				return FeedTypeRSS
 			case "feed":
 				return FeedTypeAtom
-			default:
-				decoder.Skip()
 			}
 		}
 	}

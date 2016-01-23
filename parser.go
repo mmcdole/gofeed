@@ -7,6 +7,14 @@ import (
 )
 
 type FeedParser struct {
+	// Normalizer is the object that is responsible
+	// for transforming RSSFeed or AtomFeed into the
+	// common Feed object.
+	//
+	// Defaults to `DefaultNormalizer` which tries to make
+	// a best effort at mapping between the two formats.
+	// Replace this FeedNormalizer if you need to define custom
+	// mappings.
 	Normalizer FeedNormalizer
 }
 
