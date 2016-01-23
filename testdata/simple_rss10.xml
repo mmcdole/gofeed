@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns="http://purl.org/rss/1.0/">
+  <channel rdf:about="http://www.example.org/index.rdf">
+    <title>Sample Feed</title>
+    <link>http://www.example.org/</link>
+    <description>For documentation only</description>
+    <items>
+      <rdf:Seq>
+        <rdf:li rdf:resource="http://www.example.org/1" />
+      </rdf:Seq>
+    </items>
+  </channel>
+  <item rdf:about="http://www.example.org/1">
+    <title>First of all</title>
+    <link>http://example.org/archives/2002/09/04.html#first_of_all</link>
+    <description>
+      Americans are fat. Smokers are stupid. People who don’t speak Perl are irrelevant.
+    </description>
+  </item>
+</rdf:RDF>
