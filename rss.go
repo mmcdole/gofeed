@@ -73,93 +73,130 @@ func ParseRSSFeed(feed string) (*RSSFeed, error) {
 	d.Strict = false
 
 	for {
-		token, err := d.Token()
-
-		if err != nil {
-			return nil, err
-		}
-
-		if token == nil {
-			return nil, errors.New("No root node found.")
-		}
-
-		switch t := token.(type) {
-		case xml.StartElement:
-			err := parseRoot(t, d, rss)
-			if err != nil {
-				return nil, err
+		if tok, err = d.Token(); err != nil {
+			if err == io.EOF {
+				return errors.New("No root node found.")
 			}
+			return err
+		}
+
+		switch tt := tok.(type) {
+		case xml.SyntaxError:
+			return nil, errors.New(tt.Error())
+		case xml.StartElement:
+			name := strings.ToLower(tok.Name.Local)
+			if name != "rdf" && name != "rss" {
+				return nil, fmt.Errorf("Invalid root node: %s", name)
+			} else {
+				err := parseRoot(t, d, rss)
+				if err != nil {
+					return nil, err
+				}
+			}
+		case xml.EndElement:
 			return rss, nil
 		}
 	}
 }
 
 func parseRoot(t xml.StartElement, d *xml.Decoder, rss *RSSFeed) error {
-	name := strings.ToLower(t.Name.Local)
+	rss.Version = parseVersion(t)
 
-	// Parse RSS version from root
-	switch name {
-	case "rss":
-		version := attrValue("version", t.Attr)
-		if version != "" {
-			rss.Version = version
+	for {
+		if tok, err = d.Token(); err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
 		}
-	case "rdf":
-		ns := attrValue("xmlns", t.Attr)
-		if ns == "http://channel.netscape.com/rdf/simple/0.9/" {
-			rss.Version = "0.9"
-		} else if ns == "http://purl.org/rss/1.0/" {
-			rss.Version = "1.0"
+
+		switch tt := token.(type) {
+		case xml.StartElement:
+			name := strings.ToLower(tt.Name.Local)
+			if name == "channel" {
+				parseChannel(tt, d, rss)
+			} else if name == "item" {
+				parseItem(tt, d, rss)
+			} else {
+				d.Skip()
+			}
 		}
-	default:
-		return fmt.Errorf("Invalid root element: %s", name)
 	}
+}
 
-	//	for {
-	//		token, err := d.Token()
-	//
-	//		if err != nil || token == nil {
-	//			fmt.Println(err)
-	//			return nil, err
-	//		}
-	//
-	//		switch t := token.(type) {
-	//		case xml.StartElement:
-	//			err := parseRoot(t, d, rss)
-	//			if err != nil {
-	//				return nil, error
-	//			}
-	//		}
+func parseChannel(t xml.StartElement, d *xml.Decoder, rss *RSSFeed) error {
+	for {
+		if tok, err = d.Token(); err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+
+		switch tt := token.(type) {
+		case xml.StartElement:
+
+		case xml.CharData:
+
+		case xml.EndElement:
+
+		}
+	}
+}
+
+func parseItem(t xml.StartElement, d *xml.Decoder, rss *RSSFeed) error {
+	for {
+		token, err := d.Token()
+
+		if err != nil {
+			return err
+		}
+
+		if token == nil {
+			return nil
+		}
+
+		switch t := token.(type) {
+		case xml.StartElement:
+			name := strings.ToLower(t.Name.Local)
+			switch name {
+			case "channel":
+				parseChannel(t, d, rss)
+			case "item":
+				parseItem(t, d, rss)
+			default:
+				d.Skip()
+			}
+		}
+	}
 	return nil
 }
 
+func parseVersion(root xml.StartElement) string {
+	var result string
+	name := strings.ToLower(root.Name.Local)
+	if name == "rss" {
+		version := attrValue("version", root.Attr)
+		if version != "" {
+			result = version
+		}
+	} else if name == "rdf" {
+		ns := attrValue("xmlns", root.Attr)
+		if ns == "http://channel.netscape.com/rdf/simple/0.9/" {
+			result = "0.9"
+		} else if ns == "http://purl.org/rss/1.0/" {
+			result = "1.0"
+		}
+	}
+	return result
+}
+
 func attrValue(name string, attrs []xml.Attr) string {
-	lname := strings.ToLower(name)
+	n := strings.ToLower(name)
 	for _, attr := range attrs {
-		if strings.ToLower(attr.Name.Local) == lname {
+		if strings.ToLower(attr.Name.Local) == n {
 			return attr.Value
 		}
 	}
 	return ""
 }
-
-//func extractNamespaces(attrs []xml.Attr) map[xml.Name]string {
-//	ns := make(map[xml.Name]string)
-//
-//	ns[xml.Name{Space: "", Local: "xml"}] = "http://www.w3.org/XML/1998/namespace"
-//
-//	for i := range attrs {
-//		attr := attrs[i].Name
-//		val := attrs[i].Value
-//
-//		if (attr.Local == "xmlns" && attr.Space == "") || attr.Space == "xmlns" {
-//			if attr.Local == "xmlns" && attr.Space == "" && val == "" {
-//				delete(ns, attr)
-//			} else {
-//				ns[attr] = val
-//			}
-//		} else {
-//			attrs = append(attrs, &xmlattr.XMLAttr{Attr: ele.Attr[i], Parent: ch})
-//		}
-//	}
-//}
