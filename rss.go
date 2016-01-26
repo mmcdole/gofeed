@@ -67,115 +67,109 @@ type RSSGuid struct {
 	IsPermalink string
 }
 
-func ParseRSSFeed(feed string) (*RSSFeed, error) {
+func ParseRSSFeed(feed string) (rss *RSSFeed, err error) {
 	fmt.Println("Parsing feed...")
-	var rss *RSSFeed
-	d := xml.NewDecoder(strings.NewReader(feed))
-	d.Strict = false
 
-TokenLoop:
-	for {
-		tok, err := getToken(d)
-		if err != nil {
-			return nil, err
-		}
+	p := xpp.NewXMLPullParser(strings.NewReader(feed))
 
-		switch tt := tok.(type) {
-		case xml.StartElement:
-			name := strings.ToLower(tt.Name.Local)
-			if name == "rdf" || name == "rss" {
-				rss = parseRoot(tt, d)
-				break TokenLoop
-			} else {
-				// Shouldn't be necessary since an XML document
-				// can only have a single root element.
-				d.Skip()
-			}
-		}
+	tok, err := p.NextTag()
+	if err != nil {
+		return
 	}
+
+	return parseRoot(p)
 }
 
-func parseRoot(root xml.StartElement, d *xml.Decoder) (*RSSFeed, error) {
-	fmt.Println("Parsing root...")
-	var rss *RSSFeed
-	rootItems := []*RSSItem{}
+func parseRoot(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
 
-TokenLoop:
+	if !p.Matches(xpp.StartTag, nil, "rss") &&
+		!p.Matches(xpp.StartTag, nil, "RDF") {
+		return nil, errors.New("Unexpected root element")
+	}
+
+	items := []*RSSItem{}
+	ver = parseVersion(p)
+
 	for {
-		tok, err := getToken(d)
+		tok, err := p.NextTag()
 		if err != nil {
 			return nil, err
 		}
 
-		switch tt := tok.(type) {
-		case xml.StartElement:
-			name := strings.ToLower(tt.Name.Local)
-			if name == "channel" {
-				if rss != nil {
-					// Skip any subsequent "channel" elements after we have already
-					// parsed one.
-					d.Skip()
-				} else {
-					if rss, err = parseChannel(tt, d); err != nil {
-						return nil, err
-					}
-				}
-			} else if name == "item" {
-				// Earlier versions of the RSS spec had "item" elements at the same
-				// root level as "channel" elements.
-				if item, err := parseItem(tt, d); err != nil {
+		if tok == xpp.EndTag {
+			break
+		}
+
+		if tok == xpp.StartTag {
+			if p.Name == "channel" {
+				rss, err = parseChannel(p)
+				if err != nil {
 					return nil, err
-				} else {
-					rootItems = append(rootItems, item)
 				}
+			} else if p.Name == "item" {
+				// Earlier versions of the RSS spec had "item" elements at the same
+				// root level as "channel" elements.  We will merge these items
+				// with any channel level items.
+				item, err = parseItem(i)
+				if err != nil {
+					return nil, err
+				}
+				items = append(items, item)
 			} else {
 				// Skip any elements that are not "channel" or "item"
-				d.Skip()
+				p.Skip()
 			}
-		case xml.EndElement:
-			// End the root element
-			break TokenLoop
 		}
 	}
 
-	if rss == nil {
-		return nil, errors.New("No channel element found.")
+	if !p.Matches(xpp.EndTag, nil, "rss") &&
+		!p.Matches(xpp.EndTag, nil, "RDF") {
+		return nil, errors.New("Expected root end tag")
 	}
 
-	rss.Items = append(rss.Items, rootItems...)
-	rss.Version = parseVersion(root)
-	return rss, nil
+	if rss != nil {
+		rss.Items = append(rss.Items, items...)
+		rss.Version = ver
+		return rss, nil
+	} else {
+		return nil, errors.New("No channel element found.")
+	}
 }
 
 func parseChannel(t xml.StartElement, d *xml.Decoder) (*RSSFeed, error) {
-	fmt.Println("Parsing channel...")
+	if !p.Matches(xpp.StartTag, nil, "channel") {
+		return nil, errors.New("Expected channel start tag")
+	}
+
 	rss := &RSSFeed{}
 	rss.Items = []*RSSItem{}
 
-TokenLoop:
 	for {
-		tok, err := getToken(d)
+		tok, err := p.NextTag()
 		if err != nil {
 			return nil, err
 		}
 
-		switch tt := tok.(type) {
-		case xml.StartElement:
-			name := strings.ToLower(tt.Name.Local)
-
-			if name == "title" {
-				if title, err := getElementText(tt, d); err != nil {
-					return nil, err
-				} else {
-					rss.Title = title
-				}
-				d.Skip()
-			} else {
-				d.Skip()
-			}
-		case xml.EndElement:
-			break TokenLoop
+		if tok == xpp.EndTag {
+			break
 		}
+
+		if tok == xpp.StartTag {
+			if p.Name == "title" {
+				title, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Title = title
+			} else {
+				// Skip any elements not part of the channel spec
+				p.Skip()
+			}
+		}
+	}
+
+	if !p.Matches(xpp.EndTag, nil, "channel") {
+		return nil, errors.New("Expected channel end tag")
 	}
 
 	return rss, nil
@@ -185,64 +179,15 @@ func parseItem(t xml.StartElement, d *xml.Decoder) (*RSSItem, error) {
 	return &RSSItem{}, nil
 }
 
-func parseVersion(root xml.StartElement) string {
-	var result string
-	name := strings.ToLower(root.Name.Local)
-	if name == "rss" {
-		version := getAttrValue("version", root.Attr)
-		if version != "" {
-			result = version
-		}
-	} else if name == "rdf" {
-		ns := getAttrValue("xmlns", root.Attr)
-		if ns == "http://channel.netscape.com/rdf/simple/0.9/" {
-			result = "0.9"
-		} else if ns == "http://purl.org/rss/1.0/" {
-			result = "1.0"
+func parseVersion(p *xpp.XMLPullParser) (ver string) {
+	if p.Name == "rss" {
+		ver = p.Attribute("version")
+	} else if p.Name == "RDF" {
+		if p.Space == "http://channel.netscape.com/rdf/simple/0.9/" {
+			ver = "0.9"
+		} else if p.Space == "http://purl.org/rss/1.0/" {
+			ver = "1.0"
 		}
 	}
-	return result
-}
-
-func getElementText(e xml.StartElement, d *xml.Decoder) (string, error) {
-	var result string
-
-TokenLoop:
-	for {
-		tok, err := getToken(d)
-		if err != nil {
-			return "", err
-		}
-
-		switch tt := tok.(type) {
-		case xml.StartElement:
-			d.Skip()
-		case xml.EndElement:
-			break TokenLoop
-		case xml.CharData:
-			result = string([]byte(tt))
-		}
-	}
-	return result, nil
-}
-
-func getToken(d *xml.Decoder) (xml.Token, error) {
-	tok, err := d.Token()
-	if err != nil {
-		if err == io.EOF {
-			return nil, errors.New("Unexpected end of feed")
-		}
-		return nil, err
-	}
-	return tok, nil
-}
-
-func getAttrValue(name string, attrs []xml.Attr) string {
-	n := strings.ToLower(name)
-	for _, attr := range attrs {
-		if strings.ToLower(attr.Name.Local) == n {
-			return attr.Value
-		}
-	}
-	return ""
+	return
 }
