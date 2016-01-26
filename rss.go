@@ -7,6 +7,8 @@ import (
 	"io"
 	"strings"
 	"time"
+
+	"github.com/mmcdole/go-xpp"
 )
 
 type RSSFeed struct {
