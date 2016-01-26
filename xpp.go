@@ -13,6 +13,9 @@ const (
 	StartTag
 	EndTag
 	Text
+	Comment
+	ProcessingInstruction
+	Directive
 	//IgnorableWhitespace TODO
 	//CDSECT TODO
 )
@@ -38,12 +41,24 @@ func NewXMLPullParser(r io.Reader) *XMLPullParser {
 	return &XMLPullParser{decoder: d, TokenType: StartDocument, Depth: 0}
 }
 
-func (p *XMLPullParser) Next() (XMLEventType, error) {
+func (p *XMLPullParser) NextTag() (XMLEventType, error) {
 
 }
 
-func (p *XMLPullParser) NextTag() (XMLEventType, error) {
-
+func (p *XMLPullParser) Next() (event XMLEventType, err error) {
+	for {
+		event, err := p.NextToken()
+		if err != nil {
+			return event, err
+		}
+		if event == StartTag ||
+			event == EndTag ||
+			event == Text ||
+			event == EndDocument {
+			break
+		}
+	}
+	return event, nil
 }
 
 func (p *XMLPullParser) NextToken() (event XMLEventType, err error) {
@@ -53,27 +68,33 @@ func (p *XMLPullParser) NextToken() (event XMLEventType, err error) {
 	tok, err := p.decoder.Token()
 	if err != nil {
 		if err != io.EOF {
-			return
+			return event, err
 		}
 
 		// XML decoder returns the EOF as an error
 		// but we want to return it as a valid
 		// EndDocument token instead
 		p.token = nil
-		err = nil
-		event = p.processEndDocument()
-		return
+		return p.processEndDocument(), nil
 	}
 
-	p.token = tok
-	switch tt := tok.(type) {
+	p.token = xml.CopyToken(tok)
+	switch tt := p.token.(type) {
 	case xml.StartElement:
 		event = p.processStartToken(tt)
 	case xml.EndElement:
 		event = p.processEndToken(tt)
 	case xml.CharData:
 		event = p.processTextToken(tt)
+	case xml.Comment:
+		event = p.processCommentToken(tt)
+	case xml.ProcInst:
+		event = p.processProcInstToken(tt)
+	case xml.Directive:
+		event = p.processDirectiveToken(tt)
 	}
+
+	return event, nil
 }
 
 func (p *XMLPullParser) NextText() (string, error) {
@@ -97,6 +118,7 @@ func (p *XMLPullParser) Skip() error {
 }
 
 func (p *XMLPullParser) Attribute(name string) *xml.Attr {
+
 }
 
 func (p *XMLPullParser) Matches(event XMLEventType, namespace *string, name *string) bool {
@@ -119,6 +141,21 @@ func (p *XMLPullParser) processEndToken(t *xml.EndElement) XMLEventType {
 
 func (p *XMLPullParser) processTextToken(t *xml.CharData) XMLEventType {
 	p.Event = Text
+	p.Text = string([]byte(t))
+}
+
+func (p *XMLPullParser) processCommentToken(t *xml.Comment) XMLEventType {
+	p.Event = Comment
+	p.Text = string([]byte(t))
+}
+
+func (p *XMLPullParser) processProcInstToken(t *xml.ProcInst) XMLEventType {
+	p.Event = ProcessingInstruction
+	p.Text = fmt.Sprintf("%s %s", t.Target, string(t.Inst))
+}
+
+func (p *XMLPullParser) processDirectiveToken(t *xml.Directive) XMLEventType {
+	p.Event = Directive
 	p.Text = string([]byte(t))
 }
 
