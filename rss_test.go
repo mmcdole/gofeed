@@ -1,6 +1,7 @@
 package feed_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -32,6 +33,7 @@ func TestParseRSSFeed_DetectVersion_RSS092(t *testing.T) {
 	f, _ := ioutil.ReadFile("testdata/simple_rss092.xml")
 
 	rss, err := feed.ParseRSSFeed(string(f))
+	fmt.Println(rss)
 
 	expected := "0.92"
 	assert.Nil(t, err, "Failed to parse feed")

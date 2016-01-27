@@ -34,6 +34,19 @@ type RSSFeed struct {
 	Extensions          map[string]interface{}
 }
 
+func (f *RSSFeed) String() string {
+	return fmt.Sprintf("Title: %s\nLink: %s\nDescription: %s\n"+
+		"Language: %s\nCopyright: %s\nManagingEditor: %s\n"+
+		"WebMaster: %s\nPubDate: %s\nLastBuildDate: %s\n"+
+		"Generator: %s\nDocs: %s\nTTL: %s\n"+
+		"Rating: %s\nItems: %s\nVersion: %s\n",
+		f.Title, f.Link, f.Description,
+		f.Language, f.Copyright, f.ManagingEditor,
+		f.WebMaster, f.PubDate, f.LastBuildDate,
+		f.Generator, f.Docs, f.TTL,
+		f.Rating, f.Items, f.Version)
+}
+
 type RSSItem struct {
 	Title         string
 	Link          string
@@ -45,8 +58,17 @@ type RSSItem struct {
 	Guid          RSSGuid
 	PubDate       string
 	PubDateParsed time.Time
-	Source        string
+	Source        RSSSource
 	Extensions    map[string]interface{}
+}
+
+func (i *RSSItem) String() string {
+	return fmt.Sprintf("Title: %s\nLink: %s\nDescription: %s\n"+
+		"Author: %s\nComments: %s\nPubDate: %s\n"+
+		"Source: %s\n",
+		i.Title, i.Link, i.Description,
+		i.Author, i.Comments, i.PubDate,
+		i.Source)
 }
 
 type RSSImage struct {
@@ -65,6 +87,11 @@ type RSSEnclosure struct {
 type RSSGuid struct {
 	Value       string
 	IsPermalink string
+}
+
+type RSSSource struct {
+	Title string
+	URL   string
 }
 
 func ParseRSSFeed(feed string) (rss *RSSFeed, err error) {
@@ -231,6 +258,12 @@ func parseChannel(p *xpp.XMLPullParser) (*RSSFeed, error) {
 					return nil, err
 				}
 				rss.Rating = rating
+			} else if p.Name == "item" {
+				item, err := parseItem(p)
+				if err != nil {
+					return nil, err
+				}
+				rss.Items = append(rss.Items, item)
 			} else {
 				// Skip any elements not part of the channel spec
 				p.Skip()
@@ -300,13 +333,13 @@ func parseItem(p *xpp.XMLPullParser) (*RSSItem, error) {
 				}
 				item.PubDate = pub
 			} else if p.Name == "source" {
-				source, err := p.NextText()
+				source, err := parseSource(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Source = source
 			} else {
-				// Skip any elements not part of the channel spec
+				// Skip any elements not part of the item spec
 				p.Skip()
 			}
 		}
@@ -317,6 +350,27 @@ func parseItem(p *xpp.XMLPullParser) (*RSSItem, error) {
 	}
 
 	return item, nil
+}
+
+func parseSource(p *xpp.XMLPullParser) (*RSSSource, error) {
+	if !p.Matches(xpp.StartTag, "source") {
+		return nil, errors.New("Expected source start tag")
+	}
+
+	source := &RSSSource{}
+	source.URL = p.Attribute("url")
+
+	title, err := p.NextText()
+	if err != nil {
+		return nil, err
+	}
+
+	source.Title = title
+
+	if !p.Matches(xpp.EndTag, "source") {
+		return nil, errors.New("Expected source end tag")
+	}
+	return source, nil
 }
 
 func parseVersion(p *xpp.XMLPullParser) (ver string) {
