@@ -1,10 +1,8 @@
 package feed
 
 import (
-	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 	"strings"
 	"time"
 
@@ -70,11 +68,9 @@ type RSSGuid struct {
 }
 
 func ParseRSSFeed(feed string) (rss *RSSFeed, err error) {
-	fmt.Println("Parsing feed...")
-
 	p := xpp.NewXMLPullParser(strings.NewReader(feed))
 
-	tok, err := p.NextTag()
+	_, err = p.NextTag()
 	if err != nil {
 		return
 	}
@@ -84,13 +80,13 @@ func ParseRSSFeed(feed string) (rss *RSSFeed, err error) {
 
 func parseRoot(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
 
-	if !p.Matches(xpp.StartTag, nil, "rss") &&
-		!p.Matches(xpp.StartTag, nil, "RDF") {
+	if !p.Matches(xpp.StartTag, "rss") &&
+		!p.Matches(xpp.StartTag, "RDF") {
 		return nil, errors.New("Unexpected root element")
 	}
 
 	items := []*RSSItem{}
-	ver = parseVersion(p)
+	ver := parseVersion(p)
 
 	for {
 		tok, err := p.NextTag()
@@ -112,7 +108,7 @@ func parseRoot(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
 				// Earlier versions of the RSS spec had "item" elements at the same
 				// root level as "channel" elements.  We will merge these items
 				// with any channel level items.
-				item, err = parseItem(i)
+				item, err := parseItem(p)
 				if err != nil {
 					return nil, err
 				}
@@ -124,8 +120,8 @@ func parseRoot(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
 		}
 	}
 
-	if !p.Matches(xpp.EndTag, nil, "rss") &&
-		!p.Matches(xpp.EndTag, nil, "RDF") {
+	if !p.Matches(xpp.EndTag, "rss") &&
+		!p.Matches(xpp.EndTag, "RDF") {
 		return nil, errors.New("Expected root end tag")
 	}
 
@@ -138,8 +134,8 @@ func parseRoot(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
 	}
 }
 
-func parseChannel(t xml.StartElement, d *xml.Decoder) (*RSSFeed, error) {
-	if !p.Matches(xpp.StartTag, nil, "channel") {
+func parseChannel(p *xpp.XMLPullParser) (*RSSFeed, error) {
+	if !p.Matches(xpp.StartTag, "channel") {
 		return nil, errors.New("Expected channel start tag")
 	}
 
@@ -163,6 +159,78 @@ func parseChannel(t xml.StartElement, d *xml.Decoder) (*RSSFeed, error) {
 					return nil, err
 				}
 				rss.Title = title
+			} else if p.Name == "description" {
+				desc, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Description = desc
+			} else if p.Name == "link" {
+				link, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Link = link
+			} else if p.Name == "language" {
+				lang, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Language = lang
+			} else if p.Name == "copyright" {
+				copyright, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Copyright = copyright
+			} else if p.Name == "managingEditor" {
+				editor, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.ManagingEditor = editor
+			} else if p.Name == "webMaster" {
+				web, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.WebMaster = web
+			} else if p.Name == "pubDate" {
+				pub, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.PubDate = pub
+			} else if p.Name == "lastBuildDate" {
+				build, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.LastBuildDate = build
+			} else if p.Name == "generator" {
+				gen, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Generator = gen
+			} else if p.Name == "docs" {
+				docs, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Docs = docs
+			} else if p.Name == "ttl" {
+				ttl, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.TTL = ttl
+			} else if p.Name == "rating" {
+				rating, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				rss.Rating = rating
 			} else {
 				// Skip any elements not part of the channel spec
 				p.Skip()
@@ -170,24 +238,98 @@ func parseChannel(t xml.StartElement, d *xml.Decoder) (*RSSFeed, error) {
 		}
 	}
 
-	if !p.Matches(xpp.EndTag, nil, "channel") {
+	if !p.Matches(xpp.EndTag, "channel") {
 		return nil, errors.New("Expected channel end tag")
 	}
 
 	return rss, nil
 }
 
-func parseItem(t xml.StartElement, d *xml.Decoder) (*RSSItem, error) {
-	return &RSSItem{}, nil
+func parseItem(p *xpp.XMLPullParser) (*RSSItem, error) {
+	if !p.Matches(xpp.StartTag, "item") {
+		return nil, errors.New("Expected item start tag")
+	}
+
+	item := &RSSItem{}
+
+	for {
+		tok, err := p.NextTag()
+		if err != nil {
+			return nil, err
+		}
+
+		if tok == xpp.EndTag {
+			break
+		}
+
+		if tok == xpp.StartTag {
+			if p.Name == "title" {
+				title, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				item.Title = title
+			} else if p.Name == "description" {
+				desc, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				item.Description = desc
+			} else if p.Name == "link" {
+				link, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				item.Link = link
+			} else if p.Name == "author" {
+				author, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				item.Author = author
+			} else if p.Name == "comments" {
+				comments, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				item.Comments = comments
+			} else if p.Name == "pubDate" {
+				pub, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				item.PubDate = pub
+			} else if p.Name == "source" {
+				source, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				item.Source = source
+			} else {
+				// Skip any elements not part of the channel spec
+				p.Skip()
+			}
+		}
+	}
+
+	if !p.Matches(xpp.EndTag, "item") {
+		return nil, errors.New("Expected item end tag")
+	}
+
+	return item, nil
 }
 
 func parseVersion(p *xpp.XMLPullParser) (ver string) {
 	if p.Name == "rss" {
 		ver = p.Attribute("version")
+		if ver == "" {
+			ver = "2.0"
+		}
 	} else if p.Name == "RDF" {
-		if p.Space == "http://channel.netscape.com/rdf/simple/0.9/" {
+		ns := p.Attribute("xmlns")
+		if ns == "http://channel.netscape.com/rdf/simple/0.9/" {
 			ver = "0.9"
-		} else if p.Space == "http://purl.org/rss/1.0/" {
+		} else if ns == "http://purl.org/rss/1.0/" {
 			ver = "1.0"
 		}
 	}
