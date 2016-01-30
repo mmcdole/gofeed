@@ -8,7 +8,7 @@ import (
 )
 
 func TestDetectFeedType_RSS090(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss090.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss090.xml")
 
 	expected := feed.FeedTypeRSS
 	result := feed.DetectFeedType(string(f))
@@ -16,7 +16,7 @@ func TestDetectFeedType_RSS090(t *testing.T) {
 }
 
 func TestDetectFeedType_RSS091(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss091.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss091.xml")
 
 	expected := feed.FeedTypeRSS
 	result := feed.DetectFeedType(string(f))
@@ -24,7 +24,7 @@ func TestDetectFeedType_RSS091(t *testing.T) {
 }
 
 func TestDetectFeedType_RSS092(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss092.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss092.xml")
 
 	expected := feed.FeedTypeRSS
 	result := feed.DetectFeedType(string(f))
@@ -32,7 +32,7 @@ func TestDetectFeedType_RSS092(t *testing.T) {
 }
 
 func TestDetectFeedType_RSS10(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss10.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss10.xml")
 
 	expected := feed.FeedTypeRSS
 	result := feed.DetectFeedType(string(f))
@@ -40,7 +40,7 @@ func TestDetectFeedType_RSS10(t *testing.T) {
 }
 
 func TestDetectFeedType_RSS20(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss20.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss20.xml")
 
 	expected := feed.FeedTypeRSS
 	result := feed.DetectFeedType(string(f))
@@ -48,7 +48,7 @@ func TestDetectFeedType_RSS20(t *testing.T) {
 }
 
 func TestDetectFeedType_Atom10(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_atom10.xml")
+	f, _ := ioutil.ReadFile("test/simple_atom10.xml")
 
 	expected := feed.FeedTypeAtom
 	result := feed.DetectFeedType(string(f))

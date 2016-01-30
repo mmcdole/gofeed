@@ -10,7 +10,7 @@ import (
 )
 
 func TestParseRSSFeed_DetectVersion_RSS090(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss090.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss090.xml")
 
 	rss, err := feed.ParseRSSFeed(string(f))
 
@@ -20,7 +20,7 @@ func TestParseRSSFeed_DetectVersion_RSS090(t *testing.T) {
 }
 
 func TestParseRSSFeed_DetectVersion_RSS091(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss091.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss091.xml")
 
 	rss, err := feed.ParseRSSFeed(string(f))
 
@@ -30,7 +30,7 @@ func TestParseRSSFeed_DetectVersion_RSS091(t *testing.T) {
 }
 
 func TestParseRSSFeed_DetectVersion_RSS092(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss092.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss092.xml")
 
 	rss, err := feed.ParseRSSFeed(string(f))
 	fmt.Println(rss)
@@ -41,7 +41,7 @@ func TestParseRSSFeed_DetectVersion_RSS092(t *testing.T) {
 }
 
 func TestParseRSSFeed_DetectVersion_RSS10(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss10.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss10.xml")
 
 	rss, err := feed.ParseRSSFeed(string(f))
 
@@ -51,7 +51,7 @@ func TestParseRSSFeed_DetectVersion_RSS10(t *testing.T) {
 }
 
 func TestParseRSSFeed_DetectVersion_RSS20(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/simple_rss20.xml")
+	f, _ := ioutil.ReadFile("test/simple_rss20.xml")
 
 	rss, err := feed.ParseRSSFeed(string(f))
 
