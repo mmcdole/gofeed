@@ -11,8 +11,9 @@ import (
 
 func TestParseRSSFeed_DetectVersion_RSS090(t *testing.T) {
 	f, _ := ioutil.ReadFile("test/simple_rss090.xml")
+	fp := &feed.RSSParser{}
 
-	rss, err := feed.ParseRSSFeed(string(f))
+	rss, err := fp.ParseFeed(string(f))
 
 	expected := "0.9"
 	assert.Nil(t, err, "Failed to parse feed")
@@ -21,8 +22,9 @@ func TestParseRSSFeed_DetectVersion_RSS090(t *testing.T) {
 
 func TestParseRSSFeed_DetectVersion_RSS091(t *testing.T) {
 	f, _ := ioutil.ReadFile("test/simple_rss091.xml")
+	fp := &feed.RSSParser{}
 
-	rss, err := feed.ParseRSSFeed(string(f))
+	rss, err := fp.ParseFeed(string(f))
 
 	expected := "0.91"
 	assert.Nil(t, err, "Failed to parse feed")
@@ -31,8 +33,9 @@ func TestParseRSSFeed_DetectVersion_RSS091(t *testing.T) {
 
 func TestParseRSSFeed_DetectVersion_RSS092(t *testing.T) {
 	f, _ := ioutil.ReadFile("test/simple_rss092.xml")
+	fp := &feed.RSSParser{}
 
-	rss, err := feed.ParseRSSFeed(string(f))
+	rss, err := fp.ParseFeed(string(f))
 	fmt.Println(rss)
 
 	expected := "0.92"
@@ -42,8 +45,9 @@ func TestParseRSSFeed_DetectVersion_RSS092(t *testing.T) {
 
 func TestParseRSSFeed_DetectVersion_RSS10(t *testing.T) {
 	f, _ := ioutil.ReadFile("test/simple_rss10.xml")
+	fp := &feed.RSSParser{}
 
-	rss, err := feed.ParseRSSFeed(string(f))
+	rss, err := fp.ParseFeed(string(f))
 
 	expected := "1.0"
 	assert.Nil(t, err, "Failed to parse feed")
@@ -52,8 +56,9 @@ func TestParseRSSFeed_DetectVersion_RSS10(t *testing.T) {
 
 func TestParseRSSFeed_DetectVersion_RSS20(t *testing.T) {
 	f, _ := ioutil.ReadFile("test/simple_rss20.xml")
+	fp := &feed.RSSParser{}
 
-	rss, err := feed.ParseRSSFeed(string(f))
+	rss, err := fp.ParseFeed(string(f))
 
 	expected := "2.0"
 	assert.Nil(t, err, "Failed to parse feed")
