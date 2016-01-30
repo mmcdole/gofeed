@@ -1,7 +1,6 @@
 package feed_test
 
 import (
-	"io/ioutil"
 	"testing"
 
 	"github.com/mmcdole/go-feed"
