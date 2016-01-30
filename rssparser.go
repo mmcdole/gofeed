@@ -519,12 +519,13 @@ func (rp *RSSParser) parseItemExtension(p *xpp.XMLPullParser, item *RSSItem) err
 }
 
 func (rp *RSSParser) parseVersion(p *xpp.XMLPullParser) (ver string) {
-	if p.Name == "rss" {
+	name := strings.ToLower(p.Name)
+	if name == "rss" {
 		ver = p.Attribute("version")
 		if ver == "" {
 			ver = "2.0"
 		}
-	} else if p.Name == "RDF" {
+	} else if name == "rdf" {
 		ns := p.Attribute("xmlns")
 		if ns == "http://channel.netscape.com/rdf/simple/0.9/" {
 			ver = "0.9"
