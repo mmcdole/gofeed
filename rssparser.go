@@ -33,6 +33,7 @@ func (rp *RSSParser) parseRoot(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
 
 	items := []*RSSItem{}
 	ver := rp.parseVersion(p)
+	rp.parseNamespaces(p)
 
 	for {
 		tok, err := p.NextTag()
@@ -45,6 +46,14 @@ func (rp *RSSParser) parseRoot(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
 		}
 
 		if tok == xpp.StartTag {
+
+			rp.parseNamespaces(p)
+
+			if rp.isExtension(p) {
+				p.Skip()
+				continue
+			}
+
 			if p.Name == "channel" {
 				rss, err = rp.parseChannel(p)
 				if err != nil {
@@ -103,10 +112,14 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 
 		if tok == xpp.StartTag {
 
-			// Parse and store any namespace prefix/url attributes
 			rp.parseNamespaces(p)
 
-			if p.Name == "title" {
+			if rp.isExtension(p) {
+				err := rp.parseFeedExtension(p, rss)
+				if err != nil {
+					return nil, err
+				}
+			} else if p.Name == "title" {
 				result, err := p.NextText()
 				if err != nil {
 					return nil, err
@@ -204,23 +217,6 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 					return nil, err
 				}
 				rss.Categories = append(rss.Categories, result)
-			} else if p.Space != "" {
-				result, err := rp.parseExtension(p)
-				if err != nil {
-					return nil, err
-				}
-				prefix := rp.prefixForNamespace(p.Space)
-
-				// Ensure the extension prefix map exists
-				if _, ok := rss.Extensions[prefix]; !ok {
-					rss.Extensions[prefix] = map[string][]Extension{}
-				}
-				// Ensure the extension element slice exists
-				if _, ok := rss.Extensions[prefix][p.Name]; !ok {
-					rss.Extensions[prefix][p.Name] = []Extension{}
-				}
-
-				rss.Extensions[prefix][p.Name] = append(rss.Extensions[prefix][p.Name], result)
 			} else {
 				// Skip element as it isn't an extension and not
 				// part of the spec
@@ -237,12 +233,14 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 }
 
 func (rp *RSSParser) parseItem(p *xpp.XMLPullParser) (item *RSSItem, err error) {
+
 	if err = p.Expect(xpp.StartTag, "item"); err != nil {
 		return nil, err
 	}
 
 	item = &RSSItem{}
 	item.Categories = []RSSCategory{}
+	item.Extensions = map[string]map[string][]Extension{}
 
 	for {
 		tok, err := p.NextTag()
@@ -256,10 +254,14 @@ func (rp *RSSParser) parseItem(p *xpp.XMLPullParser) (item *RSSItem, err error) 
 
 		if tok == xpp.StartTag {
 
-			// Parse and store any namespace prefix/url attributes
 			rp.parseNamespaces(p)
 
-			if p.Name == "title" {
+			if rp.isExtension(p) {
+				err := rp.parseItemExtension(p, item)
+				if err != nil {
+					return nil, err
+				}
+			} else if p.Name == "title" {
 				result, err := p.NextText()
 				if err != nil {
 					return nil, err
@@ -472,6 +474,48 @@ func (rp *RSSParser) parseCategory(p *xpp.XMLPullParser) (cat RSSCategory, err e
 		return cat, err
 	}
 	return cat, nil
+}
+
+func (rp *RSSParser) parseFeedExtension(p *xpp.XMLPullParser, rss *RSSFeed) error {
+	prefix := rp.prefixForNamespace(p.Space)
+
+	result, err := rp.parseExtension(p)
+	if err != nil {
+		return err
+	}
+
+	// Ensure the extension prefix map exists
+	if _, ok := rss.Extensions[prefix]; !ok {
+		rss.Extensions[prefix] = map[string][]Extension{}
+	}
+	// Ensure the extension element slice exists
+	if _, ok := rss.Extensions[prefix][p.Name]; !ok {
+		rss.Extensions[prefix][p.Name] = []Extension{}
+	}
+
+	rss.Extensions[prefix][p.Name] = append(rss.Extensions[prefix][p.Name], result)
+	return nil
+}
+
+func (rp *RSSParser) parseItemExtension(p *xpp.XMLPullParser, item *RSSItem) error {
+	prefix := rp.prefixForNamespace(p.Space)
+
+	result, err := rp.parseExtension(p)
+	if err != nil {
+		return err
+	}
+
+	// Ensure the extension prefix map exists
+	if _, ok := item.Extensions[prefix]; !ok {
+		item.Extensions[prefix] = map[string][]Extension{}
+	}
+	// Ensure the extension element slice exists
+	if _, ok := item.Extensions[prefix][p.Name]; !ok {
+		item.Extensions[prefix][p.Name] = []Extension{}
+	}
+
+	item.Extensions[prefix][p.Name] = append(item.Extensions[prefix][p.Name], result)
+	return nil
 }
 
 func (rp *RSSParser) parseVersion(p *xpp.XMLPullParser) (ver string) {

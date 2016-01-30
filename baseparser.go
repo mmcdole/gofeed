@@ -23,8 +23,7 @@ func (bp *BaseParser) parseExtension(p *xpp.XMLPullParser) (ext Extension, err e
 
 	for _, attr := range p.Attrs {
 		// TODO: Alright that we are stripping
-		// namespace information from attributes
-		// for the usecase of feed parsing?
+		// namespace information from attributes ?
 		ext.Attrs[attr.Name.Local] = attr.Value
 	}
 
@@ -62,19 +61,17 @@ func (bp *BaseParser) parseExtension(p *xpp.XMLPullParser) (ext Extension, err e
 }
 
 func (bp *BaseParser) prefixForNamespace(space string) string {
-	lspace := strings.ToLower(space)
-
 	// First we check if the global namespace map
 	// contains an entry for this namespace/prefix.
 	// This way we can use the canonical prefix for this
 	// ns instead of the one defined in the feed.
-	if prefix, ok := globalNamespaces[lspace]; ok {
+	if prefix, ok := globalNamespaces[space]; ok {
 		return prefix
 	}
 
 	// Next we check if the feed itself defined this
 	// this namespace and return it if we have a result.
-	if prefix, ok := bp.feedSpaces[lspace]; ok {
+	if prefix, ok := bp.feedSpaces[space]; ok {
 		return prefix
 	}
 
@@ -84,11 +81,25 @@ func (bp *BaseParser) prefixForNamespace(space string) string {
 	return space
 }
 
+func (bp *BaseParser) isExtension(p *xpp.XMLPullParser) bool {
+	if prefix, ok := globalNamespaces[p.Space]; ok {
+		return prefix != ""
+	}
+
+	if prefix, ok := bp.feedSpaces[p.Space]; ok {
+		return prefix != ""
+	}
+
+	return p.Space != ""
+}
+
 func (bp *BaseParser) parseNamespaces(p *xpp.XMLPullParser) {
 	for _, attr := range p.Attrs {
 		if attr.Name.Space == "xmlns" {
 			spacePrefix := strings.ToLower(attr.Name.Local)
 			bp.feedSpaces[attr.Value] = spacePrefix
+		} else if attr.Name.Local == "xmlns" {
+			bp.feedSpaces[attr.Value] = ""
 		}
 	}
 }

@@ -6,6 +6,19 @@ package feed
 //
 // These prefixes override any different prefixes used in the feed itself.
 var globalNamespaces = map[string]string{
+	"": "",
+	"http://backend.userland.com/rss":                                "",
+	"http://blogs.law.harvard.edu/tech/rss":                          "",
+	"http://purl.org/rss/1.0/":                                       "",
+	"http://my.netscape.com/rdf/simple/0.9/":                         "",
+	"http://example.com/newformat#":                                  "",
+	"http://example.com/necho":                                       "",
+	"http://purl.org/echo/":                                          "",
+	"uri/of/echo/namespace#":                                         "",
+	"http://purl.org/pie/":                                           "",
+	"http://purl.org/atom/ns#":                                       "",
+	"http://www.w3.org/2005/Atom":                                    "",
+	"http://purl.org/rss/1.0/modules/rss091#":                        "",
 	"http://webns.net/mvcb/":                                         "admin",
 	"http://purl.org/rss/1.0/modules/aggregation/":                   "ag",
 	"http://purl.org/rss/1.0/modules/annotate/":                      "annotate",
