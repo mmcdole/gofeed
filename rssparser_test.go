@@ -9,58 +9,57 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParseRSSFeed_DetectVersion_RSS090(t *testing.T) {
-	f, _ := ioutil.ReadFile("test/simple_rss090.xml")
-	fp := &feed.RSSParser{}
+func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
+	var verTests = []struct {
+		file    string
+		version string
+	}{
+		{"simple_rss090.xml", "0.9"},
+		{"simple_rss091.xml", "0.91"},
+		{"simple_rss092.xml", "0.92"},
+		{"simple_rss10.xml", "1.0"},
+		{"simple_rss20.xml", "2.0"},
+	}
 
-	rss, err := fp.ParseFeed(string(f))
+	for _, test := range verTests {
+		file := fmt.Sprintf("test/%s", test.file)
+		f, _ := ioutil.ReadFile(file)
+		fp := &feed.RSSParser{}
 
-	expected := "0.9"
-	assert.Nil(t, err, "Failed to parse feed")
-	assert.Equal(t, expected, rss.Version, "Expected Version %s, got %s", expected, rss.Version)
+		rss, err := fp.ParseFeed(string(f))
+
+		assert.Nil(t, err, "Failed to parse feed: %s", file)
+		assert.Equal(t, test.version, rss.Version, "Expected RSS version %s, got %s", test.version, rss.Version)
+	}
 }
 
-func TestParseRSSFeed_DetectVersion_RSS091(t *testing.T) {
-	f, _ := ioutil.ReadFile("test/simple_rss091.xml")
+func TestRSSParser_ParseFeed_Extensions(t *testing.T) {
+	f, _ := ioutil.ReadFile("test/twit.xml")
 	fp := &feed.RSSParser{}
 
 	rss, err := fp.ParseFeed(string(f))
 
-	expected := "0.91"
 	assert.Nil(t, err, "Failed to parse feed")
-	assert.Equal(t, expected, rss.Version, "Expected Version %s, got %s", expected, rss.Version)
-}
 
-func TestParseRSSFeed_DetectVersion_RSS092(t *testing.T) {
-	f, _ := ioutil.ReadFile("test/simple_rss092.xml")
-	fp := &feed.RSSParser{}
+	// Channel Extension
+	expected := "weekly"
+	actual := rss.Extensions["sy"]["updatePeriod"][0].Value
+	assert.Equal(t, expected, actual, "Expected extension value %s, got %s", expected, actual)
 
-	rss, err := fp.ParseFeed(string(f))
-	fmt.Println(rss)
+	// Channel Extension - Attribute
+	expected = "http://twit.cachefly.net/coverart/twit/twit1400audio.jpg"
+	actual = rss.Extensions["itunes"]["image"][0].Attrs["href"]
+	assert.Equal(t, expected, actual, "Expected extension attr value %s, got %s", expected, actual)
 
-	expected := "0.92"
-	assert.Nil(t, err, "Failed to parse feed")
-	assert.Equal(t, expected, rss.Version, "Expected Version %s, got %s", expected, rss.Version)
-}
+	// Channel Extension - Nested
+	expected = "Tech News"
+	actual = rss.Extensions["itunes"]["category"][0].Children["category"][0].Attrs["text"]
+	assert.Equal(t, expected, actual, "Expected nested extension value %s, got %s", expected, actual)
 
-func TestParseRSSFeed_DetectVersion_RSS10(t *testing.T) {
-	f, _ := ioutil.ReadFile("test/simple_rss10.xml")
-	fp := &feed.RSSParser{}
+	item := rss.Items[0]
 
-	rss, err := fp.ParseFeed(string(f))
-
-	expected := "1.0"
-	assert.Nil(t, err, "Failed to parse feed")
-	assert.Equal(t, expected, rss.Version, "Expected Version %s, got %s", expected, rss.Version)
-}
-
-func TestParseRSSFeed_DetectVersion_RSS20(t *testing.T) {
-	f, _ := ioutil.ReadFile("test/simple_rss20.xml")
-	fp := &feed.RSSParser{}
-
-	rss, err := fp.ParseFeed(string(f))
-
-	expected := "2.0"
-	assert.Nil(t, err, "Failed to parse feed")
-	assert.Equal(t, expected, rss.Version, "Expected Version %s, got %s", expected, rss.Version)
+	// Item Extension
+	expected = "TWiT"
+	actual = item.Extensions["itunes"]["author"][0].Value
+	assert.Equal(t, expected, actual, "Expected item extension value %s, got %s", expected, actual)
 }
