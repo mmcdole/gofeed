@@ -1,97 +1,82 @@
 package feed
 
 import (
-	"fmt"
 	"time"
 )
 
 type RSSFeed struct {
-	Title               string
-	Link                string
-	Description         string
-	Language            string
-	Copyright           string
-	ManagingEditor      string
-	WebMaster           string
-	PubDate             string
-	PubDateParsed       time.Time
-	LastBuildDate       string
-	LastBuildDateParsed time.Time
-	Categories          []RSSCategory
-	Generator           string
-	Docs                string
-	TTL                 string
-	Image               RSSImage
-	Rating              string
-	SkipHours           []string
-	SkipDays            []string
-	Items               []*RSSItem
-	Version             string
-	Extensions          map[string]map[string][]Extension
-}
-
-func (f *RSSFeed) String() string {
-	return fmt.Sprintf("Title: %s\nLink: %s\nDescription: %s\n"+
-		"Language: %s\nCopyright: %s\nManagingEditor: %s\n"+
-		"WebMaster: %s\nPubDate: %s\nLastBuildDate: %s\n"+
-		"Generator: %s\nDocs: %s\nTTL: %s\n"+
-		"Rating: %s\nItems: %s\nVersion: %s\n",
-		f.Title, f.Link, f.Description,
-		f.Language, f.Copyright, f.ManagingEditor,
-		f.WebMaster, f.PubDate, f.LastBuildDate,
-		f.Generator, f.Docs, f.TTL,
-		f.Rating, f.Items, f.Version)
+	Title               string         `json:"title"`
+	Link                string         `json:"link"`
+	Description         string         `json:"description"`
+	Language            string         `json:"langauge,omitempty"`
+	Copyright           string         `json:"copyright,omitempty"`
+	ManagingEditor      string         `json:"managingEditor,omitempty"`
+	WebMaster           string         `json:"webMaster,omitempty"`
+	PubDate             string         `json:"pubDate,omitempty"`
+	PubDateParsed       *time.Time     `json:"pubDateParsed,omitempty"`
+	LastBuildDate       string         `json:"lastBuildDate,omitempty"`
+	LastBuildDateParsed *time.Time     `json:"lastBuildDateParsed,omitempty"`
+	Categories          []*RSSCategory `json:"categories,omitempty"`
+	Generator           string         `json:"generator,omitempty"`
+	Docs                string         `json:"docs,omitempty"`
+	TTL                 string         `json:"ttl,omitempty"`
+	Image               *RSSImage      `json:"image,omitempty"`
+	Rating              string         `json:"rating,omitempty"`
+	SkipHours           []string       `json:"skipHours,omitempty"`
+	SkipDays            []string       `json:"skipDays,omitempty"`
+	TextInput           *RSSTextInput  `json:"textInput,omitempty"`
+	Items               []*RSSItem     `json:"items,omitempty"`
+	Version             string         `json:"version,omitempty"`
+	Extensions          FeedExtensions `json:"extensions,omitempty"`
 }
 
 type RSSItem struct {
-	Title         string
-	Link          string
-	Description   string
-	Author        string
-	Categories    []RSSCategory
-	Comments      string
-	Enclosure     RSSEnclosure
-	Guid          RSSGuid
-	PubDate       string
-	PubDateParsed time.Time
-	Source        RSSSource
-	Extensions    map[string]map[string][]Extension
-}
-
-func (i *RSSItem) String() string {
-	return fmt.Sprintf("Title: %s\nLink: %s\nDescription: %s\n"+
-		"Author: %s\nComments: %s\nPubDate: %s\n"+
-		"Source: %s\n",
-		i.Title, i.Link, i.Description,
-		i.Author, i.Comments, i.PubDate,
-		i.Source)
+	Title         string         `json:"title,omitempty"`
+	Link          string         `json:"link,omitempty"`
+	Description   string         `json:"description,omitempty"`
+	Author        string         `json:"author,omitempty"`
+	Categories    []*RSSCategory `json:"categories,omitempty"`
+	Comments      string         `json:"comments,omitempty"`
+	Enclosure     *RSSEnclosure  `json:"enclosure,omitempty"`
+	Guid          *RSSGuid       `json:"guid,omitempty"`
+	PubDate       string         `json:"pubDate,omitempty"`
+	PubDateParsed *time.Time     `json:"pubDateParsed,omitempty"`
+	Source        *RSSSource     `json:"source,omitempty"`
+	Extensions    FeedExtensions `json:"extensions,omitempty"`
 }
 
 type RSSImage struct {
-	URL    string
-	Link   string
-	Title  string
-	Width  string
-	Height string
+	URL    string `json:"url"`
+	Link   string `json:"link"`
+	Title  string `json:"title"`
+	Width  string `json:"width,omitempty"`
+	Height string `json:"height,omitempty"`
 }
 
 type RSSEnclosure struct {
-	URL    string
-	Length string
-	Type   string
+	URL    string `json:"url"`
+	Length string `json:"length"`
+	Type   string `json:"type"`
 }
 
 type RSSGuid struct {
-	Value       string
-	IsPermalink string
+	Value       string `json:"value"`
+	IsPermalink string `json:"isPermalink"`
 }
 
 type RSSSource struct {
-	Title string
-	URL   string
+	Title string `json:"title"`
+	URL   string `json:"url"`
 }
 
 type RSSCategory struct {
-	Domain string
-	Value  string
+	Domain string `json:"domain"`
+	Value  string `json:"value"`
+}
+
+type RSSTextInput struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Name        string `json:"name"`
+	Link        string `json:"link"`
 }

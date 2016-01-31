@@ -12,14 +12,35 @@ type BaseParser struct {
 	feedSpaces map[string]string
 }
 
-func (bp *BaseParser) parseExtension(p *xpp.XMLPullParser) (ext Extension, err error) {
+func (rp *RSSParser) parseExtension(fe FeedExtensions, p *xpp.XMLPullParser) (FeedExtensions, error) {
+	prefix := rp.prefixForNamespace(p.Space)
+
+	result, err := rp.parseExtensionElement(p)
+	if err != nil {
+		return nil, err
+	}
+
+	// Ensure the extension prefix map exists
+	if _, ok := fe[prefix]; !ok {
+		fe[prefix] = map[string][]Extension{}
+	}
+	// Ensure the extension element slice exists
+	if _, ok := fe[prefix][p.Name]; !ok {
+		fe[prefix][p.Name] = []Extension{}
+	}
+
+	fe[prefix][p.Name] = append(fe[prefix][p.Name], result)
+	return fe, nil
+}
+
+func (bp *BaseParser) parseExtensionElement(p *xpp.XMLPullParser) (ext Extension, err error) {
 	if err = p.Expect(xpp.StartTag, "*"); err != nil {
 		return ext, err
 	}
 
 	ext.Name = p.Name
-	ext.Attrs = map[string]string{}
 	ext.Children = map[string][]Extension{}
+	ext.Attrs = map[string]string{}
 
 	for _, attr := range p.Attrs {
 		// TODO: Alright that we are stripping
@@ -38,7 +59,7 @@ func (bp *BaseParser) parseExtension(p *xpp.XMLPullParser) (ext Extension, err e
 		}
 
 		if tok == xpp.StartTag {
-			child, err := bp.parseExtension(p)
+			child, err := bp.parseExtensionElement(p)
 			if err != nil {
 				return ext, err
 			}
