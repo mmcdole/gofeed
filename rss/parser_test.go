@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/mmcdole/go-feed"
+	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
 )
 

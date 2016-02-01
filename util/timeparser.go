@@ -1,4 +1,4 @@
-package parseutil
+package parsers
 
 import (
 	"fmt"

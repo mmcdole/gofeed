@@ -1,7 +1,5 @@
 package gofeed
 
-import ()
-
 type FeedExtensions map[string]map[string][]Extension
 
 type Extension struct {
