@@ -1,0 +1,34 @@
+{
+    "title": "Scripting News",
+    "link": "http://www.scripting.com/",
+    "description": "News and commentary from the cross-platform scripting community.",
+    "langauge": "en-us",
+    "copyright": "Copyright 1997-1999 UserLand Software, Inc.",
+    "managingEditor": "dave@userland.com (Dave Winer)",
+    "webMaster": "dave@userland.com (Dave Winer)",
+    "pubDate": "Thu, 08 Jul 1999 07:00:00 GMT",
+    "pubDateParsed": "1999-07-08T16:20:26Z",
+    "lastBuildDate": "Thu, 08 Jul 1999 16:20:26 GMT",
+    "lastBuildDateParsed":"1999-07-08T16:20:26Z",
+    "docs": "http://my.userland.com/stories/storyReader$11",
+    "rating": "(PICS-1.1 \"http://www.rsac.org/ratingsv01.html\" l gen true comment \"RSACi North America Server\" for \"http://www.rsac.org\" on \"1996.04.16T08:15-0500\" r (n 0 s 0 v 0 l 0))",
+    "skipHours": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+    ],
+    "skipDays": [
+        "Sunday"
+    ],
+    "items": [
+        {
+            "title": "stuff",
+            "link": "http://bar",
+            "description": "This is an article about some stuff"
+        }
+    ],
+    "version": "0.91"
+}

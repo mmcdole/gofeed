@@ -195,7 +195,8 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 				rss.PubDate = result
 				date, err := ParseDate(result)
 				if err == nil {
-					rss.PubDateParsed = &date
+					utcDate := date.UTC()
+					rss.PubDateParsed = &utcDate
 				}
 			} else if p.Name == "lastBuildDate" {
 				result, err := p.NextText()
@@ -205,7 +206,8 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 				rss.LastBuildDate = result
 				date, err := ParseDate(result)
 				if err == nil {
-					rss.PubDateParsed = &date
+					utcDate := date.UTC()
+					rss.LastBuildDateParsed = &utcDate
 				}
 			} else if p.Name == "generator" {
 				result, err := p.NextText()
@@ -231,6 +233,18 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 					return nil, err
 				}
 				rss.Rating = result
+			} else if p.Name == "skipHours" {
+				result, err := rp.parseSkipHours(p)
+				if err != nil {
+					return nil, err
+				}
+				rss.SkipHours = result
+			} else if p.Name == "skipDays" {
+				result, err := rp.parseSkipDays(p)
+				if err != nil {
+					return nil, err
+				}
+				rss.SkipDays = result
 			} else if p.Name == "item" {
 				result, err := rp.parseItem(p)
 				if err != nil {
@@ -335,7 +349,8 @@ func (rp *RSSParser) parseItem(p *xpp.XMLPullParser) (item *RSSItem, err error) 
 				item.PubDate = result
 				date, err := ParseDate(result)
 				if err == nil {
-					item.PubDateParsed = &date
+					utcDate := date.UTC()
+					item.PubDateParsed = &utcDate
 				}
 			} else if p.Name == "source" {
 				result, err := rp.parseSource(p)
@@ -579,6 +594,80 @@ func (rp *RSSParser) parseTextInput(p *xpp.XMLPullParser) (ti *RSSTextInput, err
 	}
 
 	return ti, nil
+}
+
+func (rp *RSSParser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
+	if err := p.Expect(xpp.StartTag, "skipHours"); err != nil {
+		return nil, err
+	}
+
+	hours := []string{}
+
+	for {
+		tok, err := p.NextTag()
+		if err != nil {
+			return nil, err
+		}
+
+		if tok == xpp.EndTag {
+			break
+		}
+
+		if tok == xpp.StartTag {
+			if p.Name == "hour" {
+				result, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				hours = append(hours, result)
+			} else {
+				p.Skip()
+			}
+		}
+	}
+
+	if err := p.Expect(xpp.EndTag, "skipHours"); err != nil {
+		return nil, err
+	}
+
+	return hours, nil
+}
+
+func (rp *RSSParser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
+	if err := p.Expect(xpp.StartTag, "skipDays"); err != nil {
+		return nil, err
+	}
+
+	days := []string{}
+
+	for {
+		tok, err := p.NextTag()
+		if err != nil {
+			return nil, err
+		}
+
+		if tok == xpp.EndTag {
+			break
+		}
+
+		if tok == xpp.StartTag {
+			if p.Name == "day" {
+				result, err := p.NextText()
+				if err != nil {
+					return nil, err
+				}
+				days = append(days, result)
+			} else {
+				p.Skip()
+			}
+		}
+	}
+
+	if err := p.Expect(xpp.EndTag, "skipDays"); err != nil {
+		return nil, err
+	}
+
+	return days, nil
 }
 
 func (rp *RSSParser) parseVersion(p *xpp.XMLPullParser) (ver string) {

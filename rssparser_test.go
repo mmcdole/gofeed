@@ -29,6 +29,9 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 
 		rss, err := fp.ParseFeed(string(f))
 
+		//		rssJson, _ := json.Marshal(rss)
+		//		fmt.Println(string(rssJson))
+
 		assert.Nil(t, err, "Failed to parse feed: %s", file)
 		assert.Equal(t, test.version, rss.Version, "Expected RSS version %s, got %s", test.version, rss.Version)
 	}
@@ -45,6 +48,7 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 		//		{"simple_rss10.xml", "1.0"},
 		//		{"simple_rss20.xml", "2.0"},
 		{"complete_rss090.xml", "complete_rss090.json"},
+		{"complete_rss091.xml", "complete_rss091.json"},
 	}
 
 	for _, test := range verTests {
