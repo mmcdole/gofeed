@@ -1,11 +1,11 @@
-package feed_test
+package gofeed_test
 
 import (
 	"fmt"
 	"io/ioutil"
 	"testing"
 
-	"github.com/mmcdole/go-feed"
+	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
 )
 

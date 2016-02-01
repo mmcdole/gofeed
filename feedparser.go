@@ -1,4 +1,4 @@
-package feed
+package gofeed
 
 import (
 	"errors"
@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/mmcdole/go-xpp"
-	"github.com/mmcdole/gofeed/parser/atom"
-	"github.com/mmcdole/gofeed/parser/rss"
+	"github.com/mmcdole/gofeed/atom"
+	"github.com/mmcdole/gofeed/rss"
 )
 
 type FeedType int
@@ -20,24 +20,16 @@ const (
 )
 
 type FeedParser struct {
-	// Normalizer is responsible for transforming
-	// RSSFeed or AtomFeed into the common Feed object.
-	//
-	// Defaults to `DefaultNormalizer` which tries to make
-	// a best effort at mapping between the two formats.
-	// Replace this FeedNormalizer if you need to define custom
-	// mappings.
-	Normalizer FeedNormalizer
-
-	rp *RSSParser
-	ap *AtomParser
+	ATrans AtomTranslator
+	RTrans RSSTranslator
+	rp     *RSSParser
+	ap     *AtomParser
 }
 
 func NewFeedParser() *FeedParser {
 	fp := FeedParser{
-		Normalizer: &DefaultNormalizer{},
-		rp:         &RSSParser{},
-		ap:         &AtomParser{},
+		rp: &RSSParser{},
+		ap: &AtomParser{},
 	}
 	return &fp
 }
@@ -89,8 +81,8 @@ func (f *FeedParser) parseFeedFromAtom(feed string) (*Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	nf := f.Normalizer.NormalizeAtom(af)
-	return nf, nil
+	result := f.atomTrans().Translate(af)
+	return result, nil
 }
 
 func (f *FeedParser) parseFeedFromRSS(feed string) (*Feed, error) {
@@ -99,6 +91,20 @@ func (f *FeedParser) parseFeedFromRSS(feed string) (*Feed, error) {
 		return nil, err
 	}
 
-	nf := f.Normalizer.NormalizeRSS(rf)
-	return nf, nil
+	result := f.rssTrans().Translate(rf)
+	return result, nil
+}
+
+func (f *FeedParser) atomTrans() AtomTranslator {
+	if f.ATrans != nil {
+		return f.ATrans
+	}
+	f.ATrans = &DefaultAtomTranslator
+}
+
+func (f *FeedParser) rssTrans() RSSTranslator {
+	if f.RTrans != nil {
+		return f.RTrans
+	}
+	f.RTrans = &DefaultRSSTranslator
 }
