@@ -7,7 +7,3 @@ type AtomFeed struct {
 type AtomEntry struct {
 	Title string
 }
-
-func ParseAtomFeed(feed string) (*AtomFeed, error) {
-	return &AtomFeed{}, nil
-}

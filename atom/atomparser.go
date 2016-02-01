@@ -2,6 +2,6 @@ package atom
 
 type AtomParser struct{}
 
-func (ap AtomParser) ParseFeed(feed string) (*AtomFeed, error) {
+func (a *AtomParser) ParseFeed(feed string) (*AtomFeed, error) {
 	return nil, nil
 }

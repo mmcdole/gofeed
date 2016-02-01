@@ -1,4 +1,4 @@
-package feed
+package parseutil
 
 // Namespaces taken from github.com/kurtmckee/feedparser
 // These are used for determining canonical name space prefixes
@@ -72,4 +72,11 @@ var globalNamespaces = map[string]string{
 	"http://www.w3.org/1999/xlink":                                   "xlink",
 	"http://www.w3.org/XML/1998/namespace":                           "xml",
 	"http://podlove.org/simple-chapters":                             "psc",
+}
+
+func PrefixForNamespace(namespace string) (prefix string) {
+	if p, ok := globalNamespaces[namespace]; ok {
+		prefix = p
+	}
+	return prefix
 }

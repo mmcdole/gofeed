@@ -1,4 +1,4 @@
-package feed
+package normalizer
 
 // FeedNormalizer is responsible for taking either
 // an RSS or Atom feed and outputting a normalized

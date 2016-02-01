@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/mmcdole/go-xpp"
+	"github.com/mmcdole/gofeed/parser/atom"
+	"github.com/mmcdole/gofeed/parser/rss"
 )
 
 type FeedType int
