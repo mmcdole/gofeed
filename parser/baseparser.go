@@ -70,7 +70,7 @@ func (bp *BaseParser) parseExtensionElement(p *xpp.XMLPullParser) (ext Extension
 
 			ext.Children[child.Name] = append(ext.Children[child.Name], child)
 		} else if tok == xpp.Text {
-			ext.Value = p.Text
+			ext.Value = strings.TrimSpace(p.Text)
 		}
 	}
 
@@ -103,11 +103,12 @@ func (bp *BaseParser) prefixForNamespace(space string) string {
 }
 
 func (bp *BaseParser) isExtension(p *xpp.XMLPullParser) bool {
-	if prefix, ok := globalNamespaces[p.Space]; ok {
+	space := strings.TrimSpace(p.Space)
+	if prefix, ok := globalNamespaces[space]; ok {
 		return prefix != ""
 	}
 
-	if prefix, ok := bp.feedSpaces[p.Space]; ok {
+	if prefix, ok := bp.feedSpaces[space]; ok {
 		return prefix != ""
 	}
 
@@ -117,10 +118,22 @@ func (bp *BaseParser) isExtension(p *xpp.XMLPullParser) bool {
 func (bp *BaseParser) parseNamespaces(p *xpp.XMLPullParser) {
 	for _, attr := range p.Attrs {
 		if attr.Name.Space == "xmlns" {
-			spacePrefix := strings.ToLower(attr.Name.Local)
-			bp.feedSpaces[attr.Value] = spacePrefix
+			space := strings.TrimSpace(attr.Value)
+			spacePrefix := strings.TrimSpace(strings.ToLower(attr.Name.Local))
+			bp.feedSpaces[space] = spacePrefix
 		} else if attr.Name.Local == "xmlns" {
-			bp.feedSpaces[attr.Value] = ""
+			space := strings.TrimSpace(attr.Value)
+			bp.feedSpaces[space] = ""
 		}
 	}
+}
+
+func (bp *BaseParser) parseText(p *xpp.XMLPullParser) (text string, err error) {
+	text, err = p.NextText()
+	if err != nil {
+		return text, err
+	}
+
+	text = strings.TrimSpace(text)
+	return text, nil
 }

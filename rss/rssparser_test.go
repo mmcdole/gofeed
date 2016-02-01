@@ -1,4 +1,4 @@
-package feed_test
+package rss_test
 
 import (
 	"encoding/json"
@@ -20,6 +20,7 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 		{"simple_rss092.xml", "0.92"},
 		{"simple_rss10.xml", "1.0"},
 		{"simple_rss20.xml", "2.0"},
+		{"extensions_rss20.xml", "0.0"},
 	}
 
 	for _, test := range verTests {
@@ -29,8 +30,8 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 
 		rss, err := fp.ParseFeed(string(f))
 
-		//		rssJson, _ := json.Marshal(rss)
-		//		fmt.Println(string(rssJson))
+		rssJson, _ := json.Marshal(rss)
+		fmt.Printf("\n\n%s\n", string(rssJson))
 
 		assert.Nil(t, err, "Failed to parse feed: %s", file)
 		assert.Equal(t, test.version, rss.Version, "Expected RSS version %s, got %s", test.version, rss.Version)
@@ -101,9 +102,5 @@ func TestRSSParser_ParseFeed_Extensions(t *testing.T) {
 	expected = "TWiT"
 	actual = item.Extensions["itunes"]["author"][0].Value
 	assert.Equal(t, expected, actual, "Expected item extension value %s, got %s", expected, actual)
-
-}
-
-func TestRSSParser_ParseFeed_DeepCompare_RSS090(t *testing.T) {
 
 }

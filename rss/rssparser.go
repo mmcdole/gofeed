@@ -1,4 +1,4 @@
-package feed
+package rss
 
 import (
 	"errors"
@@ -146,49 +146,49 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 				}
 				extensions = ext
 			} else if p.Name == "title" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Title = result
 			} else if p.Name == "description" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Description = result
 			} else if p.Name == "link" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Link = result
 			} else if p.Name == "language" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Language = result
 			} else if p.Name == "copyright" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Copyright = result
 			} else if p.Name == "managingEditor" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.ManagingEditor = result
 			} else if p.Name == "webMaster" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.WebMaster = result
 			} else if p.Name == "pubDate" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -199,7 +199,7 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 					rss.PubDateParsed = &utcDate
 				}
 			} else if p.Name == "lastBuildDate" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -210,25 +210,25 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 					rss.LastBuildDateParsed = &utcDate
 				}
 			} else if p.Name == "generator" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Generator = result
 			} else if p.Name == "docs" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Docs = result
 			} else if p.Name == "ttl" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.TTL = result
 			} else if p.Name == "rating" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -312,37 +312,37 @@ func (rp *RSSParser) parseItem(p *xpp.XMLPullParser) (item *RSSItem, err error) 
 				}
 				extensions = ext
 			} else if p.Name == "title" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Title = result
 			} else if p.Name == "description" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Description = result
 			} else if p.Name == "link" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Link = result
 			} else if p.Name == "author" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Author = result
 			} else if p.Name == "comments" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Comments = result
 			} else if p.Name == "pubDate" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -406,7 +406,7 @@ func (rp *RSSParser) parseSource(p *xpp.XMLPullParser) (source *RSSSource, err e
 	source = &RSSSource{}
 	source.URL = p.Attribute("url")
 
-	result, err := p.NextText()
+	result, err := rp.parseText(p)
 	if err != nil {
 		return source, err
 	}
@@ -456,31 +456,31 @@ func (rp *RSSParser) parseImage(p *xpp.XMLPullParser) (image *RSSImage, err erro
 
 		if tok == xpp.StartTag {
 			if p.Name == "url" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.URL = result
 			} else if p.Name == "title" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.Title = result
 			} else if p.Name == "link" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.Link = result
 			} else if p.Name == "width" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.Width = result
 			} else if p.Name == "height" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -506,7 +506,7 @@ func (rp *RSSParser) parseGuid(p *xpp.XMLPullParser) (guid *RSSGuid, err error) 
 	guid = &RSSGuid{}
 	guid.IsPermalink = p.Attribute("isPermalink")
 
-	result, err := p.NextText()
+	result, err := rp.parseText(p)
 	if err != nil {
 		return
 	}
@@ -528,7 +528,7 @@ func (rp *RSSParser) parseCategory(p *xpp.XMLPullParser) (cat *RSSCategory, err 
 	cat = &RSSCategory{}
 	cat.Domain = p.Attribute("domain")
 
-	result, err := p.NextText()
+	result, err := rp.parseText(p)
 	if err != nil {
 		return nil, err
 	}
@@ -560,25 +560,25 @@ func (rp *RSSParser) parseTextInput(p *xpp.XMLPullParser) (ti *RSSTextInput, err
 
 		if tok == xpp.StartTag {
 			if p.Name == "title" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				ti.Title = result
 			} else if p.Name == "description" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				ti.Description = result
 			} else if p.Name == "name" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				ti.Name = result
 			} else if p.Name == "link" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -615,7 +615,7 @@ func (rp *RSSParser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
 
 		if tok == xpp.StartTag {
 			if p.Name == "hour" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -652,7 +652,7 @@ func (rp *RSSParser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 
 		if tok == xpp.StartTag {
 			if p.Name == "day" {
-				result, err := p.NextText()
+				result, err := rp.parseText(p)
 				if err != nil {
 					return nil, err
 				}
