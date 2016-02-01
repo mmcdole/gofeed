@@ -14,12 +14,12 @@ func TestFeedParser_DetectFeedType(t *testing.T) {
 		file     string
 		feedType feed.FeedType
 	}{
-		{"simple_rss090.xml", feed.FeedTypeRSS},
-		{"simple_rss091.xml", feed.FeedTypeRSS},
-		{"simple_rss092.xml", feed.FeedTypeRSS},
-		{"simple_rss10.xml", feed.FeedTypeRSS},
-		{"simple_rss20.xml", feed.FeedTypeRSS},
-		{"simple_atom10.xml", feed.FeedTypeAtom},
+		{"rss/simple_rss090.xml", feed.FeedTypeRSS},
+		{"rss/simple_rss091.xml", feed.FeedTypeRSS},
+		{"rss/simple_rss092.xml", feed.FeedTypeRSS},
+		{"rss/simple_rss10.xml", feed.FeedTypeRSS},
+		{"rss/simple_rss20.xml", feed.FeedTypeRSS},
+		{"atom/simple_atom10.xml", feed.FeedTypeAtom},
 		{"invalid.xml", feed.FeedTypeUnknown},
 	}
 

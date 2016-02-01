@@ -6,8 +6,7 @@
 	<channel>
 		<title>Mozilla Dot Org</title>
 		<link>http://www.mozilla.org</link>
-		<description>the Mozilla Organization
-			web site</description>
+		<description>the Mozilla Organization web site</description>
 	</channel>
 
 	<image>
@@ -40,5 +39,12 @@
 		<title>NPL 1.0M published</title>
 		<link>http://www.mozilla.org/NPL/NPL-1.0M.html</link>
 	</item>
+
+  <textinput>
+    <title>Send Comments</title>
+    <description>Use the text box below to send your comments to mozilla.org</description>
+    <name>ResponseText</name>
+    <link>http://www.mozilla.org/cgi-bin/feedback.cgi</link>
+  </textinput>
 
 </rdf:RDF>

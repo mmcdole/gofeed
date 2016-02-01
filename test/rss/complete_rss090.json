@@ -1,0 +1,39 @@
+{
+    "title": "Mozilla Dot Org",
+    "link": "http://www.mozilla.org",
+    "description": "the Mozilla Organization web site",
+    "image": {
+        "url": "http://www.mozilla.org/images/moz.gif",
+        "link": "http://www.mozilla.org",
+        "title": "Mozilla"
+    },
+    "textInput": {
+        "title": "Send Comments",
+        "description": "Use the text box below to send your comments to mozilla.org",
+        "name": "ResponseText",
+        "link": "http://www.mozilla.org/cgi-bin/feedback.cgi"
+    },
+    "items": [
+        {
+            "title": "New Status Updates",
+            "link": "http://www.mozilla.org/status/"
+        },
+        {
+            "title": "Bugzilla Reorganized",
+            "link": "http://www.mozilla.org/bugs/"
+        },
+        {
+            "title": "Mozilla Party, 2.0!",
+            "link": "http://www.mozilla.org/party/1999/"
+        },
+        {
+            "title": "Unix Platform Parity",
+            "link": "http://www.mozilla.org/build/unix.html"
+        },
+        {
+            "title": "NPL 1.0M published",
+            "link": "http://www.mozilla.org/NPL/NPL-1.0M.html"
+        }
+    ],
+    "version": "0.9"
+}

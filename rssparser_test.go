@@ -1,6 +1,7 @@
 package feed_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"testing"
@@ -22,7 +23,7 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 	}
 
 	for _, test := range verTests {
-		file := fmt.Sprintf("test/%s", test.file)
+		file := fmt.Sprintf("test/rss/%s", test.file)
 		f, _ := ioutil.ReadFile(file)
 		fp := &feed.RSSParser{}
 
@@ -33,8 +34,42 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 	}
 }
 
+func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
+	var verTests = []struct {
+		feedFile     string
+		expectedFile string
+	}{
+		//		{"simple_rss090.xml", "0.9"},
+		//		{"simple_rss091.xml", "0.91"},
+		//		{"simple_rss092.xml", "0.92"},
+		//		{"simple_rss10.xml", "1.0"},
+		//		{"simple_rss20.xml", "2.0"},
+		{"complete_rss090.xml", "complete_rss090.json"},
+	}
+
+	for _, test := range verTests {
+		// Get actual source feed
+		ff := fmt.Sprintf("test/rss/%s", test.feedFile)
+		f, _ := ioutil.ReadFile(ff)
+
+		// Parse actual feed
+		fp := &feed.RSSParser{}
+		actual, _ := fp.ParseFeed(string(f))
+
+		// Get json encoded expected feed result
+		ef := fmt.Sprintf("test/rss/%s", test.expectedFile)
+		e, _ := ioutil.ReadFile(ef)
+
+		// Unmarshal expected feed
+		expected := &feed.RSSFeed{}
+		json.Unmarshal(e, &expected)
+
+		assert.Equal(t, actual, expected, "Feed file %s did not match expected output %s", test.feedFile, test.expectedFile)
+	}
+}
+
 func TestRSSParser_ParseFeed_Extensions(t *testing.T) {
-	f, _ := ioutil.ReadFile("test/twit.xml")
+	f, _ := ioutil.ReadFile("test/rss/twit.xml")
 	fp := &feed.RSSParser{}
 
 	rss, err := fp.ParseFeed(string(f))
@@ -62,4 +97,9 @@ func TestRSSParser_ParseFeed_Extensions(t *testing.T) {
 	expected = "TWiT"
 	actual = item.Extensions["itunes"]["author"][0].Value
 	assert.Equal(t, expected, actual, "Expected item extension value %s, got %s", expected, actual)
+
+}
+
+func TestRSSParser_ParseFeed_DeepCompare_RSS090(t *testing.T) {
+
 }

@@ -34,10 +34,10 @@ func (rp *RSSParser) parseRoot(p *xpp.XMLPullParser) (*RSSFeed, error) {
 	}
 
 	// Items found in feed root
-	var rootChannel *RSSFeed
-	var rootTextInput *RSSTextInput
-	var rootItems []*RSSItem
-	var rootImage *RSSImage
+	var channel *RSSFeed
+	var textinput *RSSTextInput
+	var image *RSSImage
+	items := []*RSSItem{}
 
 	ver := rp.parseVersion(p)
 
@@ -62,7 +62,7 @@ func (rp *RSSParser) parseRoot(p *xpp.XMLPullParser) (*RSSFeed, error) {
 			}
 
 			if p.Name == "channel" {
-				rootChannel, err = rp.parseChannel(p)
+				channel, err = rp.parseChannel(p)
 				if err != nil {
 					return nil, err
 				}
@@ -71,17 +71,14 @@ func (rp *RSSParser) parseRoot(p *xpp.XMLPullParser) (*RSSFeed, error) {
 				if err != nil {
 					return nil, err
 				}
-				if rootItems == nil {
-					rootItems = []*RSSItem{}
-				}
-				rootItems = append(rootItems, item)
+				items = append(items, item)
 			} else if p.Name == "textinput" {
-				rootTextInput, err = rp.parseTextInput(p)
+				textinput, err = rp.parseTextInput(p)
 				if err != nil {
 					return nil, err
 				}
 			} else if p.Name == "image" {
-				rootImage, err = rp.parseImage(p)
+				image, err = rp.parseImage(p)
 				if err != nil {
 					return nil, err
 				}
@@ -97,24 +94,24 @@ func (rp *RSSParser) parseRoot(p *xpp.XMLPullParser) (*RSSFeed, error) {
 		return nil, fmt.Errorf("%s or %s", rssErr.Error(), rdfErr.Error())
 	}
 
-	if rootChannel == nil {
+	if channel == nil {
 		return nil, errors.New("No channel element found.")
 	}
 
-	if rootTextInput != nil {
-		rootChannel.TextInput = rootTextInput
+	if len(items) > 0 {
+		channel.Items = append(channel.Items, items...)
 	}
 
-	if rootItems != nil {
-		rootChannel.Items = append(rootChannel.Items, rootItems...)
+	if textinput != nil {
+		channel.TextInput = textinput
 	}
 
-	if rootImage != nil {
-		rootChannel.Image = rootImage
+	if image != nil {
+		channel.Image = image
 	}
 
-	rootChannel.Version = ver
-	return rootChannel, nil
+	channel.Version = ver
+	return channel, nil
 }
 
 func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error) {
@@ -125,8 +122,8 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 
 	rss = &RSSFeed{}
 	rss.Items = []*RSSItem{}
-	rss.Categories = []*RSSCategory{}
-	rss.Extensions = FeedExtensions{}
+	categories := []*RSSCategory{}
+	extensions := FeedExtensions{}
 
 	for {
 		tok, err := p.NextTag()
@@ -143,11 +140,11 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 			rp.parseNamespaces(p)
 
 			if rp.isExtension(p) {
-				ext, err := rp.parseExtension(rss.Extensions, p)
+				ext, err := rp.parseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
-				rss.Extensions = ext
+				extensions = ext
 			} else if p.Name == "title" {
 				result, err := p.NextText()
 				if err != nil {
@@ -245,7 +242,7 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 				if err != nil {
 					return nil, err
 				}
-				rss.Categories = append(rss.Categories, result)
+				categories = append(categories, result)
 			} else {
 				// Skip element as it isn't an extension and not
 				// part of the spec
@@ -258,6 +255,14 @@ func (rp *RSSParser) parseChannel(p *xpp.XMLPullParser) (rss *RSSFeed, err error
 		return nil, err
 	}
 
+	if len(extensions) > 0 {
+		rss.Extensions = extensions
+	}
+
+	if len(categories) > 0 {
+		rss.Categories = categories
+	}
+
 	return rss, nil
 }
 
@@ -268,8 +273,9 @@ func (rp *RSSParser) parseItem(p *xpp.XMLPullParser) (item *RSSItem, err error) 
 	}
 
 	item = &RSSItem{}
-	item.Categories = []*RSSCategory{}
-	item.Extensions = FeedExtensions{}
+
+	categories := []*RSSCategory{}
+	extensions := FeedExtensions{}
 
 	for {
 		tok, err := p.NextTag()
@@ -286,11 +292,11 @@ func (rp *RSSParser) parseItem(p *xpp.XMLPullParser) (item *RSSItem, err error) 
 			rp.parseNamespaces(p)
 
 			if rp.isExtension(p) {
-				ext, err := rp.parseExtension(item.Extensions, p)
+				ext, err := rp.parseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
-				item.Extensions = ext
+				extensions = ext
 			} else if p.Name == "title" {
 				result, err := p.NextText()
 				if err != nil {
@@ -354,12 +360,20 @@ func (rp *RSSParser) parseItem(p *xpp.XMLPullParser) (item *RSSItem, err error) 
 				if err != nil {
 					return nil, err
 				}
-				item.Categories = append(item.Categories, result)
+				categories = append(categories, result)
 			} else {
 				// Skip any elements not part of the item spec
 				p.Skip()
 			}
 		}
+	}
+
+	if len(categories) > 0 {
+		item.Categories = categories
+	}
+
+	if len(extensions) > 0 {
+		item.Extensions = extensions
 	}
 
 	if err = p.Expect(xpp.EndTag, "item"); err != nil {
@@ -560,7 +574,7 @@ func (rp *RSSParser) parseTextInput(p *xpp.XMLPullParser) (ti *RSSTextInput, err
 		}
 	}
 
-	if err = p.Expect(xpp.EndTag, "image"); err != nil {
+	if err = p.Expect(xpp.EndTag, "textinput"); err != nil {
 		return nil, err
 	}
 
