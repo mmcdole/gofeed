@@ -12,14 +12,14 @@ type Extension struct {
 type Feed struct {
 	Title       string            `json:"title"`
 	Description string            `json:"description"`
-	Items       []FeedItem        `json:"items"`
+	Items       []Item            `json:"items"`
 	FeedType    string            `json:"feedType"`
 	FeedVersion string            `json:"feedVersion"`
 	Custom      map[string]string `json:"custom"`
 	Extensions  FeedExtensions    `json:"extensions"`
 }
 
-type FeedItem struct {
+type Item struct {
 	Title       string            `json:"title"`
 	Description string            `json:"description"`
 	Custom      map[string]string `json:"custom"`
