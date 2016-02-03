@@ -1,4 +1,4 @@
-package gofeed
+package parseutil
 
 import (
 	"fmt"

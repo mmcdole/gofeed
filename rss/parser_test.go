@@ -1,4 +1,4 @@
-package gofeed_test
+package rss_test
 
 import (
 	"encoding/json"

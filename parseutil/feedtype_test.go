@@ -1,11 +1,10 @@
-package gofeed_test
+package parseutil_test
 
 import (
 	"fmt"
 	"io/ioutil"
 	"testing"
 
-	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
 )
 

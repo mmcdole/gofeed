@@ -1,4 +1,4 @@
-package gofeed
+package feed
 
 type FeedExtensions map[string]map[string][]Extension
 
