@@ -1,4 +1,11 @@
-package parsers
+package gofeed
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/mmcdole/goxpp"
+)
 
 type FeedType int
 
@@ -13,6 +20,7 @@ func DetectFeedType(feed string) FeedType {
 
 	_, err := p.NextTag()
 	if err != nil {
+		fmt.Printf("Error %s: \n", err)
 		return FeedTypeUnknown
 	}
 

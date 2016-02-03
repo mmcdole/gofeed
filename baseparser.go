@@ -1,9 +1,9 @@
-package parsers
+package gofeed
 
 import (
 	"strings"
 
-	"github.com/mmcdole/go-xpp"
+	"github.com/mmcdole/goxpp"
 )
 
 // Namespaces taken from github.com/kurtmckee/feedparser
@@ -12,19 +12,6 @@ import (
 //
 // These prefixes override any different prefixes used in the feed itself.
 var globalNamespaces = map[string]string{
-	"": "",
-	"http://backend.userland.com/rss":                                "",
-	"http://blogs.law.harvard.edu/tech/rss":                          "",
-	"http://purl.org/rss/1.0/":                                       "",
-	"http://my.netscape.com/rdf/simple/0.9/":                         "",
-	"http://example.com/newformat#":                                  "",
-	"http://example.com/necho":                                       "",
-	"http://purl.org/echo/":                                          "",
-	"uri/of/echo/namespace#":                                         "",
-	"http://purl.org/pie/":                                           "",
-	"http://purl.org/atom/ns#":                                       "",
-	"http://www.w3.org/2005/Atom":                                    "",
-	"http://purl.org/rss/1.0/modules/rss091#":                        "",
 	"http://webns.net/mvcb/":                                         "admin",
 	"http://purl.org/rss/1.0/modules/aggregation/":                   "ag",
 	"http://purl.org/rss/1.0/modules/annotate/":                      "annotate",
@@ -178,10 +165,6 @@ func (bp *BaseParser) prefixForNamespace(space string) string {
 
 func (bp *BaseParser) isExtension(p *xpp.XMLPullParser) bool {
 	space := strings.TrimSpace(p.Space)
-	if prefix, ok := globalNamespaces[space]; ok {
-		return prefix != ""
-	}
-
 	if prefix, ok := bp.feedSpaces[space]; ok {
 		return prefix != ""
 	}

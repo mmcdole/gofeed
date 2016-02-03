@@ -1,4 +1,4 @@
-package atom
+package gofeed
 
 type AtomParser struct{}
 

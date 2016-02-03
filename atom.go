@@ -1,4 +1,4 @@
-package atom
+package gofeed
 
 type AtomFeed struct {
 	Title string

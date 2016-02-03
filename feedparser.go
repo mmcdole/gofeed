@@ -4,12 +4,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
-	"strings"
-
-	"github.com/mmcdole/go-xpp"
-	"github.com/mmcdole/gofeed/atom"
-	"github.com/mmcdole/gofeed/rss"
-	"github.com/mmcdole/gofeed/util"
 )
 
 type FeedParser struct {
@@ -68,15 +62,17 @@ func (f *FeedParser) parseFeedFromRSS(feed string) (*Feed, error) {
 }
 
 func (f *FeedParser) atomTrans() AtomTranslator {
-	if f.ATrans != nil {
-		return f.ATrans
+	if f.AtomTrans != nil {
+		return f.AtomTrans
 	}
-	f.AtomTrans = &DefaultAtomTranslator
+	f.AtomTrans = &DefaultAtomTranslator{}
+	return f.AtomTrans
 }
 
 func (f *FeedParser) rssTrans() RSSTranslator {
-	if f.RTrans != nil {
-		return f.RTrans
+	if f.RSSTrans != nil {
+		return f.RSSTrans
 	}
-	f.RSSTrans = &DefaultRSSTranslator
+	f.RSSTrans = &DefaultRSSTranslator{}
+	return f.RSSTrans
 }

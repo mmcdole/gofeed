@@ -1,11 +1,11 @@
-package rss
+package gofeed
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 
-	"github.com/mmcdole/go-xpp"
+	"github.com/mmcdole/goxpp"
 )
 
 type RSSParser struct {

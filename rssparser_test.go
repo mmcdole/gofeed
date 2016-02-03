@@ -1,4 +1,4 @@
-package rss_test
+package gofeed_test
 
 import (
 	"encoding/json"
@@ -24,9 +24,9 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 	}
 
 	for _, test := range verTests {
-		file := fmt.Sprintf("test/rss/%s", test.file)
+		file := fmt.Sprintf("testdata/%s", test.file)
 		f, _ := ioutil.ReadFile(file)
-		fp := &feed.RSSParser{}
+		fp := &gofeed.RSSParser{}
 
 		rss, err := fp.ParseFeed(string(f))
 
@@ -54,19 +54,19 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 
 	for _, test := range verTests {
 		// Get actual source feed
-		ff := fmt.Sprintf("test/rss/%s", test.feedFile)
+		ff := fmt.Sprintf("testdata/%s", test.feedFile)
 		f, _ := ioutil.ReadFile(ff)
 
 		// Parse actual feed
-		fp := &feed.RSSParser{}
+		fp := &gofeed.RSSParser{}
 		actual, _ := fp.ParseFeed(string(f))
 
 		// Get json encoded expected feed result
-		ef := fmt.Sprintf("test/rss/%s", test.expectedFile)
+		ef := fmt.Sprintf("testdata/%s", test.expectedFile)
 		e, _ := ioutil.ReadFile(ef)
 
 		// Unmarshal expected feed
-		expected := &feed.RSSFeed{}
+		expected := &gofeed.RSSFeed{}
 		json.Unmarshal(e, &expected)
 
 		assert.Equal(t, actual, expected, "Feed file %s did not match expected output %s", test.feedFile, test.expectedFile)
@@ -75,7 +75,7 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 
 func TestRSSParser_ParseFeed_Extensions(t *testing.T) {
 	f, _ := ioutil.ReadFile("test/rss/twit.xml")
-	fp := &feed.RSSParser{}
+	fp := &gofeed.RSSParser{}
 
 	rss, err := fp.ParseFeed(string(f))
 
