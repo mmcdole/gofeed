@@ -1,4 +1,4 @@
-package parseutil
+package shared
 
 import (
 	"github.com/mmcdole/goxpp"

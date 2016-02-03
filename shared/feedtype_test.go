@@ -1,4 +1,4 @@
-package parseutil_test
+package shared_test
 
 import (
 	"fmt"

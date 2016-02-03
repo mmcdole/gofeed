@@ -9,8 +9,7 @@ import (
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/feed"
 	"github.com/mmcdole/gofeed/rss"
-
-	pu "github.com/mmcdole/gofeed/parseutil"
+	"github.com/mmcdole/gofeed/shared"
 )
 
 type FeedParser struct {
@@ -40,7 +39,7 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*feed.Feed, error) {
 
 func (f *FeedParser) ParseFeed(feed string) (*feed.Feed, error) {
 	fmt.Println(feed)
-	ft := pu.DetectFeedType(feed)
+	ft := shared.DetectFeedType(feed)
 	switch ft {
 	case pu.FeedTypeAtom:
 		return f.parseFeedFromAtom(feed)

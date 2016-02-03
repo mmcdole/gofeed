@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/mmcdole/gofeed"
+	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,7 +26,7 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 	for _, test := range verTests {
 		file := fmt.Sprintf("testdata/%s", test.file)
 		f, _ := ioutil.ReadFile(file)
-		fp := &gofeed.RSSParser{}
+		fp := &rss.Parser{}
 
 		rss, err := fp.ParseFeed(string(f))
 
@@ -58,7 +58,7 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 		f, _ := ioutil.ReadFile(ff)
 
 		// Parse actual feed
-		fp := &gofeed.RSSParser{}
+		fp := &rss.Parser{}
 		actual, _ := fp.ParseFeed(string(f))
 
 		// Get json encoded expected feed result
@@ -66,7 +66,7 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 		e, _ := ioutil.ReadFile(ef)
 
 		// Unmarshal expected feed
-		expected := &gofeed.RSSFeed{}
+		expected := &rss.Feed{}
 		json.Unmarshal(e, &expected)
 
 		assert.Equal(t, actual, expected, "Feed file %s did not match expected output %s", test.feedFile, test.expectedFile)
@@ -74,8 +74,8 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 }
 
 func TestRSSParser_ParseFeed_Extensions(t *testing.T) {
-	f, _ := ioutil.ReadFile("test/rss/twit.xml")
-	fp := &gofeed.RSSParser{}
+	f, _ := ioutil.ReadFile("testdata/twit.xml")
+	fp := &rss.Parser{}
 
 	rss, err := fp.ParseFeed(string(f))
 
