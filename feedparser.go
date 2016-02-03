@@ -58,7 +58,7 @@ func (f *FeedParser) ParseFeed(feed string) (*feed.Feed, error) {
 	return nil, errors.New("Failed to detect feed type")
 }
 
-func DetectFeedType(feed string) FeedType {
+func (f *FeedParser) DetectFeedType(feed string) FeedType {
 	p := xpp.NewXMLPullParser(strings.NewReader(feed))
 
 	_, err := p.NextTag()
