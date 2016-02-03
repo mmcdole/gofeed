@@ -5,11 +5,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/feed"
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/mmcdole/gofeed/shared"
+	"github.com/mmcdole/goxpp"
+)
+
+type FeedType int
+
+const (
+	FeedTypeUnknown FeedType = iota
+	FeedTypeAtom
+	FeedTypeRSS
 )
 
 type FeedParser struct {
@@ -39,14 +48,36 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*feed.Feed, error) {
 
 func (f *FeedParser) ParseFeed(feed string) (*feed.Feed, error) {
 	fmt.Println(feed)
-	ft := shared.DetectFeedType(feed)
+	ft := DetectFeedType(feed)
 	switch ft {
-	case pu.FeedTypeAtom:
+	case FeedTypeAtom:
 		return f.parseFeedFromAtom(feed)
-	case pu.FeedTypeRSS:
+	case FeedTypeRSS:
 		return f.parseFeedFromRSS(feed)
 	}
 	return nil, errors.New("Failed to detect feed type")
+}
+
+func DetectFeedType(feed string) FeedType {
+	p := xpp.NewXMLPullParser(strings.NewReader(feed))
+
+	_, err := p.NextTag()
+	if err != nil {
+		fmt.Printf("Error %s: \n", err)
+		return FeedTypeUnknown
+	}
+
+	name := strings.ToLower(p.Name)
+	switch name {
+	case "rdf":
+		return FeedTypeRSS
+	case "rss":
+		return FeedTypeRSS
+	case "feed":
+		return FeedTypeAtom
+	default:
+		return FeedTypeUnknown
+	}
 }
 
 func (f *FeedParser) parseFeedFromAtom(feed string) (*feed.Feed, error) {

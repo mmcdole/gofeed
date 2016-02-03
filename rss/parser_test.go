@@ -24,7 +24,7 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 	}
 
 	for _, test := range verTests {
-		file := fmt.Sprintf("testdata/%s", test.file)
+		file := fmt.Sprintf("../testdata/%s", test.file)
 		f, _ := ioutil.ReadFile(file)
 		fp := &rss.Parser{}
 
