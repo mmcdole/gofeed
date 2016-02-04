@@ -1,0 +1,434 @@
+{
+  "title": "This Week in Tech (MP3)",
+  "link": "http://twit.tv/twit",
+  "description": "Your first podcast of the week is the last word in tech. Join the top tech pundits in a roundtable discussion of the latest trends in high tech.\nRecords live at https://twit.tv/live every Sunday at 6:00pm Eastern / 3:00pm Pacific / 22:00 UTC.",
+  "langauge": "en-US",
+  "copyright": "This work is licensed under a Creative Commons License - Attribution-NonCommercial-NoDerivatives 4.0 International - http://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "managingEditor": "leo@twit.tv (Leo Laporte)",
+  "webMaster": "leo@twit.tv (Leo Laporte)",
+  "pubDate": "Sun, 24 Jan 2016 22:18:43 -0800",
+  "pubDateParsed": "2016-01-25T06:18:43Z",
+  "lastBuildDate": "Sun, 24 Jan 2016 22:18:43 -0800",
+  "lastBuildDateParsed": "2016-01-25T06:18:43Z",
+  "categories": [
+    {
+      "domain": "",
+      "value": "Tech News"
+    }
+  ],
+  "generator": "TWiT Feed Generator v2.6",
+  "docs": "http://blogs.law.harvard.edu/tech/rss",
+  "ttl": "720",
+  "items": [
+    {
+      "title": "TWiT 546: Do I Look Like an Angel to You?",
+      "link": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0546/twit0546.mp3",
+      "description": "<p><img src=\"http://twit.cachefly.net/coverart/twit/twit144audio.jpg\" align=\"right\" hspace=\"20\" vspace=\"20\" border=\"0\" title=\"This Week in Tech\" alt=\"This Week in Tech\"/></p><p><strong>Host:</strong>\u00a0<a href=\"https://twit.tv/people/leo-laporte\">Leo Laporte</a></p>\n<p><strong>Guests:</strong>\u00a0<a href=\"https://twitter.com/eringriffith\">Erin Griffith</a>, <a href=\"https://twitter.com/om\">Om Malik</a>, and <a href=\"https://twitter.com/iainthomson\">Iain Thomson</a></p>\n<p>Facebook\u2019s internet.org, journalistic orthodoxy, Twitter upheaval, and more.</p>\n<p>Download or subscribe to this show at <a href=\"https://twit.tv/shows/this-week-in-tech\">https://twit.tv/shows/this-week-in-tech</a></p>\n<p>Bandwidth for This Week in Tech is provided by <a href=\"http://cachefly.com/\" target=\"_blank\">Cachefly</a>.</p>",
+      "author": "leo@twit.tv (Leo Laporte)",
+      "categories": [
+        {
+          "domain": "",
+          "value": "Tech News"
+        }
+      ],
+      "comments": "http://twit.tv/twit/546",
+      "enclosure": {
+        "url": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0546/twit0546.mp3",
+        "length": "64981536",
+        "type": "audio/mpeg"
+      },
+      "guid": {
+        "value": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0546/twit0546.mp3",
+        "isPermalink": ""
+      },
+      "pubDate": "Sun, 24 Jan 2016 20:00:45 -0800",
+      "pubDateParsed": "2016-01-25T04:00:45Z",
+      "extensions": {
+        "itunes": {
+          "author": [
+            {
+              "name": "author",
+              "value": "TWiT",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "duration": [
+            {
+              "name": "duration",
+              "value": "2:14:43",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "explicit": [
+            {
+              "name": "explicit",
+              "value": "no",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "subtitle": [
+            {
+              "name": "subtitle",
+              "value": "Facebook\u2019s internet.org, journalistic orthodoxy, Twitter upheaval, and more.",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "summary": [
+            {
+              "name": "summary",
+              "value": "Host:\u00a0Leo Laporte\nGuests:\u00a0Erin Griffith, Om Malik, and Iain Thomson\nFacebook\u2019s internet.org, journalistic orthodoxy, Twitter upheaval, and more.\nDownload or subscribe to this show at https://twit.tv/shows/this-week-in-tech\nBandwidth for This Week in Tech is provided by Cachefly.",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "media": {
+          "content": [
+            {
+              "name": "content",
+              "value": "",
+              "attrs": {
+                "fileSize": "64981536",
+                "medium": "audio",
+                "type": "audio/mpeg",
+                "url": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0546/twit0546.mp3"
+              },
+              "children": {
+                "rating": [
+                  {
+                    "name": "rating",
+                    "value": "nonadult",
+                    "attrs": {
+                      "scheme": "urn:simple"
+                    },
+                    "children": {}
+                  },
+                  {
+                    "name": "rating",
+                    "value": "tv-g",
+                    "attrs": {
+                      "scheme": "urn:v-chip"
+                    },
+                    "children": {}
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "TWiT 545: There's a Literal Frog in My Throat",
+      "link": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0545/twit0545.mp3",
+      "description": "<p><img src=\"http://twit.cachefly.net/coverart/twit/twit144audio.jpg\" align=\"right\" hspace=\"20\" vspace=\"20\" border=\"0\" title=\"This Week in Tech\" alt=\"This Week in Tech\"/></p><p><strong>Host:</strong> <a href=\"https://twitter.com/leolaporte\">Leo Laporte</a></p>\n<p>New car technologies, Bitcoin warning, Twitter anonymity, and more.</p>\n<p><strong>Guests:</strong> <a href=\"https://twitter.com/stevekovach\">Steve Kovach</a>, <a href=\"https://twitter.com/Tim_Stevens\">Tim Stevens</a>, and <a href=\"https://twitter.com/benthompson\">Ben Thompson</a></p>\n<p>For additional show notes, visit <a href=\"http://twit.tv/twit/545\" target=\"_blank\">twit.tv/twit/545</a>.</p>\n<p>Download or subscribe to this show at <a href=\"http://twit.tv/twit\" target=\"_blank\">twit.tv/twit</a>.</p>\n<p>Bandwidth for This Week in Tech is provided by <a href=\"http://www.cachefly.com\" target=\"_blank\">Cachefly</a>.</p>",
+      "author": "leo@twit.tv (Leo Laporte)",
+      "categories": [
+        {
+          "domain": "",
+          "value": "Tech News"
+        }
+      ],
+      "comments": "http://twit.tv/twit/545",
+      "enclosure": {
+        "url": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0545/twit0545.mp3",
+        "length": "63829223",
+        "type": "audio/mpeg"
+      },
+      "guid": {
+        "value": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0545/twit0545.mp3",
+        "isPermalink": ""
+      },
+      "pubDate": "Sun, 17 Jan 2016 17:15:00 -0800",
+      "pubDateParsed": "2016-01-18T01:15:00Z",
+      "extensions": {
+        "itunes": {
+          "author": [
+            {
+              "name": "author",
+              "value": "TWiT",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "duration": [
+            {
+              "name": "duration",
+              "value": "2:12:19",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "explicit": [
+            {
+              "name": "explicit",
+              "value": "no",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "subtitle": [
+            {
+              "name": "subtitle",
+              "value": "New car technologies, Bitcoin warning, Twitter anonymity, and more.",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "summary": [
+            {
+              "name": "summary",
+              "value": "Host: Leo Laporte\nNew car technologies, Bitcoin warning, Twitter anonymity, and more.\nGuests: Steve Kovach, Tim Stevens, and Ben Thompson\nFor additional show notes, visit twit.tv/twit/545.\nDownload or subscribe to this show at twit.tv/twit.\nBandwidth for This Week in Tech is provided by Cachefly.",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "media": {
+          "content": [
+            {
+              "name": "content",
+              "value": "",
+              "attrs": {
+                "fileSize": "63829223",
+                "medium": "audio",
+                "type": "audio/mpeg",
+                "url": "http://www.podtrac.com/pts/redirect.mp3/twit.cachefly.net/audio/twit/twit0545/twit0545.mp3"
+              },
+              "children": {
+                "rating": [
+                  {
+                    "name": "rating",
+                    "value": "nonadult",
+                    "attrs": {
+                      "scheme": "urn:simple"
+                    },
+                    "children": {}
+                  },
+                  {
+                    "name": "rating",
+                    "value": "tv-g",
+                    "attrs": {
+                      "scheme": "urn:v-chip"
+                    },
+                    "children": {}
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0",
+  "extensions": {
+    "atom": {
+      "link": [
+        {
+          "name": "link",
+          "value": "",
+          "attrs": {
+            "href": "http://feeds.twit.tv/twit.xml",
+            "rel": "self",
+            "type": "application/rss+xml"
+          },
+          "children": {}
+        }
+      ]
+    },
+    "creativeCommons": {
+      "license": [
+        {
+          "name": "license",
+          "value": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    },
+    "itunes": {
+      "author": [
+        {
+          "name": "author",
+          "value": "TWiT",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "block": [
+        {
+          "name": "block",
+          "value": "no",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "category": [
+        {
+          "name": "category",
+          "value": "",
+          "attrs": {
+            "text": "Technology"
+          },
+          "children": {
+            "category": [
+              {
+                "name": "category",
+                "value": "",
+                "attrs": {
+                  "text": "Tech News"
+                },
+                "children": {}
+              }
+            ]
+          }
+        },
+        {
+          "name": "category",
+          "value": "",
+          "attrs": {
+            "text": "News & Politics"
+          },
+          "children": {}
+        },
+        {
+          "name": "category",
+          "value": "",
+          "attrs": {
+            "text": "Technology"
+          },
+          "children": {
+            "category": [
+              {
+                "name": "category",
+                "value": "",
+                "attrs": {
+                  "text": "Gadgets"
+                },
+                "children": {}
+              }
+            ]
+          }
+        },
+        {
+          "name": "category",
+          "value": "",
+          "attrs": {
+            "text": "Business"
+          },
+          "children": {
+            "category": [
+              {
+                "name": "category",
+                "value": "",
+                "attrs": {
+                  "text": "Business News"
+                },
+                "children": {}
+              }
+            ]
+          }
+        }
+      ],
+      "explicit": [
+        {
+          "name": "explicit",
+          "value": "no",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "image": [
+        {
+          "name": "image",
+          "value": "",
+          "attrs": {
+            "href": "http://twit.cachefly.net/coverart/twit/twit1400audio.jpg"
+          },
+          "children": {}
+        }
+      ],
+      "keywords": [
+        {
+          "name": "keywords",
+          "value": "TWiT, TechTV, Leo Laporte, Kevin Rose, Patrick Norton, John C. Dvorak",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "new-feed-url": [
+        {
+          "name": "new-feed-url",
+          "value": "http://feeds.twit.tv/twit.xml",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "owner": [
+        {
+          "name": "owner",
+          "value": "",
+          "attrs": {},
+          "children": {
+            "email": [
+              {
+                "name": "email",
+                "value": "leo@twit.tv",
+                "attrs": {},
+                "children": {}
+              }
+            ],
+            "name": [
+              {
+                "name": "name",
+                "value": "Leo Laporte",
+                "attrs": {},
+                "children": {}
+              }
+            ]
+          }
+        }
+      ],
+      "subtitle": [
+        {
+          "name": "subtitle",
+          "value": "Your first podcast of the week is the last word in tech. Join the top tech pundits in a roundtable discussion of the latest trends in high tech.",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "summary": [
+        {
+          "name": "summary",
+          "value": "Your first podcast of the week is the last word in tech. Join the top tech pundits in a roundtable discussion of the latest trends in high tech.\nRecords live at https://twit.tv/live every Sunday at 6:00pm Eastern / 3:00pm Pacific / 22:00 UTC.",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    },
+    "sy": {
+      "updateFrequency": [
+        {
+          "name": "updateFrequency",
+          "value": "1",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "updatePeriod": [
+        {
+          "name": "updatePeriod",
+          "value": "weekly",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    }
+  }
+}
+

@@ -117,8 +117,8 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 
 	rss = &Feed{}
 	rss.Items = []*Item{}
+	rss.Extensions = feed.FeedExtensions{}
 	categories := []*Category{}
-	extensions := feed.FeedExtensions{}
 
 	for {
 		tok, err := p.NextTag()
@@ -133,11 +133,11 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 		if tok == xpp.StartTag {
 
 			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
+				ext, err := shared.ParseExtension(rss.Extensions, p)
 				if err != nil {
 					return nil, err
 				}
-				extensions = ext
+				rss.Extensions = ext
 			} else if p.Name == "title" {
 				result, err := shared.ParseTrimText(p)
 				if err != nil {
@@ -262,11 +262,6 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 		return nil, err
 	}
 
-	rss.Extensions = extensions
-	if len(extensions) > 0 {
-		rss.Extensions = extensions
-	}
-
 	if len(categories) > 0 {
 		rss.Categories = categories
 	}
@@ -281,9 +276,9 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 	}
 
 	item = &Item{}
+	item.Extensions = feed.FeedExtensions{}
 
 	categories := []*Category{}
-	extensions := feed.FeedExtensions{}
 
 	for {
 		tok, err := p.NextTag()
@@ -298,11 +293,11 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 		if tok == xpp.StartTag {
 
 			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
+				ext, err := shared.ParseExtension(item.Extensions, p)
 				if err != nil {
 					return nil, err
 				}
-				extensions = ext
+				item.Extensions = ext
 			} else if p.Name == "title" {
 				result, err := shared.ParseTrimText(p)
 				if err != nil {
@@ -377,10 +372,6 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 
 	if len(categories) > 0 {
 		item.Categories = categories
-	}
-
-	if len(extensions) > 0 {
-		item.Extensions = extensions
 	}
 
 	if err = p.Expect(xpp.EndTag, "item"); err != nil {

@@ -48,7 +48,7 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*feed.Feed, error) {
 
 func (f *FeedParser) ParseFeed(feed string) (*feed.Feed, error) {
 	fmt.Println(feed)
-	ft := DetectFeedType(feed)
+	ft := f.DetectFeedType(feed)
 	switch ft {
 	case FeedTypeAtom:
 		return f.parseFeedFromAtom(feed)
@@ -63,7 +63,6 @@ func (f *FeedParser) DetectFeedType(feed string) FeedType {
 
 	_, err := p.NextTag()
 	if err != nil {
-		fmt.Printf("Error %s: \n", err)
 		return FeedTypeUnknown
 	}
 

@@ -4,9 +4,9 @@ type FeedExtensions map[string]map[string][]Extension
 
 type Extension struct {
 	Name     string                 `json:"name"`
-	Value    string                 `json:"value,omitempty"`
-	Attrs    map[string]string      `json:"attrs,omitempty"`
-	Children map[string][]Extension `json:"children,omitempty"`
+	Value    string                 `json:"value"`
+	Attrs    map[string]string      `json:"attrs"`
+	Children map[string][]Extension `json:"children"`
 }
 
 type Feed struct {

@@ -20,7 +20,7 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 		{"simple_rss092.xml", "0.92"},
 		{"simple_rss10.xml", "1.0"},
 		{"simple_rss20.xml", "2.0"},
-		{"extensions_rss20.xml", "0.0"},
+		//		{"extensions_rss20.xml", "2.0"},
 	}
 
 	for _, test := range verTests {
@@ -30,8 +30,8 @@ func TestRSSParser_ParseFeed_DetectVersion(t *testing.T) {
 
 		rss, err := fp.ParseFeed(string(f))
 
-		rssJson, _ := json.Marshal(rss)
-		fmt.Printf("\n\n%s\n", string(rssJson))
+		//		rssJson, _ := json.Marshal(rss)
+		//		fmt.Printf("\n\n%s\n", string(rssJson))
 
 		assert.Nil(t, err, "Failed to parse feed: %s", file)
 		assert.Equal(t, test.version, rss.Version, "Expected RSS version %s, got %s", test.version, rss.Version)
@@ -43,18 +43,14 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 		feedFile     string
 		expectedFile string
 	}{
-		//		{"simple_rss090.xml", "0.9"},
-		//		{"simple_rss091.xml", "0.91"},
-		//		{"simple_rss092.xml", "0.92"},
-		//		{"simple_rss10.xml", "1.0"},
-		//		{"simple_rss20.xml", "2.0"},
 		{"complete_rss090.xml", "complete_rss090.json"},
 		{"complete_rss091.xml", "complete_rss091.json"},
+		{"extensions_rss20.xml", "extensions_rss20.json"},
 	}
 
 	for _, test := range verTests {
 		// Get actual source feed
-		ff := fmt.Sprintf("testdata/%s", test.feedFile)
+		ff := fmt.Sprintf("../testdata/%s", test.feedFile)
 		f, _ := ioutil.ReadFile(ff)
 
 		// Parse actual feed
@@ -62,7 +58,7 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 		actual, _ := fp.ParseFeed(string(f))
 
 		// Get json encoded expected feed result
-		ef := fmt.Sprintf("testdata/%s", test.expectedFile)
+		ef := fmt.Sprintf("../testdata/%s", test.expectedFile)
 		e, _ := ioutil.ReadFile(ef)
 
 		// Unmarshal expected feed
@@ -74,7 +70,7 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 }
 
 func TestRSSParser_ParseFeed_Extensions(t *testing.T) {
-	f, _ := ioutil.ReadFile("testdata/twit.xml")
+	f, _ := ioutil.ReadFile("../testdata/extensions_rss20.xml")
 	fp := &rss.Parser{}
 
 	rss, err := fp.ParseFeed(string(f))

@@ -27,9 +27,9 @@ type Feed struct {
 	SkipHours           []string            `json:"skipHours,omitempty"`
 	SkipDays            []string            `json:"skipDays,omitempty"`
 	TextInput           *TextInput          `json:"textInput,omitempty"`
-	Items               []*Item             `json:"items,omitempty"`
-	Version             string              `json:"version,omitempty"`
-	Extensions          feed.FeedExtensions `json:"extensions,omitempty"`
+	Items               []*Item             `json:"items"`
+	Version             string              `json:"version"`
+	Extensions          feed.FeedExtensions `json:"extensions"`
 }
 
 type Item struct {
@@ -44,7 +44,7 @@ type Item struct {
 	PubDate       string              `json:"pubDate,omitempty"`
 	PubDateParsed *time.Time          `json:"pubDateParsed,omitempty"`
 	Source        *Source             `json:"source,omitempty"`
-	Extensions    feed.FeedExtensions `json:"extensions,omitempty"`
+	Extensions    feed.FeedExtensions `json:"extensions"`
 }
 
 type Image struct {
