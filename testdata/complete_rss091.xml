@@ -24,9 +24,6 @@
 			<hour>6</hour>
 			<hour>7</hour>
 			<hour>8</hour>
-			<hour>9</hour>
-			<hour>10</hour>
-			<hour>11</hour>
 		</skipHours>
 		<skipDays>
 			<day>Sunday</day>
@@ -35,6 +32,11 @@
 		<item>
 			<title>stuff</title>
 			<link>http://bar</link>
+			<description>This is an article about some stuff</description>
+		</item>
+		<item>
+			<title>stuff 2</title>
+			<link>http://bar2</link>
 			<description>This is an article about some stuff</description>
 		</item>
 		<textinput>

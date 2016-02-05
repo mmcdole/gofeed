@@ -246,6 +246,12 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 					return nil, err
 				}
 				rss.Items = append(rss.Items, result)
+			} else if p.Name == "cloud" {
+				result, err := rp.parseCloud(p)
+				if err != nil {
+					return nil, err
+				}
+				rss.Cloud = result
 			} else if p.Name == "category" {
 				result, err := rp.parseCategory(p)
 				if err != nil {
@@ -653,6 +659,27 @@ func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 	}
 
 	return days, nil
+}
+
+func (rp *Parser) parseCloud(p *xpp.XMLPullParser) (*Cloud, error) {
+	if err := p.Expect(xpp.StartTag, "cloud"); err != nil {
+		return nil, err
+	}
+
+	cloud := &Cloud{}
+	cloud.Domain = p.Attribute("domain")
+	cloud.Port = p.Attribute("port")
+	cloud.Path = p.Attribute("path")
+	cloud.RegisterProcedure = p.Attribute("registerProcedure")
+	cloud.Protocol = p.Attribute("protocol")
+
+	p.NextTag()
+
+	if err := p.Expect(xpp.EndTag, "cloud"); err != nil {
+		return nil, err
+	}
+
+	return cloud, nil
 }
 
 func (rp *Parser) parseVersion(p *xpp.XMLPullParser) (ver string) {

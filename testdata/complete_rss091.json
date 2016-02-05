@@ -15,10 +15,7 @@
   "skipHours": [
     "6",
     "7",
-    "8",
-    "9",
-    "10",
-    "11"
+    "8"
   ],
   "skipDays": [
     "Sunday"
@@ -29,9 +26,14 @@
       "link": "http://bar",
       "description": "This is an article about some stuff",
       "extensions": {}
+    },
+    {
+      "title": "stuff 2",
+      "link": "http://bar2",
+      "description": "This is an article about some stuff",
+      "extensions": {}
     }
   ],
-  "version": "0.91",
-  "extensions": {}
+  "extensions": {},
+  "version": "0.91"
 }
-

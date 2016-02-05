@@ -252,7 +252,8 @@ func (bp *BaseParser) ParseText(p *xpp.XMLPullParser) (string, error) {
 	}
 
 	text = strings.TrimSpace(text)
-	// TODO: decode entities?
+	// the default xml decoder already handles this
+	//text = bp.decodeEntities(text)
 	// TODO: resolveRelativeURIs?
 	return text, nil
 }
@@ -325,8 +326,13 @@ func (bp *BaseParser) ParseDate(ds string) (t time.Time, err error) {
 	return
 }
 
-func (bp *BaseParser) decodeEntities(string) string {
-	return ""
+func (bp *BaseParser) decodeEntities(str string) string {
+	str = strings.Replace(str, "&lt;", "<", -1)
+	str = strings.Replace(str, "&gt;", ">", -1)
+	str = strings.Replace(str, "&quot;", "\"", -1)
+	str = strings.Replace(str, "&apos;", "'", -1)
+	str = strings.Replace(str, "&amp;", "&", -1)
+	return str
 }
 
 func (bp *BaseParser) resolveRelativeURIs(string) string {

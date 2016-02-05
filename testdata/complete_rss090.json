@@ -28,18 +28,8 @@
       "title": "Mozilla Party, 2.0!",
       "link": "http://www.mozilla.org/party/1999/",
       "extensions": {}
-    },
-    {
-      "title": "Unix Platform Parity",
-      "link": "http://www.mozilla.org/build/unix.html",
-      "extensions": {}
-    },
-    {
-      "title": "NPL 1.0M published",
-      "link": "http://www.mozilla.org/NPL/NPL-1.0M.html",
-      "extensions": {}
     }
   ],
-  "version": "0.9",
-  "extensions": {}
+  "extensions": {},
+  "version": "0.9"
 }

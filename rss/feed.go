@@ -26,10 +26,11 @@ type Feed struct {
 	Rating              string              `json:"rating,omitempty"`
 	SkipHours           []string            `json:"skipHours,omitempty"`
 	SkipDays            []string            `json:"skipDays,omitempty"`
+	Cloud               *Cloud              `json:"cloud,omitempty"`
 	TextInput           *TextInput          `json:"textInput,omitempty"`
 	Items               []*Item             `json:"items"`
-	Version             string              `json:"version"`
 	Extensions          feed.FeedExtensions `json:"extensions"`
+	Version             string              `json:"version"`
 }
 
 type Item struct {
@@ -48,11 +49,12 @@ type Item struct {
 }
 
 type Image struct {
-	URL    string `json:"url"`
-	Link   string `json:"link"`
-	Title  string `json:"title"`
-	Width  string `json:"width,omitempty"`
-	Height string `json:"height,omitempty"`
+	URL         string `json:"url"`
+	Link        string `json:"link"`
+	Title       string `json:"title"`
+	Width       string `json:"width,omitempty"`
+	Height      string `json:"height,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 type Enclosure struct {
@@ -81,4 +83,12 @@ type TextInput struct {
 	Description string `json:"description"`
 	Name        string `json:"name"`
 	Link        string `json:"link"`
+}
+
+type Cloud struct {
+	Domain            string `json:"domain"`
+	Port              string `json:"port"`
+	Path              string `json:"path"`
+	RegisterProcedure string `json:"registerProcedure"`
+	Protocol          string `json:"Protocol"`
 }
