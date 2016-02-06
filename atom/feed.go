@@ -2,65 +2,90 @@ package atom
 
 import (
 	"time"
+
+	"github.com/mmcdole/gofeed/feed"
 )
 
 type Feed struct {
-	Title         string
-	ID            string
-	Updated       string
-	UpdatedParsed *time.Time
-	Subtitle      string
-	Link          string
-	Generator     Generator
-	Icon          string
-	Logo          string
-	Rights        string
-	Contributors  []Person
-	Authors       []Person
-	Categories    []Category
-	Source        string
-	Version       string
+	Title         string              `json:"title"`
+	ID            string              `json:"id"`
+	Updated       string              `json:"updated"`
+	UpdatedParsed *time.Time          `json:"updatedParsed,omitempty"`
+	Subtitle      string              `json:"subtitle,omitempty"`
+	Link          *Link               `json:"link,omitempty"`
+	Generator     *Generator          `json:"generator,omitempty"`
+	Icon          string              `json:"icon,omitempty"`
+	Logo          string              `json:"logo,omitempty"`
+	Rights        string              `json:"rights,omitempty"`
+	Contributors  []*Person           `json:"contributors,omitempty"`
+	Authors       []*Person           `json:"authors,omitempty"`
+	Categories    []*Category         `json:"categories,omitempty"`
+	Source        *Source             `json:"source,omitempty"`
+	Entries       []*Entry            `json:"entries"`
+	Extensions    feed.FeedExtensions `json:"extensions"`
+	Version       string              `json:"version"`
 }
 
 type Entry struct {
-	Title           string
-	ID              string
-	Link            Link
-	Published       string
-	PublishedParsed *time.Time
-	Updated         string
-	UpdatedParsed   *time.Time
-	Content         string
+	Title           string              `json:"title"`
+	ID              string              `json:"id"`
+	Updated         string              `json:"updated"`
+	UpdatedParsed   *time.Time          `json:"updatedParsed,omitempty"`
+	Authors         []*Person           `json:"authors,omitempty"`
+	Contributors    []*Person           `json:"contributors,omitempty"`
+	Categories      []*Category         `json:"categories,omitempty"`
+	Link            *Link               `json:"link,omitempty"`
+	Published       string              `json:"published,omitempty"`
+	PublishedParsed *time.Time          `json:"publishedParsed,omitempty"`
+	Content         string              `json:"content,omitempty"`
+	Extensions      feed.FeedExtensions `json:"extensions"`
 }
 
 type Category struct {
-	Term   string
-	Scheme string
-	Label  string
+	Term   string `json:"term"`
+	Scheme string `json:"scheme,omitempty"`
+	Label  string `json:"label,omitempty"`
 }
 
 type Person struct {
-	Name  string
-	Email string
-	URI   string
+	Name  string `json:'name'`
+	Email string `json:"email"`
+	URI   string `json:"uri"`
 }
 
 type Link struct {
-	Rel      string
-	Type     string
-	Href     string
-	Hreflang string
-	Title    string
-	Length   string
+	Href     string `json:"href"`
+	Hreflang string `json:"hreflang,omitempty"`
+	Rel      string `json:"rel,omitempty"`
+	Type     string `json:"type,omitempty"`
+	Title    string `json:"title,omitempty"`
+	Length   string `json:"length,omitempty"`
 }
 
 type Content struct {
-	Src  string
-	Type string
+	Src  string `json:"src"`
+	Type string `json:"type"`
 }
 
 type Generator struct {
-	Value   string
-	URI     string
-	Version string
+	Value   string `json:"value"`
+	URI     string `json:"uri,omitempty"`
+	Version string `json:"version,omitempty"`
+}
+
+type Source struct {
+	Title         string              `json:"title"`
+	ID            string              `json:"id"`
+	Updated       string              `json:"updated"`
+	UpdatedParsed *time.Time          `json:"updatedParsed,omitempty"`
+	Subtitle      string              `json:"subtitle,omitempty"`
+	Link          *Link               `json:"link,omitempty"`
+	Generator     *Generator          `json:"generator,omitempty"`
+	Icon          string              `json:"icon,omitempty"`
+	Logo          string              `json:"logo,omitempty"`
+	Rights        string              `json:"rights,omitempty"`
+	Contributors  []*Person           `json:"contributors,omitempty"`
+	Authors       []*Person           `json:"authors,omitempty"`
+	Categories    []*Category         `json:"categories,omitempty"`
+	Extensions    feed.FeedExtensions `json:"extensions"`
 }

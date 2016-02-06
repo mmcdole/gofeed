@@ -72,12 +72,12 @@ var globalNamespaces = map[string]string{
 
 // DateFormats taken from github.com/mjibson/goread
 var dateFormats = []string{
-	time.RFC822,
-	time.RFC822Z,
+	time.RFC822,  // RSS
+	time.RFC822Z, // RSS
+	time.RFC3339, // Atom
 	time.UnixDate,
 	time.RubyDate,
 	time.RFC850,
-	time.RFC3339,
 	time.RFC1123Z,
 	time.RFC1123,
 	time.ANSIC,
