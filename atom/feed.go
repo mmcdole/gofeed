@@ -37,7 +37,7 @@ type Entry struct {
 	Link            *Link               `json:"link,omitempty"`
 	Published       string              `json:"published,omitempty"`
 	PublishedParsed *time.Time          `json:"publishedParsed,omitempty"`
-	Content         string              `json:"content,omitempty"`
+	Content         *Content            `json:"content,omitempty"`
 	Extensions      feed.FeedExtensions `json:"extensions"`
 }
 
@@ -49,8 +49,8 @@ type Category struct {
 
 type Person struct {
 	Name  string `json:'name'`
-	Email string `json:"email"`
-	URI   string `json:"uri"`
+	Email string `json:"email,omitempty"`
+	URI   string `json:"uri,omitempty"`
 }
 
 type Link struct {
@@ -63,8 +63,8 @@ type Link struct {
 }
 
 type Content struct {
-	Src  string `json:"src"`
-	Type string `json:"type"`
+	Src   string `json:"src,omitempty"`
+	Value string `json:"value"`
 }
 
 type Generator struct {
