@@ -15,7 +15,7 @@ type Parser struct {
 }
 
 func (rp *Parser) ParseFeed(feed string) (rss *Feed, err error) {
-	p := xpp.NewXMLPullParser(strings.NewReader(feed))
+	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
 
 	_, err = p.NextTag()
 	if err != nil {

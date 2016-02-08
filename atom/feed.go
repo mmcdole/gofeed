@@ -31,6 +31,7 @@ type Entry struct {
 	ID              string              `json:"id"`
 	Updated         string              `json:"updated"`
 	UpdatedParsed   *time.Time          `json:"updatedParsed,omitempty"`
+	Summary         string              `json:"summary,omitempty"`
 	Authors         []*Person           `json:"authors,omitempty"`
 	Contributors    []*Person           `json:"contributors,omitempty"`
 	Categories      []*Category         `json:"categories,omitempty"`
@@ -64,6 +65,7 @@ type Link struct {
 
 type Content struct {
 	Src   string `json:"src,omitempty"`
+	Type  string `json:"type,omitempty"`
 	Value string `json:"value"`
 }
 
