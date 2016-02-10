@@ -1,0 +1,14 @@
+{
+    "items": [
+        {
+            "enclosure": {
+                "url": "http://example.com/file.mp3",
+                "length": "100000",
+                "type": "audio/mpeg"
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "2.0"
+}

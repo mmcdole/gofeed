@@ -1,0 +1,10 @@
+{
+    "items": [
+        {
+            "link": "http://example.com/",
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "2.0"
+}

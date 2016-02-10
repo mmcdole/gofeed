@@ -1,0 +1,10 @@
+{
+    "items": [
+        {
+            "title": "Item 1 title",
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "2.0"
+}

@@ -1,7 +1,6 @@
 package rss
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -93,7 +92,9 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	}
 
 	if channel == nil {
-		return nil, errors.New("No channel element found.")
+		channel = &Feed{}
+		channel.Items = []*Item{}
+		channel.Extensions = feed.FeedExtensions{}
 	}
 
 	if len(items) > 0 {
@@ -705,12 +706,10 @@ func (rp *Parser) parseVersion(p *xpp.XMLPullParser) (ver string) {
 	name := strings.ToLower(p.Name)
 	if name == "rss" {
 		ver = p.Attribute("version")
-		if ver == "" {
-			ver = "2.0"
-		}
 	} else if name == "rdf" {
 		ns := p.Attribute("xmlns")
-		if ns == "http://channel.netscape.com/rdf/simple/0.9/" {
+		if ns == "http://channel.netscape.com/rdf/simple/0.9/" ||
+			ns == "http://my.netscape.com/rdf/simple/0.9/" {
 			ver = "0.9"
 		} else if ns == "http://purl.org/rss/1.0/" {
 			ver = "1.0"

@@ -1,0 +1,13 @@
+{
+    "items": [
+        {
+            "source": {
+                "title": "Example source",
+                "url": "http://example.com/"
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "2.0"
+}
