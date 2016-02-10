@@ -607,6 +607,10 @@ func (ap *Parser) parseGenerator(p *xpp.XMLPullParser) (*Generator, error) {
 	return g, nil
 }
 
+func (ap *Parser) stripWrapperDiv(xml string) string {
+	return ""
+}
+
 func (ap *Parser) parseVersion(p *xpp.XMLPullParser) string {
 	ver := p.Attribute("version")
 	if ver != "" {

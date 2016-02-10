@@ -14,12 +14,12 @@ type Parser struct {
 	shared.BaseParser
 }
 
-func (rp *Parser) ParseFeed(feed string) (rss *Feed, err error) {
+func (rp *Parser) ParseFeed(feed string) (*Feed, error) {
 	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
 
-	_, err = p.NextTag()
+	_, err := p.NextTag()
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	return rp.parseRoot(p)
@@ -61,6 +61,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 			if p.Name == "channel" {
 				channel, err = rp.parseChannel(p)
 				if err != nil {
+					fmt.Printf("error in channel: %s\n", err)
 					return nil, err
 				}
 			} else if p.Name == "item" {
@@ -69,7 +70,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 					return nil, err
 				}
 				items = append(items, item)
-			} else if p.Name == "textinput" {
+			} else if p.Name == "textInput" {
 				textinput, err = rp.parseTextInput(p)
 				if err != nil {
 					return nil, err
@@ -258,6 +259,18 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 					return nil, err
 				}
 				categories = append(categories, result)
+			} else if p.Name == "image" {
+				result, err := rp.parseImage(p)
+				if err != nil {
+					return nil, err
+				}
+				rss.Image = result
+			} else if p.Name == "textInput" {
+				result, err := rp.parseTextInput(p)
+				if err != nil {
+					return nil, err
+				}
+				rss.TextInput = result
 			} else {
 				// Skip element as it isn't an extension and not
 				// part of the spec
@@ -476,6 +489,12 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 					return nil, err
 				}
 				image.Height = result
+			} else if p.Name == "description" {
+				result, err := rp.ParseText(p)
+				if err != nil {
+					return nil, err
+				}
+				image.Description = result
 			} else {
 				p.Skip()
 			}
@@ -532,12 +551,12 @@ func (rp *Parser) parseCategory(p *xpp.XMLPullParser) (cat *Category, err error)
 	return cat, nil
 }
 
-func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (ti *TextInput, err error) {
-	if err = p.Expect(xpp.StartTag, "textinput"); err != nil {
+func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
+	if err := p.Expect(xpp.StartTag, "textInput"); err != nil {
 		return nil, err
 	}
 
-	ti = &TextInput{}
+	ti := &TextInput{}
 
 	for {
 		tok, err := p.NextTag()
@@ -580,7 +599,7 @@ func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (ti *TextInput, err error
 		}
 	}
 
-	if err = p.Expect(xpp.EndTag, "textinput"); err != nil {
+	if err := p.Expect(xpp.EndTag, "textInput"); err != nil {
 		return nil, err
 	}
 

@@ -7,9 +7,9 @@ import (
 )
 
 type Feed struct {
-	Title               string              `json:"title"`
-	Link                string              `json:"link"`
-	Description         string              `json:"description"`
+	Title               string              `json:"title,omitempty"`
+	Link                string              `json:"link,omitempty"`
+	Description         string              `json:"description,omitempty"`
 	Language            string              `json:"langauge,omitempty"`
 	Copyright           string              `json:"copyright,omitempty"`
 	ManagingEditor      string              `json:"managingEditor,omitempty"`
@@ -49,46 +49,46 @@ type Item struct {
 }
 
 type Image struct {
-	URL         string `json:"url"`
-	Link        string `json:"link"`
-	Title       string `json:"title"`
+	URL         string `json:"url,omitempty"`
+	Link        string `json:"link,omitempty"`
+	Title       string `json:"title,omitempty"`
 	Width       string `json:"width,omitempty"`
 	Height      string `json:"height,omitempty"`
 	Description string `json:"description,omitempty"`
 }
 
 type Enclosure struct {
-	URL    string `json:"url"`
-	Length string `json:"length"`
-	Type   string `json:"type"`
+	URL    string `json:"url,omitempty"`
+	Length string `json:"length,omitempty"`
+	Type   string `json:"type,omitempty"`
 }
 
 type Guid struct {
-	Value       string `json:"value"`
-	IsPermalink string `json:"isPermalink"`
+	Value       string `json:"value,omitempty"`
+	IsPermalink string `json:"isPermalink,omitempty"`
 }
 
 type Source struct {
-	Title string `json:"title"`
-	URL   string `json:"url"`
+	Title string `json:"title,omitempty"`
+	URL   string `json:"url,omitempty"`
 }
 
 type Category struct {
-	Domain string `json:"domain"`
-	Value  string `json:"value"`
+	Domain string `json:"domain,omitempty"`
+	Value  string `json:"value,omitempty"`
 }
 
 type TextInput struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Name        string `json:"name"`
-	Link        string `json:"link"`
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Link        string `json:"link,omitempty"`
 }
 
 type Cloud struct {
-	Domain            string `json:"domain"`
-	Port              string `json:"port"`
-	Path              string `json:"path"`
-	RegisterProcedure string `json:"registerProcedure"`
-	Protocol          string `json:"Protocol"`
+	Domain            string `json:"domain,omitempty"`
+	Port              string `json:"port,omitempty"`
+	Path              string `json:"path,omitempty"`
+	RegisterProcedure string `json:"registerProcedure,omitempty"`
+	Protocol          string `json:"protocol,omitempty"`
 }

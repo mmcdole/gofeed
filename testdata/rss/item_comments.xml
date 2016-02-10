@@ -1,0 +1,10 @@
+<!--
+Description: item comments
+-->
+<rss version="2.0">
+<channel>
+<item>
+<comments>http://example.com/</comments>
+</item>
+</channel>
+</rss>
