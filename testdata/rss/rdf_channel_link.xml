@@ -1,0 +1,8 @@
+<!--
+Description: rdf channel link
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+<channel rdf:about="http://example.com/index.rdf">
+<link>http://example.com/</link>
+</channel>
+</rdf:RDF>

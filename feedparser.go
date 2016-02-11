@@ -59,7 +59,7 @@ func (f *FeedParser) ParseFeed(feed string) (*feed.Feed, error) {
 }
 
 func (f *FeedParser) DetectFeedType(feed string) FeedType {
-	p := xpp.NewXMLPullParser(strings.NewReader(feed))
+	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
 
 	_, err := p.NextTag()
 	if err != nil {

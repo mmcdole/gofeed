@@ -1,0 +1,10 @@
+{
+    "items": [
+        {
+            "description": "Example description",
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

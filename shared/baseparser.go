@@ -306,7 +306,7 @@ func (bp *BaseParser) PrefixForNamespace(space string, p *xpp.XMLPullParser) str
 func (bp *BaseParser) IsExtension(p *xpp.XMLPullParser) bool {
 	space := strings.TrimSpace(p.Space)
 	if prefix, ok := p.Spaces[space]; ok {
-		return prefix != ""
+		return !(prefix == "" || prefix == "rss" || prefix == "rdf")
 	}
 
 	return p.Space != ""
@@ -323,6 +323,13 @@ func (bp *BaseParser) ParseDate(ds string) (t time.Time, err error) {
 		}
 	}
 	err = fmt.Errorf("Failed to parse date: %s", ds)
+	return
+}
+
+func (bp *BaseParser) Expect(p *xpp.XMLPullParser, event xpp.XMLEventType, name string) (err error) {
+	if !(p.Event == event && strings.ToLower(p.Name) == strings.ToLower(name)) {
+		err = fmt.Errorf("Expected Name:%s Event:%s but got Name:%s Event:%s", name, p.EventName(event), p.Name, p.EventName(p.Event))
+	}
 	return
 }
 
