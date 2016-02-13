@@ -7,12 +7,12 @@ import (
 )
 
 type Feed struct {
-	Title         string              `json:"title"`
-	ID            string              `json:"id"`
-	Updated       string              `json:"updated"`
+	Title         string              `json:"title,omitempty"`
+	ID            string              `json:"id,omitempty"`
+	Updated       string              `json:"updated,omitempty"`
 	UpdatedParsed *time.Time          `json:"updatedParsed,omitempty"`
 	Subtitle      string              `json:"subtitle,omitempty"`
-	Link          *Link               `json:"link,omitempty"`
+	Links         []*Link             `json:"links,omitempty"`
 	Generator     *Generator          `json:"generator,omitempty"`
 	Icon          string              `json:"icon,omitempty"`
 	Logo          string              `json:"logo,omitempty"`
@@ -27,15 +27,15 @@ type Feed struct {
 }
 
 type Entry struct {
-	Title           string              `json:"title"`
-	ID              string              `json:"id"`
-	Updated         string              `json:"updated"`
+	Title           string              `json:"title,omitempty"`
+	ID              string              `json:"id,omitempty"`
+	Updated         string              `json:"updated,omitempty"`
 	UpdatedParsed   *time.Time          `json:"updatedParsed,omitempty"`
 	Summary         string              `json:"summary,omitempty"`
 	Authors         []*Person           `json:"authors,omitempty"`
 	Contributors    []*Person           `json:"contributors,omitempty"`
 	Categories      []*Category         `json:"categories,omitempty"`
-	Link            *Link               `json:"link,omitempty"`
+	Links           []*Link             `json:"links,omitempty"`
 	Published       string              `json:"published,omitempty"`
 	PublishedParsed *time.Time          `json:"publishedParsed,omitempty"`
 	Content         *Content            `json:"content,omitempty"`
@@ -43,19 +43,19 @@ type Entry struct {
 }
 
 type Category struct {
-	Term   string `json:"term"`
+	Term   string `json:"term,omitempty"`
 	Scheme string `json:"scheme,omitempty"`
 	Label  string `json:"label,omitempty"`
 }
 
 type Person struct {
-	Name  string `json:'name'`
+	Name  string `json:"name,omitempty"`
 	Email string `json:"email,omitempty"`
 	URI   string `json:"uri,omitempty"`
 }
 
 type Link struct {
-	Href     string `json:"href"`
+	Href     string `json:"href,omitempty"`
 	Hreflang string `json:"hreflang,omitempty"`
 	Rel      string `json:"rel,omitempty"`
 	Type     string `json:"type,omitempty"`
@@ -66,19 +66,19 @@ type Link struct {
 type Content struct {
 	Src   string `json:"src,omitempty"`
 	Type  string `json:"type,omitempty"`
-	Value string `json:"value"`
+	Value string `json:"value,omitempty"`
 }
 
 type Generator struct {
-	Value   string `json:"value"`
+	Value   string `json:"value,omitempty"`
 	URI     string `json:"uri,omitempty"`
 	Version string `json:"version,omitempty"`
 }
 
 type Source struct {
-	Title         string              `json:"title"`
-	ID            string              `json:"id"`
-	Updated       string              `json:"updated"`
+	Title         string              `json:"title,omitempty"`
+	ID            string              `json:"id,omitempty"`
+	Updated       string              `json:"updated,omitempty"`
 	UpdatedParsed *time.Time          `json:"updatedParsed,omitempty"`
 	Subtitle      string              `json:"subtitle,omitempty"`
 	Link          *Link               `json:"link,omitempty"`

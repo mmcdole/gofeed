@@ -1,0 +1,8 @@
+<!--
+Description: entry content src
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+<entry>
+  <content src="http://example.com/movie.mp4"/>
+</entry>
+</feed>

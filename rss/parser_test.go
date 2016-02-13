@@ -38,6 +38,8 @@ func TestRSSParser_ParseFeed_ExpectedResults(t *testing.T) {
 
 		if assert.Equal(t, actual, expected, "Feed file %s.xml did not match expected output %s.json", name, name) {
 			fmt.Printf("OK\n")
+		} else {
+			fmt.Printf("Failed\n")
 		}
 	}
 }

@@ -1,0 +1,10 @@
+{
+    "generator": {
+        "value": "Example generator",
+        "uri": "http://example.com/",
+        "version": "2.65"
+    },
+    "entries": [],
+    "extensions": {},
+    "version": "1.0"
+}

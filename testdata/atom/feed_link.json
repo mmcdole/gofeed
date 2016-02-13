@@ -1,0 +1,12 @@
+{
+    "links": [
+        {
+            "href": "http://www.example.com/",
+            "rel": "alternate",
+            "type": "text/html"
+        }
+    ],
+    "entries": [],
+    "extensions": {},
+    "version": "1.0"
+}

@@ -1,0 +1,7 @@
+<!--
+Description: feed categories 
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <category term="cat1" scheme="http://example.org/tests/1" label="Category 1"/>
+  <category term="cat2" scheme="http://example.org/tests/2" label="Category 2"/>
+</feed>

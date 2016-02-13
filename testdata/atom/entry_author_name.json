@@ -1,0 +1,14 @@
+{
+    "entries": [
+        {
+            "authors": [
+                {
+                    "name": "Test Name"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "0.3"
+}

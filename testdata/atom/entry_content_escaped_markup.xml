@@ -1,0 +1,8 @@
+<!--
+Description: entry content escaped HTML
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+<entry>
+  <content type="html">Example &lt;b&gt;Atom&lt;/b&gt;</content>
+</entry>
+</feed>

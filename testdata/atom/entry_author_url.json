@@ -1,0 +1,14 @@
+{
+    "entries": [
+        {
+            "authors": [
+                {
+                    "uri": "http://example.com"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "0.3"
+}

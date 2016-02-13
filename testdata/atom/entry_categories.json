@@ -1,0 +1,21 @@
+{
+    "entries": [
+        {
+            "categories": [
+                {
+                    "term": "cat1",
+                    "scheme": "http://example.org/tests/1",
+                    "label": "Category 1"
+                },
+                {
+                    "term": "cat2",
+                    "scheme": "http://example.org/tests/2",
+                    "label": "Category 2"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

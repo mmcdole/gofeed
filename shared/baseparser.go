@@ -246,17 +246,44 @@ var dateFormats = []string{
 type BaseParser struct{}
 
 func (bp *BaseParser) ParseText(p *xpp.XMLPullParser) (string, error) {
-	text, err := p.NextText()
-	if err != nil {
-		return text, err
+
+	var text struct {
+		Type     string `xml:"type,attr"`
+		Body     string `xml:",chardata"`
+		InnerXML string `xml:",innerxml"`
 	}
 
-	text = strings.TrimSpace(text)
-	// the default xml decoder already handles this
-	//text = bp.decodeEntities(text)
-	// TODO: resolveRelativeURIs?
-	return text, nil
+	err := p.DecodeElement(&text)
+	if err != nil {
+		return "", err
+	}
+
+	// TODO: unwrap XHTML surrounding div
+	// and handle other rules based on type
+	result := ""
+	if len(text.InnerXML) > 0 {
+		result = text.InnerXML
+	} else if len(text.Body) > 0 {
+		result = text.Body
+	}
+
+	result = strings.TrimSpace(result)
+	result = bp.decodeEntities(result)
+	return result, nil
 }
+
+//func (bp *BaseParser) ParseText(p *xpp.XMLPullParser) (string, error) {
+//	text, err := p.NextText()
+//	if err != nil {
+//		return text, err
+//	}
+//
+//	text = strings.TrimSpace(text)
+//	// the default xml decoder already handles this
+//	//text = bp.decodeEntities(text)
+//	// TODO: resolveRelativeURIs?
+//	return text, nil
+//}
 
 func (bp *BaseParser) ParseExtension(fe feed.FeedExtensions, p *xpp.XMLPullParser) (feed.FeedExtensions, error) {
 	prefix := bp.PrefixForNamespace(p.Space, p)

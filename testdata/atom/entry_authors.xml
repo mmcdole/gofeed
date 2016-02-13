@@ -1,0 +1,13 @@
+<!--
+Description: entry contains multiple authors
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <author>
+      <name>Test Name 1</name>
+    </author>
+    <author>
+      <name>Test Name 2</name>
+    </author>
+  </entry>
+</feed>
