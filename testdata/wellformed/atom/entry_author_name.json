@@ -3,12 +3,12 @@
         {
             "authors": [
                 {
-                    "email": "me@example.com"
+                    "name": "Example author"
                 }
             ],
             "extensions": {}
         }
     ],
     "extensions": {},
-    "version": "0.3"
+    "version": "1.0"
 }

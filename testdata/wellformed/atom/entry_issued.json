@@ -1,11 +1,8 @@
 {
     "entries": [
         {
-            "authors": [
-                {
-                    "name": "Test Name"
-                }
-            ],
+            "published": "2003-12-13T18:30:02Z",
+            "publishedParsed": "2003-12-13T18:30:02Z",
             "extensions": {}
         }
     ],

@@ -223,6 +223,12 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 					return nil, err
 				}
 				entry.ID = result
+			} else if name == "summary" {
+				result, err := ap.ParseText(p)
+				if err != nil {
+					return nil, err
+				}
+				entry.Summary = result
 			} else if name == "updated" ||
 				name == "modified" {
 				result, err := ap.ParseText(p)
