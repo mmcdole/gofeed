@@ -1,0 +1,10 @@
+{
+    "entries": [
+        {
+            "id": "http://example.com/",
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

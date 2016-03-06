@@ -138,12 +138,6 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 					return nil, err
 				}
 				categories = append(categories, result)
-			} else if name == "source" {
-				result, err := ap.parseSource(p)
-				if err != nil {
-					return nil, err
-				}
-				atom.Source = result
 			} else if name == "entry" {
 				result, err := ap.parseEntry(p)
 				if err != nil {
@@ -223,12 +217,25 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 					return nil, err
 				}
 				entry.ID = result
+			} else if name == "rights" ||
+				name == "copyright" {
+				result, err := ap.ParseText(p)
+				if err != nil {
+					return nil, err
+				}
+				entry.Rights = result
 			} else if name == "summary" {
 				result, err := ap.ParseText(p)
 				if err != nil {
 					return nil, err
 				}
 				entry.Summary = result
+			} else if name == "source" {
+				result, err := ap.parseSource(p)
+				if err != nil {
+					return nil, err
+				}
+				entry.Source = result
 			} else if name == "updated" ||
 				name == "modified" {
 				result, err := ap.ParseText(p)
@@ -324,6 +331,7 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 	contributors := []*Person{}
 	authors := []*Person{}
 	categories := []*Category{}
+	links := []*Link{}
 
 	for {
 		tok, err := p.NextTag()
@@ -381,7 +389,7 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 				if err != nil {
 					return nil, err
 				}
-				source.Link = result
+				links = append(links, result)
 			} else if name == "generator" {
 				result, err := ap.parseGenerator(p)
 				if err != nil {
@@ -441,6 +449,10 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 
 	if len(contributors) > 0 {
 		source.Contributors = contributors
+	}
+
+	if len(links) > 0 {
+		source.Links = links
 	}
 
 	if err := ap.Expect(p, xpp.EndTag, "source"); err != nil {
@@ -539,10 +551,14 @@ func (ap *Parser) parseLink(p *xpp.XMLPullParser) (*Link, error) {
 
 	l := &Link{}
 	l.Href = p.Attribute("href")
-	l.Rel = p.Attribute("rel")
 	l.Hreflang = p.Attribute("hreflang")
 	l.Type = p.Attribute("type")
 	l.Length = p.Attribute("length")
+	l.Title = p.Attribute("title")
+	l.Rel = p.Attribute("rel")
+	if l.Rel == "" {
+		l.Rel = "alternate"
+	}
 
 	if err := p.Skip(); err != nil {
 		return nil, err

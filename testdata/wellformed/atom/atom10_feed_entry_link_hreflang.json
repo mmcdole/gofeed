@@ -1,0 +1,15 @@
+{
+    "entries": [
+        {
+            "links": [
+                {
+                    "hreflang": "en",
+                    "rel": "alternate"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

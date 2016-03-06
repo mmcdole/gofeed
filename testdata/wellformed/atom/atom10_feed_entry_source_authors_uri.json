@@ -1,0 +1,20 @@
+{
+    "entries": [
+        {
+            "source": {
+                "authors": [
+                    {
+                        "uri": "http://one.com/"
+                    },
+                    {
+                        "uri": "http://two.com/"
+                    }
+                ],
+                "extensions": {}
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

@@ -1,0 +1,15 @@
+{
+    "entries": [
+        {
+            "links": [
+                {
+                    "rel": "alternate",
+                    "title": "Example title"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

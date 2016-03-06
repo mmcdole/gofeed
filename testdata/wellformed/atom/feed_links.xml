@@ -1,7 +1,0 @@
-<!--
-Description: feed links 
--->
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <link rel="alternate" type="text/html" href="http://www.example.com/2"/>
-  <link rel="alternate" type="text/html" href="http://www.example.com/1"/>
-</feed>

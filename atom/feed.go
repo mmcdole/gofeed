@@ -20,7 +20,6 @@ type Feed struct {
 	Contributors  []*Person           `json:"contributors,omitempty"`
 	Authors       []*Person           `json:"authors,omitempty"`
 	Categories    []*Category         `json:"categories,omitempty"`
-	Source        *Source             `json:"source,omitempty"`
 	Entries       []*Entry            `json:"entries"`
 	Extensions    feed.FeedExtensions `json:"extensions"`
 	Version       string              `json:"version"`
@@ -36,8 +35,10 @@ type Entry struct {
 	Contributors    []*Person           `json:"contributors,omitempty"`
 	Categories      []*Category         `json:"categories,omitempty"`
 	Links           []*Link             `json:"links,omitempty"`
+	Rights          string              `json:"rights,omitempty"`
 	Published       string              `json:"published,omitempty"`
 	PublishedParsed *time.Time          `json:"publishedParsed,omitempty"`
+	Source          *Source             `json:"source,omitempty"`
 	Content         *Content            `json:"content,omitempty"`
 	Extensions      feed.FeedExtensions `json:"extensions"`
 }
@@ -81,7 +82,7 @@ type Source struct {
 	Updated       string              `json:"updated,omitempty"`
 	UpdatedParsed *time.Time          `json:"updatedParsed,omitempty"`
 	Subtitle      string              `json:"subtitle,omitempty"`
-	Link          *Link               `json:"link,omitempty"`
+	Links         []*Link             `json:"links,omitempty"`
 	Generator     *Generator          `json:"generator,omitempty"`
 	Icon          string              `json:"icon,omitempty"`
 	Logo          string              `json:"logo,omitempty"`

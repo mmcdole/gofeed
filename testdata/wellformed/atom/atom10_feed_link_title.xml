@@ -1,0 +1,7 @@
+<!--
+Description: feed link title
+Expect:      not bozo and feed['links'][0]['title'] == 'Example title'
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <link title="Example title" />
+</feed>

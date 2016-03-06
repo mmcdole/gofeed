@@ -1,0 +1,17 @@
+{
+    "entries": [
+        {
+            "source": {
+                "authors": [
+                    {
+                        "email": "me@example.com"
+                    }
+                ],
+                "extensions": {}
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

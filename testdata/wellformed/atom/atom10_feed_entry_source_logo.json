@@ -1,0 +1,13 @@
+{
+    "entries": [
+        {
+            "source": {
+                "logo": "http://example.com/logo.jpg",
+                "extensions": {}
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

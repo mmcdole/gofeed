@@ -1,0 +1,17 @@
+{
+    "entries": [
+        {
+            "source": {
+                "links": [
+                    {
+                        "rel": "http://feedparser.org/rel/test"
+                    }
+                ],
+                "extensions": {}
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

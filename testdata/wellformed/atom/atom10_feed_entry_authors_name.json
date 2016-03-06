@@ -1,0 +1,17 @@
+{
+    "entries": [
+        {
+            "authors": [
+                {
+                    "name": "one"
+                },
+                {
+                    "name": "two"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

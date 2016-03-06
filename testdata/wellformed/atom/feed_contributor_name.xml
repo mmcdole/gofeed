@@ -1,8 +1,0 @@
-<!--
-Description: feed contributor name
--->
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <contributor>
-    <name>Example author</name>
-  </contributor>
-</feed>

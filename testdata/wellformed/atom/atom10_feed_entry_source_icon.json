@@ -1,0 +1,13 @@
+{
+    "entries": [
+        {
+            "source": {
+                "icon": "http://example.com/favicon.ico",
+                "extensions": {}
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

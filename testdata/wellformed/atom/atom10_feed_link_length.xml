@@ -1,0 +1,7 @@
+<!--
+Description: feed link length
+Expect:      not bozo and feed['links'][0]['length'] == '42301'
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <link length="42301"/>
+</feed>

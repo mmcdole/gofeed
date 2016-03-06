@@ -1,0 +1,17 @@
+{
+    "entries": [
+        {
+            "source": {
+                "contributors": [
+                    {
+                        "name": "Example contributor"
+                    }
+                ],
+                "extensions": {}
+            },
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

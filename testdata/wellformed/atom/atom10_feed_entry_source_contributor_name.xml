@@ -1,0 +1,13 @@
+<!--
+Description: entry source contributor name
+Expect:      not bozo and entries[0]['source']['contributors'][0]['name'] == 'Example contributor'
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+<entry>
+<source>
+  <contributor>
+    <name>Example contributor</name>
+  </contributor>
+</source>
+</entry>
+</feed>

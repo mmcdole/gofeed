@@ -1,0 +1,14 @@
+{
+    "entries": [
+        {
+            "categories": [
+                {
+                    "scheme": "http://feedparser.org/tests/"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "1.0"
+}

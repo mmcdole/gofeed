@@ -1,8 +1,0 @@
-<!--
-Description: feed contributor email
--->
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <contributor>
-    <email>me@example.com</email>
-  </contributor>
-</feed>

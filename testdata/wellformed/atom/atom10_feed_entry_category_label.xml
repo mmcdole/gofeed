@@ -1,0 +1,9 @@
+<!--
+Description: entry category label
+Expect:      not bozo and entries[0]['tags'][0]['label'] == 'Atom 1.0 tests'
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+<entry>
+  <category label="Atom 1.0 tests"/>
+</entry>
+</feed>
