@@ -1,0 +1,15 @@
+{
+    "entries": [
+        {
+            "links": [
+                {
+                    "href": "http://www.example.com/",
+                    "rel": "alternate"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "0.3"
+}

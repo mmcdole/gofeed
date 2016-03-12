@@ -1,0 +1,15 @@
+{
+    "entries": [
+        {
+            "links": [
+                {
+                    "rel": "alternate",
+                    "type": "text/html"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "0.3"
+}

@@ -1,0 +1,9 @@
+<!--
+Description: feed contributor homepage
+Expect:      not bozo and feed['contributors'][0]['url'] == 'http://example.com/'
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <contributor>
+    <homepage>http://example.com/</homepage>
+  </contributor>
+</feed>

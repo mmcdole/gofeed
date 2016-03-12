@@ -525,7 +525,8 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 				}
 				person.Email = result
 			} else if name == "uri" ||
-				name == "url" {
+				name == "url" ||
+				name == "homepage" {
 				result, err := ap.ParseText(p)
 				if err != nil {
 					return nil, err

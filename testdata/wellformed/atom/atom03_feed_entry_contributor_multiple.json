@@ -1,0 +1,21 @@
+{
+    "entries": [
+        {
+            "contributors": [
+                {
+                    "name": "Contributor 1",
+                    "email": "me@example.com",
+                    "uri": "http://example.com/"
+                },
+                {
+                    "name": "Contributor 2",
+                    "email": "you@example.com",
+                    "uri": "http://two.example.com/"
+                }
+            ],
+            "extensions": {}
+        }
+    ],
+    "extensions": {},
+    "version": "0.3"
+}
