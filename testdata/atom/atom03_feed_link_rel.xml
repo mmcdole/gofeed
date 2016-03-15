@@ -3,5 +3,5 @@ Description: feed link rel
 Expect:      not bozo and feed['links'][0]['rel'] == 'alternate'
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
-  <link rel="alternate" type="text/html" href="http://www.example.com/"/>
+  <link rel="alternate" />
 </feed>

@@ -1,0 +1,11 @@
+{
+    "links": [
+        {
+            "rel": "alternate",
+            "title": "Example title"
+        }
+    ],
+    "entries": [],
+    "extensions": {},
+    "version": "0.3"
+}
