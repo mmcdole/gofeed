@@ -3,10 +3,8 @@
         {
             "content": {
                 "value": "Example Atom"
-            },
-            "extensions": {}
+            }
         }
     ],
-    "extensions": {},
     "version": "0.3"
 }

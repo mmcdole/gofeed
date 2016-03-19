@@ -8,10 +8,8 @@
                 {
                     "uri": "http://two.com/"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

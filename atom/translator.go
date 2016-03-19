@@ -10,7 +10,7 @@ type Translator interface {
 	Translate(atom *Feed) *feed.Feed
 }
 
-// DefaulTranslator converts an atom.Feed struct
+// DefaultTranslator converts an atom.Feed struct
 // into the generic feed.Feed struct.
 //
 // This default implementation defines a set of
@@ -19,5 +19,14 @@ type Translator interface {
 type DefaultTranslator struct{}
 
 func (t *DefaultTranslator) Translate(atom *Feed) *feed.Feed {
-	return nil
+	feed := &feed.Feed{}
+	feed.Title = atom.Title
+	feed.Subtitle = atom.Subtitle
+	feed.Rights = atom.Rights
+	//feed.Links =
+	if atom.Generator != nil {
+		feed.Generator = atom.Generator.Value
+	}
+
+	return feed
 }

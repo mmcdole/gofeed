@@ -2,15 +2,14 @@
     "entries": [
         {
             "source": {
-                "link": {
-                    "hreflang": "en",
-                    "rel": "alternate"
-                },
-                "extensions": {}
-            },
-            "extensions": {}
+                "links": [
+                    {
+                        "hreflang": "en",
+                        "rel": "alternate"
+                    }
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

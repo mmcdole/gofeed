@@ -9,12 +9,9 @@
                     {
                         "name": "two"
                     }
-                ],
-                "extensions": {}
-            },
-            "extensions": {}
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

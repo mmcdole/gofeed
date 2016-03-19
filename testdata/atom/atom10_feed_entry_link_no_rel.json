@@ -7,10 +7,8 @@
                     "rel": "alternate",
                     "type": "text/html"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

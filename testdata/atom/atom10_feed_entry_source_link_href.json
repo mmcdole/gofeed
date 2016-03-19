@@ -2,15 +2,14 @@
     "entries": [
         {
             "source": {
-                "link": {
-                    "href": "http://www.example.com/",
-                    "rel": "alternate"
-                },
-                "extensions": {}
-            },
-            "extensions": {}
+                "links": [
+                    {
+                        "href": "http://www.example.com/",
+                        "rel": "alternate"
+                    }
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

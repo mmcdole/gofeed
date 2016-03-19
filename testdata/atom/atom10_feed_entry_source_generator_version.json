@@ -5,12 +5,9 @@
                 "generator": {
                     "value": "Example generator",
                     "version": "2.65"
-                },
-                "extensions": {}
-            },
-            "extensions": {}
+                }
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

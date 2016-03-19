@@ -13,12 +13,9 @@
                         "rel": "service.post",
                         "type": "application/atom+xml"
                     }
-                ],
-                "extensions": {}
-            },
-            "extensions": {}
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

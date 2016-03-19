@@ -5,10 +5,8 @@
                 {
                     "rel": "http://feedparser.org/rel/test"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

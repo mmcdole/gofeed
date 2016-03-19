@@ -6,12 +6,9 @@
                     {
                         "name": "Example author"
                     }
-                ],
-                "extensions": {}
-            },
-            "extensions": {}
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

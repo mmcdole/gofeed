@@ -2,12 +2,9 @@
     "entries": [
         {
             "source": {
-                "logo": "http://example.com/logo.jpg",
-                "extensions": {}
-            },
-            "extensions": {}
+                "logo": "http://example.com/logo.jpg"
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

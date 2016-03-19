@@ -9,12 +9,9 @@
                     {
                         "email": "two@two.com"
                     }
-                ],
-                "extensions": {}
-            },
-            "extensions": {}
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

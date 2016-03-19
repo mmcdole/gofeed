@@ -1,10 +1,8 @@
 {
     "items": [
         {
-            "title": "Item 1 title",
-            "extensions": {}
+            "title": "Item 1 title"
         }
     ],
-    "extensions": {},
     "version": "2.0"
 }

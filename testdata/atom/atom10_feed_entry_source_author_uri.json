@@ -6,12 +6,9 @@
                     {
                         "uri": "http://example.com/"
                     }
-                ],
-                "extensions": {}
-            },
-            "extensions": {}
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

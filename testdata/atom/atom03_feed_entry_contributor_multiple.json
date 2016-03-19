@@ -12,10 +12,8 @@
                     "email": "you@example.com",
                     "uri": "http://two.example.com/"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "0.3"
 }

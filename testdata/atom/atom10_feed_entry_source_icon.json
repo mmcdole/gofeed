@@ -2,12 +2,9 @@
     "entries": [
         {
             "source": {
-                "icon": "http://example.com/favicon.ico",
-                "extensions": {}
-            },
-            "extensions": {}
+                "icon": "http://example.com/favicon.ico"
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

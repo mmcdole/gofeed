@@ -2,12 +2,9 @@
     "entries": [
         {
             "source": {
-                "rights": "Example <b>Atom</b>",
-                "extensions": {}
-            },
-            "extensions": {}
+                "rights": "Example <b>Atom</b>"
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

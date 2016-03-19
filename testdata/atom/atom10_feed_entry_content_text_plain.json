@@ -4,10 +4,8 @@
             "content": {
                 "type": "text",
                 "value": "Example Atom"
-            },
-            "extensions": {}
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

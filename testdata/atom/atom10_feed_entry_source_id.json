@@ -2,12 +2,9 @@
     "entries": [
         {
             "source": {
-                "id": "http://example.com/",
-                "extensions": {}
-            },
-            "extensions": {}
+                "id": "http://example.com/"
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

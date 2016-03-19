@@ -1,10 +1,8 @@
 {
     "items": [
         {
-            "author": "Example editor",
-            "extensions": {}
+            "author": "Example editor"
         }
     ],
-    "extensions": {},
     "version": "2.0"
 }

@@ -8,10 +8,8 @@
                 {
                     "email": "two@two.com"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

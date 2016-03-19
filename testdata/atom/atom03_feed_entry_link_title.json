@@ -6,10 +6,8 @@
                     "rel": "alternate",
                     "title": "Example title"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "0.3"
 }

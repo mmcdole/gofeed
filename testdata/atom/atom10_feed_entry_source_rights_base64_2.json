@@ -2,12 +2,9 @@
     "entries": [
         {
             "source": {
-                "rights": "<p>History of the &lt;blink&gt; tag</p>",
-                "extensions": {}
-            },
-            "extensions": {}
+                "rights": "<p>History of the &lt;blink&gt; tag</p>"
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

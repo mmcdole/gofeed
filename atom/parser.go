@@ -1,16 +1,16 @@
 package atom
 
 import (
+	"encoding/base64"
 	"strings"
 
-	"github.com/mmcdole/gofeed/feed"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/shared"
 	"github.com/mmcdole/goxpp"
 )
 
-type Parser struct {
-	shared.BaseParser
-}
+type Parser struct{}
 
 func (ap *Parser) ParseFeed(feed string) (*Feed, error) {
 	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
@@ -24,19 +24,19 @@ func (ap *Parser) ParseFeed(feed string) (*Feed, error) {
 }
 
 func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
-	if err := ap.Expect(p, xpp.StartTag, "feed"); err != nil {
+	if err := p.Expect(xpp.StartTag, "feed"); err != nil {
 		return nil, err
 	}
 
 	atom := &Feed{}
 	atom.Entries = []*Entry{}
-	atom.Extensions = feed.FeedExtensions{}
 	atom.Version = ap.parseVersion(p)
 
 	contributors := []*Person{}
 	authors := []*Person{}
 	categories := []*Category{}
 	links := []*Link{}
+	extensions := ext.Extensions{}
 
 	for {
 		tok, err := p.NextTag()
@@ -52,39 +52,39 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 
 			name := strings.ToLower(p.Name)
 
-			if ap.IsExtension(p) {
-				ext, err := ap.ParseExtension(atom.Extensions, p)
+			if shared.IsExtension(p) {
+				e, err := shared.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
-				atom.Extensions = ext
+				extensions = e
 			} else if name == "title" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				atom.Title = result
 			} else if name == "id" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				atom.ID = result
 			} else if name == "updated" ||
 				name == "modified" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				atom.Updated = result
-				date, err := ap.ParseDate(result)
+				date, err := shared.ParseDate(result)
 				if err == nil {
 					utcDate := date.UTC()
 					atom.UpdatedParsed = &utcDate
 				}
 			} else if name == "subtitle" ||
 				name == "tagline" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -102,20 +102,20 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 				}
 				atom.Generator = result
 			} else if name == "icon" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				atom.Icon = result
 			} else if name == "logo" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				atom.Logo = result
 			} else if name == "rights" ||
 				name == "copyright" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -166,7 +166,11 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 		atom.Links = links
 	}
 
-	if err := ap.Expect(p, xpp.EndTag, "feed"); err != nil {
+	if len(extensions) > 0 {
+		atom.Extensions = extensions
+	}
+
+	if err := p.Expect(xpp.EndTag, "feed"); err != nil {
 		return nil, err
 	}
 
@@ -174,16 +178,16 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 }
 
 func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
-	if err := ap.Expect(p, xpp.StartTag, "entry"); err != nil {
+	if err := p.Expect(xpp.StartTag, "entry"); err != nil {
 		return nil, err
 	}
 	entry := &Entry{}
-	entry.Extensions = feed.FeedExtensions{}
 
 	contributors := []*Person{}
 	authors := []*Person{}
 	categories := []*Category{}
 	links := []*Link{}
+	extensions := ext.Extensions{}
 
 	for {
 		tok, err := p.NextTag()
@@ -199,33 +203,33 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 
 			name := strings.ToLower(p.Name)
 
-			if ap.IsExtension(p) {
-				ext, err := ap.ParseExtension(entry.Extensions, p)
+			if shared.IsExtension(p) {
+				e, err := shared.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
-				entry.Extensions = ext
+				extensions = e
 			} else if name == "title" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				entry.Title = result
 			} else if name == "id" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				entry.ID = result
 			} else if name == "rights" ||
 				name == "copyright" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				entry.Rights = result
 			} else if name == "summary" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -238,12 +242,12 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 				entry.Source = result
 			} else if name == "updated" ||
 				name == "modified" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				entry.Updated = result
-				date, err := ap.ParseDate(result)
+				date, err := shared.ParseDate(result)
 				if err == nil {
 					utcDate := date.UTC()
 					entry.UpdatedParsed = &utcDate
@@ -274,12 +278,12 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 				links = append(links, result)
 			} else if name == "published" ||
 				name == "issued" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				entry.Published = result
-				date, err := ap.ParseDate(result)
+				date, err := shared.ParseDate(result)
 				if err == nil {
 					utcDate := date.UTC()
 					entry.PublishedParsed = &utcDate
@@ -312,7 +316,7 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 		entry.Contributors = contributors
 	}
 
-	if err := ap.Expect(p, xpp.EndTag, "entry"); err != nil {
+	if err := p.Expect(xpp.EndTag, "entry"); err != nil {
 		return nil, err
 	}
 
@@ -321,17 +325,17 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 
 func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 
-	if err := ap.Expect(p, xpp.StartTag, "source"); err != nil {
+	if err := p.Expect(xpp.StartTag, "source"); err != nil {
 		return nil, err
 	}
 
 	source := &Source{}
-	source.Extensions = feed.FeedExtensions{}
 
 	contributors := []*Person{}
 	authors := []*Person{}
 	categories := []*Category{}
 	links := []*Link{}
+	extensions := ext.Extensions{}
 
 	for {
 		tok, err := p.NextTag()
@@ -347,39 +351,39 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 
 			name := strings.ToLower(p.Name)
 
-			if ap.IsExtension(p) {
-				ext, err := ap.ParseExtension(source.Extensions, p)
+			if shared.IsExtension(p) {
+				e, err := shared.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
-				source.Extensions = ext
+				extensions = e
 			} else if name == "title" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				source.Title = result
 			} else if name == "id" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				source.ID = result
 			} else if name == "updated" ||
 				name == "modified" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				source.Updated = result
-				date, err := ap.ParseDate(result)
+				date, err := shared.ParseDate(result)
 				if err == nil {
 					utcDate := date.UTC()
 					source.UpdatedParsed = &utcDate
 				}
 			} else if name == "subtitle" ||
 				name == "tagline" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -397,20 +401,20 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 				}
 				source.Generator = result
 			} else if name == "icon" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				source.Icon = result
 			} else if name == "logo" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				source.Logo = result
 			} else if name == "rights" ||
 				name == "copyright" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -455,7 +459,11 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 		source.Links = links
 	}
 
-	if err := ap.Expect(p, xpp.EndTag, "source"); err != nil {
+	if len(extensions) > 0 {
+		source.Extensions = extensions
+	}
+
+	if err := p.Expect(xpp.EndTag, "source"); err != nil {
 		return nil, err
 	}
 
@@ -463,36 +471,22 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 }
 
 func (ap *Parser) parseContent(p *xpp.XMLPullParser) (*Content, error) {
+	c := &Content{}
+	c.Type = p.Attribute("type")
+	c.Src = p.Attribute("src")
 
-	var content struct {
-		Src      string `xml:"src,attr"`
-		Type     string `xml:"type,attr"`
-		Body     string `xml:",chardata"`
-		InnerXML string `xml:",innerxml"`
-	}
-
-	err := p.DecodeElement(&content)
+	text, err := ap.parseAtomText(p)
 	if err != nil {
 		return nil, err
 	}
-
-	c := &Content{}
-	c.Type = content.Type
-	c.Src = content.Src
-
-	// TODO: base64 decode?
-	if len(content.InnerXML) > 0 {
-		c.Value = strings.TrimSpace(content.InnerXML)
-	} else if len(content.Body) > 0 {
-		c.Value = strings.TrimSpace(content.Body)
-	}
+	c.Value = text
 
 	return c, nil
 }
 
 func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error) {
 
-	if err := ap.Expect(p, xpp.StartTag, name); err != nil {
+	if err := p.Expect(xpp.StartTag, name); err != nil {
 		return nil, err
 	}
 
@@ -513,13 +507,13 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 			name := strings.ToLower(p.Name)
 
 			if name == "name" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
 				person.Name = result
 			} else if name == "email" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -527,7 +521,7 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 			} else if name == "uri" ||
 				name == "url" ||
 				name == "homepage" {
-				result, err := ap.ParseText(p)
+				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -538,7 +532,7 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 		}
 	}
 
-	if err := ap.Expect(p, xpp.EndTag, name); err != nil {
+	if err := p.Expect(xpp.EndTag, name); err != nil {
 		return nil, err
 	}
 
@@ -546,7 +540,7 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 }
 
 func (ap *Parser) parseLink(p *xpp.XMLPullParser) (*Link, error) {
-	if err := ap.Expect(p, xpp.StartTag, "link"); err != nil {
+	if err := p.Expect(xpp.StartTag, "link"); err != nil {
 		return nil, err
 	}
 
@@ -565,14 +559,14 @@ func (ap *Parser) parseLink(p *xpp.XMLPullParser) (*Link, error) {
 		return nil, err
 	}
 
-	if err := ap.Expect(p, xpp.EndTag, "link"); err != nil {
+	if err := p.Expect(xpp.EndTag, "link"); err != nil {
 		return nil, err
 	}
 	return l, nil
 }
 
 func (ap *Parser) parseCategory(p *xpp.XMLPullParser) (*Category, error) {
-	if err := ap.Expect(p, xpp.StartTag, "category"); err != nil {
+	if err := p.Expect(xpp.StartTag, "category"); err != nil {
 		return nil, err
 	}
 
@@ -585,7 +579,7 @@ func (ap *Parser) parseCategory(p *xpp.XMLPullParser) (*Category, error) {
 		return nil, err
 	}
 
-	if err := ap.Expect(p, xpp.EndTag, "category"); err != nil {
+	if err := p.Expect(xpp.EndTag, "category"); err != nil {
 		return nil, err
 	}
 	return c, nil
@@ -593,7 +587,7 @@ func (ap *Parser) parseCategory(p *xpp.XMLPullParser) (*Category, error) {
 
 func (ap *Parser) parseGenerator(p *xpp.XMLPullParser) (*Generator, error) {
 
-	if err := ap.Expect(p, xpp.StartTag, "generator"); err != nil {
+	if err := p.Expect(xpp.StartTag, "generator"); err != nil {
 		return nil, err
 	}
 
@@ -610,22 +604,74 @@ func (ap *Parser) parseGenerator(p *xpp.XMLPullParser) (*Generator, error) {
 
 	g.Version = p.Attribute("version")
 
-	result, err := ap.ParseText(p)
+	result, err := ap.parseAtomText(p)
 	if err != nil {
 		return nil, err
 	}
 
 	g.Value = result
 
-	if err := ap.Expect(p, xpp.EndTag, "generator"); err != nil {
+	if err := p.Expect(xpp.EndTag, "generator"); err != nil {
 		return nil, err
 	}
 
 	return g, nil
 }
 
-func (ap *Parser) stripWrapperDiv(xml string) string {
-	return ""
+func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
+
+	var text struct {
+		Type     string `xml:"type,attr"`
+		Mode     string `xml:"mode,attr"`
+		Body     string `xml:",chardata"`
+		InnerXML string `xml:",innerxml"`
+	}
+
+	err := p.DecodeElement(&text)
+	if err != nil {
+		return "", err
+	}
+
+	result := ""
+	if len(text.InnerXML) > 0 {
+		result = text.InnerXML
+	} else if len(text.Body) > 0 {
+		result = text.Body
+	}
+
+	lowerType := strings.ToLower(text.Type)
+	lowerMode := strings.ToLower(text.Mode)
+	result = strings.TrimSpace(result)
+
+	if lowerType == "html" {
+		result = shared.DecodeEntities(result)
+	}
+
+	if lowerType == "text" ||
+		strings.HasPrefix(lowerType, "text/") ||
+		(lowerType == "" && lowerMode == "") {
+		result = shared.DecodeEntities(result)
+	} else if strings.Contains(lowerType, "xhtml") ||
+		lowerType == "html" {
+		r := strings.NewReader(result)
+		doc, err := goquery.NewDocumentFromReader(r)
+		if err == nil {
+			outerElement := doc.Find("div").First()
+			if outerElement.Is("div") {
+				html, err := outerElement.Unwrap().Html()
+				if err == nil {
+					result = html
+				}
+			}
+		}
+	} else {
+		decodedStr, err := base64.StdEncoding.DecodeString(result)
+		if err == nil {
+			result = string(decodedStr)
+		}
+	}
+
+	return result, nil
 }
 
 func (ap *Parser) parseVersion(p *xpp.XMLPullParser) string {

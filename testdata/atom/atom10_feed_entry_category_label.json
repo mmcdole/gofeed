@@ -5,10 +5,8 @@
                 {
                     "label": "Atom 1.0 tests"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

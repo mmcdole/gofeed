@@ -5,10 +5,8 @@
                 {
                     "name": "Example contributor"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

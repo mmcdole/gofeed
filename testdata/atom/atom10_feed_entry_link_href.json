@@ -6,10 +6,8 @@
                     "rel": "alternate",
                     "href": "http://www.example.com/"
                 }
-            ],
-            "extensions": {}
+            ]
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

@@ -4,10 +4,8 @@
             "content": {
                 "type": "application/octet-stream",
                 "value": "Example <b>Atom</b>"
-            },
-            "extensions": {}
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

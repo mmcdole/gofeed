@@ -2,12 +2,9 @@
     "entries": [
         {
             "source": {
-                "subtitle": "Example <b>Atom</b>",
-                "extensions": {}
-            },
-            "extensions": {}
+                "subtitle": "Example <b>Atom</b>"
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

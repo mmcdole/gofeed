@@ -1,10 +1,8 @@
 {
     "items": [
         {
-            "comments": "http://example.com/",
-            "extensions": {}
+            "comments": "http://example.com/"
         }
     ],
-    "extensions": {},
     "version": "2.0"
 }

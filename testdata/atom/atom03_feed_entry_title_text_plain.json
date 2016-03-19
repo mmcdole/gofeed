@@ -1,10 +1,8 @@
 {
     "entries": [
         {
-            "title": "Example Atom",
-            "extensions": {}
+            "title": "Example Atom"
         }
     ],
-    "extensions": {},
     "version": "0.3"
 }

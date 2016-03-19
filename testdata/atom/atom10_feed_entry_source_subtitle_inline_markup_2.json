@@ -2,12 +2,9 @@
     "entries": [
         {
             "source": {
-                "subtitle": "History of the &lt;blink&gt; tag",
-                "extensions": {}
-            },
-            "extensions": {}
+                "subtitle": "History of the &lt;blink&gt; tag"
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }

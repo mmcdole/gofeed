@@ -2,15 +2,14 @@
     "entries": [
         {
             "source": {
-                "link": {
-                    "rel": "alternate",
-                    "length": "42301"
-                },
-                "extensions": {}
-            },
-            "extensions": {}
+                "links": [
+                    {
+                        "rel": "alternate",
+                        "length": "42301"
+                    }
+                ]
+            }
         }
     ],
-    "extensions": {},
     "version": "1.0"
 }
