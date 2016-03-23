@@ -52,8 +52,8 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 
 			name := strings.ToLower(p.Name)
 
-			if shared.IsExtension(p) {
-				e, err := shared.ParseExtension(extensions, p)
+			if ext.IsExtension(p) {
+				e, err := ext.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
@@ -203,8 +203,8 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 
 			name := strings.ToLower(p.Name)
 
-			if shared.IsExtension(p) {
-				e, err := shared.ParseExtension(extensions, p)
+			if ext.IsExtension(p) {
+				e, err := ext.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
@@ -316,6 +316,10 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 		entry.Contributors = contributors
 	}
 
+	if len(extensions) > 0 {
+		entry.Extensions = extensions
+	}
+
 	if err := p.Expect(xpp.EndTag, "entry"); err != nil {
 		return nil, err
 	}
@@ -351,8 +355,8 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 
 			name := strings.ToLower(p.Name)
 
-			if shared.IsExtension(p) {
-				e, err := shared.ParseExtension(extensions, p)
+			if ext.IsExtension(p) {
+				e, err := ext.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}

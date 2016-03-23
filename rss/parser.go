@@ -50,7 +50,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 		if tok == xpp.StartTag {
 
 			// Skip any extensions found in the feed root.
-			if shared.IsExtension(p) {
+			if ext.IsExtension(p) {
 				p.Skip()
 				continue
 			}
@@ -138,8 +138,8 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 
 			name := strings.ToLower(p.Name)
 
-			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
+			if ext.IsExtension(p) {
+				ext, err := ext.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
@@ -321,8 +321,8 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 
 			name := strings.ToLower(p.Name)
 
-			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
+			if ext.IsExtension(p) {
+				ext, err := ext.ParseExtension(extensions, p)
 				if err != nil {
 					return nil, err
 				}
