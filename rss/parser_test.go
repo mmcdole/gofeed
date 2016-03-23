@@ -13,7 +13,7 @@ import (
 )
 
 func TestRSSParser_ParseFeed(t *testing.T) {
-	files, _ := filepath.Glob("../testdata/rss/*.xml")
+	files, _ := filepath.Glob("../testdata/parser/rss/*.xml")
 	for _, f := range files {
 		base := filepath.Base(f)
 		name := strings.TrimSuffix(base, filepath.Ext(base))
@@ -21,7 +21,7 @@ func TestRSSParser_ParseFeed(t *testing.T) {
 		fmt.Printf("Testing %s... ", name)
 
 		// Get actual source feed
-		ff := fmt.Sprintf("../testdata/rss/%s.xml", name)
+		ff := fmt.Sprintf("../testdata/parser/rss/%s.xml", name)
 		f, _ := ioutil.ReadFile(ff)
 
 		// Parse actual feed
@@ -29,7 +29,7 @@ func TestRSSParser_ParseFeed(t *testing.T) {
 		actual, _ := fp.ParseFeed(string(f))
 
 		// Get json encoded expected feed result
-		ef := fmt.Sprintf("../testdata/rss/%s.json", name)
+		ef := fmt.Sprintf("../testdata/parser/rss/%s.json", name)
 		e, _ := ioutil.ReadFile(ef)
 
 		// Unmarshal expected feed
