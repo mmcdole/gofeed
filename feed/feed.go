@@ -31,7 +31,7 @@ type Feed struct {
 type Item struct {
 	Title           string            `json:"title,omitempty"`
 	Description     string            `json:"description,omitempty"`
-	Summary         string            `json:"summary,omitempty"`
+	Content         string            `json:"content,omitempty"`
 	Link            string            `json:"link,omitempty"`
 	Updated         string            `json:"updated,omitempty"`
 	UpdatedParsed   *time.Time        `json:"updatedParsed,omitempty"`

@@ -10,7 +10,7 @@ type Feed struct {
 	Title               string         `json:"title,omitempty"`
 	Link                string         `json:"link,omitempty"`
 	Description         string         `json:"description,omitempty"`
-	Language            string         `json:"langauge,omitempty"`
+	Language            string         `json:"language,omitempty"`
 	Copyright           string         `json:"copyright,omitempty"`
 	ManagingEditor      string         `json:"managingEditor,omitempty"`
 	WebMaster           string         `json:"webMaster,omitempty"`

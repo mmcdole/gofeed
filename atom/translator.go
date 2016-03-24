@@ -44,7 +44,7 @@ func (t *DefaultTranslator) translateFeedItem(entry *Entry) (item *feed.Item) {
 	item = &feed.Item{}
 	item.Title = t.translateItemTitle(entry)
 	item.Description = t.translateItemDescription(entry)
-	item.Summary = t.translateItemSummary(entry)
+	item.Content = t.translateItemContent(entry)
 	item.Link = t.translateItemLink(entry)
 	item.Updated = t.translateItemUpdated(entry)
 	item.UpdatedParsed = t.translateItemUpdatedParsed(entry)
@@ -149,14 +149,14 @@ func (t *DefaultTranslator) translateItemTitle(entry *Entry) (title string) {
 }
 
 func (t *DefaultTranslator) translateItemDescription(entry *Entry) (desc string) {
-	if entry.Content != nil {
-		desc = entry.Content.Value
-	}
-	return
+	return entry.Summary
 }
 
-func (t *DefaultTranslator) translateItemSummary(entry *Entry) (summary string) {
-	return entry.Summary
+func (t *DefaultTranslator) translateItemContent(entry *Entry) (content string) {
+	if entry.Content != nil {
+		content = entry.Content.Value
+	}
+	return
 }
 
 func (t *DefaultTranslator) translateItemLink(entry *Entry) (link string) {
