@@ -1,0 +1,13 @@
+<!--
+Description: rdf item 
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+<channel rdf:about="http://example.com/index.rdf">
+<image rdf:resource="http://xml.com/universal/images/xml_tiny.gif" />
+</channel>
+<image rdf:about="http://xml.com/universal/images/xml_tiny.gif">
+<title>XML.com</title>
+<link>http://www.xml.com</link>
+<url>http://xml.com/universal/images/xml_tiny.gif</url>
+</image>
+</rdf:RDF>

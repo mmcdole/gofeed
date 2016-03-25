@@ -40,6 +40,7 @@ func (t *DefaultTranslator) Translate(rss *Feed) *feed.Feed {
 	feed.Language = t.translateFeedLanguage(rss)
 	feed.Image = t.translateFeedImage(rss)
 	feed.Copyright = t.translateFeedCopyright(rss)
+	feed.Generator = t.translateFeedGenerator(rss)
 	feed.Categories = t.translateFeedCategories(rss)
 	feed.Items = t.translateFeedItems(rss)
 	feed.Extensions = rss.Extensions

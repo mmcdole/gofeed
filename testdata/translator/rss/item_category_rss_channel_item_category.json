@@ -1,0 +1,12 @@
+{
+    "items": [
+        {
+            "categories": [
+                "Example category 1",
+                "Example category 2"
+            ]
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

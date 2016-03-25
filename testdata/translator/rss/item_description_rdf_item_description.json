@@ -1,0 +1,9 @@
+{
+    "items": [
+        {
+            "description": "Example description"
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "1.0"
+}
