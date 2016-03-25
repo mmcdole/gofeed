@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed/atom"
+	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/mmcdole/gofeed/shared"
 )
 
 // Translator converts an atom.Feed struct

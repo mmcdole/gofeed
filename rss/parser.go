@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/mmcdole/gofeed/extensions"
-	"github.com/mmcdole/gofeed/shared"
+	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/goxpp"
 )
 
