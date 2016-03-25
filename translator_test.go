@@ -1,0 +1,1 @@
+package gofeed_test

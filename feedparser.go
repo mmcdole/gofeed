@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/mmcdole/gofeed/atom"
-	"github.com/mmcdole/gofeed/feed"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/mmcdole/goxpp"
 )
@@ -22,8 +21,8 @@ const (
 )
 
 type FeedParser struct {
-	AtomTrans atom.Translator
-	RSSTrans  rss.Translator
+	AtomTrans AtomTranslator
+	RSSTrans  RSSTranslator
 	rp        *rss.Parser
 	ap        *atom.Parser
 }
@@ -36,7 +35,7 @@ func NewFeedParser() *FeedParser {
 	return &fp
 }
 
-func (f *FeedParser) ParseFeedURL(feedURL string) (*feed.Feed, error) {
+func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
 	resp, err := http.Get(feedURL)
 	if err != nil {
 		return nil, err
@@ -46,7 +45,7 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*feed.Feed, error) {
 	return f.ParseFeed(string(body))
 }
 
-func (f *FeedParser) ParseFeed(feed string) (*feed.Feed, error) {
+func (f *FeedParser) ParseFeed(feed string) (*Feed, error) {
 	fmt.Println(feed)
 	ft := f.DetectFeedType(feed)
 	switch ft {
@@ -79,7 +78,7 @@ func (f *FeedParser) DetectFeedType(feed string) FeedType {
 	}
 }
 
-func (f *FeedParser) parseFeedFromAtom(feed string) (*feed.Feed, error) {
+func (f *FeedParser) parseFeedFromAtom(feed string) (*Feed, error) {
 	af, err := f.ap.ParseFeed(feed)
 	if err != nil {
 		return nil, err
@@ -88,7 +87,7 @@ func (f *FeedParser) parseFeedFromAtom(feed string) (*feed.Feed, error) {
 	return result, nil
 }
 
-func (f *FeedParser) parseFeedFromRSS(feed string) (*feed.Feed, error) {
+func (f *FeedParser) parseFeedFromRSS(feed string) (*Feed, error) {
 	rf, err := f.rp.ParseFeed(feed)
 	if err != nil {
 		return nil, err
@@ -98,18 +97,18 @@ func (f *FeedParser) parseFeedFromRSS(feed string) (*feed.Feed, error) {
 	return result, nil
 }
 
-func (f *FeedParser) atomTrans() atom.Translator {
+func (f *FeedParser) atomTrans() AtomTranslator {
 	if f.AtomTrans != nil {
 		return f.AtomTrans
 	}
-	f.AtomTrans = &atom.DefaultTranslator{}
+	f.AtomTrans = &DefaultAtomTranslator{}
 	return f.AtomTrans
 }
 
-func (f *FeedParser) rssTrans() rss.Translator {
+func (f *FeedParser) rssTrans() RSSTranslator {
 	if f.RSSTrans != nil {
 		return f.RSSTrans
 	}
-	f.RSSTrans = &rss.DefaultTranslator{}
+	f.RSSTrans = &DefaultRSSTranslator{}
 	return f.RSSTrans
 }
