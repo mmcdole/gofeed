@@ -11,8 +11,7 @@ type Extension struct {
 	Children map[string][]Extension `json:"children"`
 }
 
-// Parse a single text value from a given extension key
-func ParseTextExtension(name string, extensions map[string][]Extension) (value string) {
+func parseTextExtension(name string, extensions map[string][]Extension) (value string) {
 	if extensions == nil {
 		return
 	}
@@ -26,7 +25,7 @@ func ParseTextExtension(name string, extensions map[string][]Extension) (value s
 	return match.Value
 }
 
-func ParseTextArrayExtension(name string, extensions map[string][]Extension) (values []string) {
+func parseTextArrayExtension(name string, extensions map[string][]Extension) (values []string) {
 	if extensions == nil {
 		return
 	}

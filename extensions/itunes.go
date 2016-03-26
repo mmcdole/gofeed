@@ -41,15 +41,15 @@ type ITunesOwner struct {
 // extension map.
 func NewITunesFeedExtension(extensions map[string][]Extension) *ITunesFeedExtension {
 	feed := &ITunesFeedExtension{}
-	feed.Author = ParseTextExtension("author", extensions)
-	feed.Block = ParseTextExtension("block", extensions)
-	feed.Explicit = ParseTextExtension("explicit", extensions)
-	feed.Keywords = ParseTextExtension("keywords", extensions)
-	feed.Subtitle = ParseTextExtension("subtitle", extensions)
-	feed.Summary = ParseTextExtension("summary", extensions)
-	feed.Image = ParseTextExtension("image", extensions)
-	feed.Complete = ParseTextExtension("complete", extensions)
-	feed.NewFeedURL = ParseTextExtension("new-feed-url", extensions)
+	feed.Author = parseTextExtension("author", extensions)
+	feed.Block = parseTextExtension("block", extensions)
+	feed.Explicit = parseTextExtension("explicit", extensions)
+	feed.Keywords = parseTextExtension("keywords", extensions)
+	feed.Subtitle = parseTextExtension("subtitle", extensions)
+	feed.Summary = parseTextExtension("summary", extensions)
+	feed.Image = parseTextExtension("image", extensions)
+	feed.Complete = parseTextExtension("complete", extensions)
+	feed.NewFeedURL = parseTextExtension("new-feed-url", extensions)
 	feed.Categories = parseCategories(extensions)
 	feed.Owner = parseOwner(extensions)
 	return feed
@@ -59,15 +59,15 @@ func NewITunesFeedExtension(extensions map[string][]Extension) *ITunesFeedExtens
 // extension map.
 func NewITunesEntryExtension(extensions map[string][]Extension) *ITunesEntryExtension {
 	entry := &ITunesEntryExtension{}
-	entry.Author = ParseTextExtension("author", extensions)
-	entry.Block = ParseTextExtension("block", extensions)
-	entry.Duration = ParseTextExtension("duration", extensions)
-	entry.Explicit = ParseTextExtension("explicit", extensions)
-	entry.Subtitle = ParseTextExtension("subtitle", extensions)
-	entry.Summary = ParseTextExtension("summary", extensions)
-	entry.Image = ParseTextExtension("image", extensions)
-	entry.IsClosedCaptioned = ParseTextExtension("isClosedCaptioned", extensions)
-	entry.Order = ParseTextExtension("order", extensions)
+	entry.Author = parseTextExtension("author", extensions)
+	entry.Block = parseTextExtension("block", extensions)
+	entry.Duration = parseTextExtension("duration", extensions)
+	entry.Explicit = parseTextExtension("explicit", extensions)
+	entry.Subtitle = parseTextExtension("subtitle", extensions)
+	entry.Summary = parseTextExtension("summary", extensions)
+	entry.Image = parseTextExtension("image", extensions)
+	entry.IsClosedCaptioned = parseTextExtension("isClosedCaptioned", extensions)
+	entry.Order = parseTextExtension("order", extensions)
 	return entry
 }
 
