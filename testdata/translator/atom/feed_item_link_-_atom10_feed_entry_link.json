@@ -1,0 +1,9 @@
+{
+    "items": [
+        {
+            "link": "http://www.example.com/"
+        }
+    ],
+    "feedType": "atom",
+    "feedVersion": "1.0"
+}

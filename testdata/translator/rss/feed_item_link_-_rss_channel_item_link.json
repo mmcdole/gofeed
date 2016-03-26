@@ -1,0 +1,9 @@
+{
+    "items": [
+        {
+            "link": "http://example.com/"
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

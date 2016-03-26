@@ -3,6 +3,6 @@ Description: channel webMaster
 -->
 <rss version="2.0">
 <channel>
-<webMaster>Example editor</webMaster>
+<webMaster>Example name</webMaster>
 </channel>
 </rss>

@@ -1,0 +1,15 @@
+{
+    "items": [
+        {
+            "enclosures": [
+                {
+                    "url": "http://example.com/file.mp3",
+                    "length": "123456",
+                    "type": "audio/mpeg"
+                }
+            ]
+        }
+    ],
+    "feedType": "atom",
+    "feedVersion": "1.0"
+}

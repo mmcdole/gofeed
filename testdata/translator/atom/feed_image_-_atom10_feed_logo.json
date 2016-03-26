@@ -1,0 +1,8 @@
+{
+    "image": {
+        "url": "http://example.com/logo.jpg"
+    },
+    "items": [],
+    "feedType": "atom",
+    "feedVersion": "1.0"
+}

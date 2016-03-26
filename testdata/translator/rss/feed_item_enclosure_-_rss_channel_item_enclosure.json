@@ -1,0 +1,15 @@
+{
+    "items": [
+        {
+            "enclosures": [
+                {
+                    "url": "http://example.com/file.mp3",
+                    "length": "100000",
+                    "type": "audio/mpeg"
+                }
+            ]
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

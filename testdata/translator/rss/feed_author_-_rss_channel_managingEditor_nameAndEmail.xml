@@ -3,6 +3,6 @@ Description: channel managingEditor
 -->
 <rss version="2.0">
 <channel>
-<managingEditor>Example editor</managingEditor>
+<managingEditor>Example name (example@site.com)</managingEditor>
 </channel>
 </rss>

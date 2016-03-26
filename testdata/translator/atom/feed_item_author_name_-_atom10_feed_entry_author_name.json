@@ -1,0 +1,11 @@
+{
+    "items": [
+        {
+            "author": {
+                "name": "Example author"
+            }
+        }
+    ],
+    "feedType": "atom",
+    "feedVersion": "1.0"
+}

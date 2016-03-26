@@ -1,0 +1,9 @@
+{
+    "items": [
+        {
+            "guid": "http://example.com/"
+        }
+    ],
+    "feedType": "atom",
+    "feedVersion": "0.3"
+}

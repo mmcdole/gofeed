@@ -1,0 +1,11 @@
+{
+    "items": [
+        {
+            "author": {
+                "email": "me@example.com"
+            }
+        }
+    ],
+    "feedType": "atom",
+    "feedVersion": "1.0"
+}

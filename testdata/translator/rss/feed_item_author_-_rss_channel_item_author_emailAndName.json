@@ -1,0 +1,12 @@
+{
+    "items": [
+        {
+            "author": {
+                "name": "Example Name",
+                "email": "example@site.com"
+            }
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

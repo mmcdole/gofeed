@@ -1,0 +1,8 @@
+<!--
+Description: channel managingEditor
+-->
+<rss version="2.0">
+<channel>
+<managingEditor>Example name</managingEditor>
+</channel>
+</rss>

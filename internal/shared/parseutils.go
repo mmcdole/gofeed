@@ -55,7 +55,7 @@ func ParseNameAddress(nameAddressText string) (name string, address string) {
 	if emailNameRgx.MatchString(nameAddressText) {
 		result := emailNameRgx.FindStringSubmatch(nameAddressText)
 		address = result[1]
-		name = result[1]
+		name = result[2]
 	} else if nameEmailRgx.MatchString(nameAddressText) {
 		result := nameEmailRgx.FindStringSubmatch(nameAddressText)
 		name = result[1]

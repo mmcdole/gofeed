@@ -1,0 +1,9 @@
+{
+    "items": [
+        {
+            "description": "Example Atom"
+        }
+    ],
+    "feedType": "atom",
+    "feedVersion": "1.0"
+}

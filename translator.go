@@ -1,9 +1,11 @@
 package gofeed
 
 import (
+	"strings"
 	"time"
 
 	"github.com/mmcdole/gofeed/atom"
+	"github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/gofeed/rss"
 )
@@ -34,6 +36,8 @@ func (t *DefaultRSSTranslator) Translate(rss *rss.Feed) *Feed {
 	feed.Description = t.translateFeedDescription(rss)
 	feed.Link = t.translateFeedLink(rss)
 	feed.FeedLink = t.translateFeedFeedLink(rss)
+	feed.Updated = t.translateFeedUpdated(rss)
+	feed.UpdatedParsed = t.translateFeedUpdatedParsed(rss)
 	feed.Published = t.translateFeedPublished(rss)
 	feed.PublishedParsed = t.translateFeedPublishedParsed(rss)
 	feed.Author = t.translateFeedAuthor(rss)
@@ -62,7 +66,7 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.Categories = t.translateItemCategories(rssItem)
 	item.Enclosures = t.translateItemEnclosures(rssItem)
 	item.Extensions = rssItem.Extensions
-	return item
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedTitle(rss *rss.Feed) (title string) {
@@ -74,18 +78,19 @@ func (t *DefaultRSSTranslator) translateFeedDescription(rss *rss.Feed) (desc str
 }
 
 func (t *DefaultRSSTranslator) translateFeedLink(rss *rss.Feed) (link string) {
-	return rss.Link
+	if rss.Link != "" {
+		link = rss.Link
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string) {
-	if rss.Extensions == nil {
-		return
-	}
-	if atom, ok := rss.Extensions["atom"]; ok {
-		if links, ok := atom["link"]; ok {
+	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
+	for _, ex := range atomExtensions {
+		if links, ok := ex["link"]; ok {
 			for _, l := range links {
 				if l.Attrs["Rel"] == "self" {
-					return l.Value
+					link = l.Value
 				}
 			}
 		}
@@ -93,11 +98,19 @@ func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string
 	return
 }
 
-func (t *DefaultRSSTranslator) translateFeedPublished(rss *rss.Feed) (updated string) {
+func (t *DefaultRSSTranslator) translateFeedUpdated(rss *rss.Feed) (updated string) {
+	return rss.LastBuildDate
+}
+
+func (t *DefaultRSSTranslator) translateFeedUpdatedParsed(rss *rss.Feed) (updated *time.Time) {
+	return rss.LastBuildDateParsed
+}
+
+func (t *DefaultRSSTranslator) translateFeedPublished(rss *rss.Feed) (published string) {
 	return rss.PubDate
 }
 
-func (t *DefaultRSSTranslator) translateFeedPublishedParsed(rss *rss.Feed) (updated *time.Time) {
+func (t *DefaultRSSTranslator) translateFeedPublishedParsed(rss *rss.Feed) (published *time.Time) {
 	return rss.PubDateParsed
 }
 
@@ -176,6 +189,12 @@ func (t *DefaultRSSTranslator) translateItemPublishedParsed(rssItem *rss.Item) (
 }
 
 func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *Person) {
+	if rssItem.Author != "" {
+		name, address := shared.ParseNameAddress(rssItem.Author)
+		author = &Person{}
+		author.Name = name
+		author.Email = address
+	}
 	return // TODO: dc and itunes
 }
 
@@ -211,6 +230,21 @@ func (t *DefaultRSSTranslator) translateItemEnclosures(rssItem *rss.Item) (enclo
 	return
 }
 
+func (t *DefaultRSSTranslator) extensionsForKeys(keys []string, extensions ext.Extensions) (matches []map[string][]ext.Extension) {
+	matches = []map[string][]ext.Extension{}
+
+	if extensions == nil {
+		return
+	}
+
+	for _, key := range keys {
+		if match, ok := extensions[key]; ok {
+			matches = append(matches, match)
+		}
+	}
+	return
+}
+
 // DefaultAtomTranslator converts an atom.Feed struct
 // into the generic Feed struct.
 //
@@ -232,6 +266,7 @@ func (t *DefaultAtomTranslator) Translate(atom *atom.Feed) *Feed {
 	feed.Image = t.translateFeedImage(atom)
 	feed.Copyright = t.translateFeedCopyright(atom)
 	feed.Categories = t.translateFeedCategories(atom)
+	feed.Generator = t.translateFeedGenerator(atom)
 	feed.Items = t.translateFeedItems(atom)
 	feed.Extensions = atom.Extensions
 	feed.FeedVersion = atom.Version
@@ -292,7 +327,7 @@ func (t *DefaultAtomTranslator) translateFeedUpdatedParsed(atom *atom.Feed) (upd
 
 func (t *DefaultAtomTranslator) translateFeedAuthor(atom *atom.Feed) (author *Person) {
 	a := t.firstPerson(atom.Authors)
-	if author != nil {
+	if a != nil {
 		feedAuthor := Person{}
 		feedAuthor.Name = a.Name
 		feedAuthor.Email = a.Email
@@ -320,14 +355,23 @@ func (t *DefaultAtomTranslator) translateFeedCopyright(atom *atom.Feed) (rights 
 
 func (t *DefaultAtomTranslator) translateFeedGenerator(atom *atom.Feed) (generator string) {
 	if atom.Generator != nil {
-		generator = atom.Generator.Value
+		if atom.Generator.Value != "" {
+			generator += atom.Generator.Value
+		}
+		if atom.Generator.Version != "" {
+			generator += " v" + atom.Generator.Version
+		}
+		if atom.Generator.URI != "" {
+			generator += " " + atom.Generator.URI
+		}
+		generator = strings.TrimSpace(generator)
 	}
 	return
 }
 
 func (t *DefaultAtomTranslator) translateFeedCategories(atom *atom.Feed) (categories []string) {
 	if atom.Categories != nil {
-		categories := []string{}
+		categories = []string{}
 		for _, c := range atom.Categories {
 			categories = append(categories, c.Term)
 		}
@@ -402,7 +446,7 @@ func (t *DefaultAtomTranslator) translateItemImage(entry *atom.Entry) (image *Im
 
 func (t *DefaultAtomTranslator) translateItemCategories(entry *atom.Entry) (categories []string) {
 	if entry.Categories != nil {
-		categories := []string{}
+		categories = []string{}
 		for _, c := range entry.Categories {
 			categories = append(categories, c.Term)
 		}
@@ -412,7 +456,7 @@ func (t *DefaultAtomTranslator) translateItemCategories(entry *atom.Entry) (cate
 
 func (t *DefaultAtomTranslator) translateItemEnclosures(entry *atom.Entry) (enclosures []*Enclosure) {
 	if entry.Links != nil {
-		enclosures := []*Enclosure{}
+		enclosures = []*Enclosure{}
 		for _, e := range entry.Links {
 			if e.Rel == "enclosure" {
 				enclosure := &Enclosure{}
@@ -436,21 +480,18 @@ func (t *DefaultAtomTranslator) firstLinkWithType(linkType string, links []*atom
 	}
 
 	for _, link := range links {
-		if link.Rel == "alternate" {
+		if link.Rel == linkType {
 			return link
 		}
 	}
 	return nil
 }
 
-func (t *DefaultAtomTranslator) firstPerson(persons []*atom.Person) *atom.Person {
-	if persons == nil {
-		return nil
+func (t *DefaultAtomTranslator) firstPerson(persons []*atom.Person) (person *atom.Person) {
+	if persons == nil || len(persons) == 0 {
+		return
 	}
 
-	if len(persons) == 0 {
-		return nil
-	}
-
-	return persons[0]
+	person = persons[0]
+	return
 }
