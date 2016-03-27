@@ -52,13 +52,6 @@ TODO
 The ```DefaultRSSTranslator``` and the ```DefaultAtomTranslator``` map the following ```rss.Feed``` and ```atom.Feed``` fields to their respective ```Feed``` fields.  They are listed in order of precedence (highest to lowest):
 
 
-/atom03:feed/atom03:modified
-/atom10:feed/atom10:updated
-
-
-/rss/channel/dc:date
-/rss/channel/lastBuildDate
-
 Feed | RSS | Atom
 --- | --- | ---
 Title | /rss/channel/title<br>/rdf:RDF/channel/title<br>/rss/channel/dc:title<br>/rdf:RDF/channel/dc:title | /feed/title
