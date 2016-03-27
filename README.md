@@ -52,9 +52,17 @@ TODO
 The ```DefaultRSSTranslator``` and the ```DefaultAtomTranslator``` map the following ```rss.Feed``` and ```atom.Feed``` fields to their respective ```Feed``` fields.  They are listed in order of precedence (highest to lowest):
 
 
+/atom03:feed/atom03:modified
+/atom10:feed/atom10:updated
+
+
+/rss/channel/dc:date
+/rss/channel/lastBuildDate
+
 Feed | RSS | Atom
 --- | --- | ---
 Title | /rss/channel/title<br>/rdf:RDF/channel/title<br>/rss/channel/dc:title<br>/rdf:RDF/channel/dc:title | /feed/title
 Description | /rss/channel/description<br>/rdf:RDF/channel/description<br>/rss/channel/itunes:subtitle<br>/rdf:RDF/channel/itunes:subtitle | /feed/subtitle<br>/feed/tagline
 Link | /rss/channel/link<br>/rdf:RDF/channel/link | /feed/link[@rel=”alternate”]/@href<br>/feed/link[not(@rel)]/@href
-FeedLink | /rss/channel/atom:link[@rel="self]/@href | /feed/link[@rel="self"]/@href
+FeedLink | /rss/channel/atom:link[@rel="self]/@href<br>/rdf:RDF/channel/atom:link[@rel="self] | /feed/link[@rel="self"]/@href
+Updated | /rss/channel/lastBuildDate<br>/rss/channel/dc:date<br>/rdf:RDF/channel/dc:date<br>/rdf:RDF/channel/dcterms:modified | /feed/updated<br>/feed/modified
