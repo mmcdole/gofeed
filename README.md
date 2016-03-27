@@ -54,7 +54,7 @@ The ```DefaultRSSTranslator``` and the ```DefaultAtomTranslator``` map the follo
 
 Feed | RSS | Atom
 --- | --- | ---
-Title | /rss/channel/title<br>/rdf:RDF/rdf:channel/rdf:title<br>/rss/channel/dc:title<br>/rdf:RDF/rdf:channel/dc:title | /atom10:feed/atom10:title<br>/atom03:feed/atom03:title
-Description | /rss/channel/description<br>/rdf:RDF/rdf:channel/rdf:description<br>/rss/channel/itunes:subtitle<br>/rdf:RDF/rdf:channel/itunes:subtitle | /atom10:feed/atom10:subtitle<br>/atom03:feed/atom03:tagline
-Link | /rss/channel/link<br>/rdf:RDF/rdf:channel/rdf:link | /atom10:feed/atom10:link[@rel=”alternate”]/@href<br>/atom10:feed/atom10:link[not(@rel)]/@href<br>/atom03:feed/atom03:link[@rel=”alternate”]/@href
-
+Title | /rss/channel/title<br>/rdf:RDF/rdf:channel/rdf:title<br>/rss/channel/dc:title<br>/rdf:RDF/rdf:channel/dc:title | /feed/title
+Description | /rss/channel/description<br>/rdf:RDF/rdf:channel/rdf:description<br>/rss/channel/itunes:subtitle<br>/rdf:RDF/rdf:channel/itunes:subtitle | /feed/subtitle<br>/feed/tagline
+Link | /rss/channel/link<br>/rdf:RDF/rdf:channel/rdf:link | /feed/link[@rel=”alternate”]/@href<br>/feed/link[not(@rel)]/@href
+FeedLink | /rss/channel/atom:link[@rel="self]/@href | /feed/link[@rel="self"]/@href
