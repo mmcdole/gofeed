@@ -292,6 +292,14 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 
 	if len(extensions) > 0 {
 		rss.Extensions = extensions
+
+		if itunes, ok := rss.Extensions["itunes"]; ok {
+			rss.ITunesExt = ext.NewITunesFeedExtension(itunes)
+		}
+
+		if dc, ok := rss.Extensions["dc"]; ok {
+			rss.DublinCoreExt = ext.NewDublinCoreExtension(dc)
+		}
 	}
 
 	return rss, nil
@@ -405,6 +413,14 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 
 	if len(extensions) > 0 {
 		item.Extensions = extensions
+
+		if itunes, ok := item.Extensions["itunes"]; ok {
+			item.ITunesExt = ext.NewITunesItemExtension(itunes)
+		}
+
+		if dc, ok := item.Extensions["dc"]; ok {
+			item.DublinCoreExt = ext.NewDublinCoreExtension(dc)
+		}
 	}
 
 	if err = p.Expect(xpp.EndTag, "item"); err != nil {

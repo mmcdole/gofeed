@@ -20,6 +20,27 @@ const (
 	FeedTypeRSS
 )
 
+func DetectFeedType(feed string) FeedType {
+	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
+
+	_, err := p.NextTag()
+	if err != nil {
+		return FeedTypeUnknown
+	}
+
+	name := strings.ToLower(p.Name)
+	switch name {
+	case "rdf":
+		return FeedTypeRSS
+	case "rss":
+		return FeedTypeRSS
+	case "feed":
+		return FeedTypeAtom
+	default:
+		return FeedTypeUnknown
+	}
+}
+
 type FeedParser struct {
 	AtomTrans AtomTranslator
 	RSSTrans  RSSTranslator
@@ -47,7 +68,7 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
 
 func (f *FeedParser) ParseFeed(feed string) (*Feed, error) {
 	fmt.Println(feed)
-	ft := f.DetectFeedType(feed)
+	ft := DetectFeedType(feed)
 	switch ft {
 	case FeedTypeAtom:
 		return f.parseFeedFromAtom(feed)
@@ -55,27 +76,6 @@ func (f *FeedParser) ParseFeed(feed string) (*Feed, error) {
 		return f.parseFeedFromRSS(feed)
 	}
 	return nil, errors.New("Failed to detect feed type")
-}
-
-func (f *FeedParser) DetectFeedType(feed string) FeedType {
-	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
-
-	_, err := p.NextTag()
-	if err != nil {
-		return FeedTypeUnknown
-	}
-
-	name := strings.ToLower(p.Name)
-	switch name {
-	case "rdf":
-		return FeedTypeRSS
-	case "rss":
-		return FeedTypeRSS
-	case "feed":
-		return FeedTypeAtom
-	default:
-		return FeedTypeUnknown
-	}
 }
 
 func (f *FeedParser) parseFeedFromAtom(feed string) (*Feed, error) {
