@@ -70,7 +70,12 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 }
 
 func (t *DefaultRSSTranslator) translateFeedTitle(rss *rss.Feed) (title string) {
-	return rss.Title
+	if rss.Title != "" {
+		title = rss.Title
+	} else if rss.DublinCoreExt != nil && rss.DublinCoreExt.Title != nil {
+		title = t.firstEntry(rss.DublinCoreExt.Title)
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedDescription(rss *rss.Feed) (desc string) {
@@ -80,6 +85,8 @@ func (t *DefaultRSSTranslator) translateFeedDescription(rss *rss.Feed) (desc str
 func (t *DefaultRSSTranslator) translateFeedLink(rss *rss.Feed) (link string) {
 	if rss.Link != "" {
 		link = rss.Link
+	} else if rss.ITunesExt != nil && rss.ITunesExt.Subtitle != "" {
+		link = rss.ITunesExt.Subtitle
 	}
 	return
 }
@@ -99,11 +106,25 @@ func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string
 }
 
 func (t *DefaultRSSTranslator) translateFeedUpdated(rss *rss.Feed) (updated string) {
-	return rss.LastBuildDate
+	if rss.LastBuildDate != "" {
+		updated = rss.LastBuildDate
+	} else if rss.DublinCoreExt != nil && rss.DublinCoreExt.Date != nil {
+		updated = t.firstEntry(rss.DublinCoreExt.Date)
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedUpdatedParsed(rss *rss.Feed) (updated *time.Time) {
-	return rss.LastBuildDateParsed
+	if rss.LastBuildDateParsed != nil {
+		updated = rss.LastBuildDateParsed
+	} else if rss.DublinCoreExt != nil && rss.DublinCoreExt.Date != nil {
+		dateText := t.firstEntry(rss.DublinCoreExt.Date)
+		date, err := shared.ParseDate(dateText)
+		if err == nil {
+			updated = &date
+		}
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedPublished(rss *rss.Feed) (published string) {
@@ -125,12 +146,34 @@ func (t *DefaultRSSTranslator) translateFeedAuthor(rss *rss.Feed) (author *Perso
 		author = &Person{}
 		author.Name = name
 		author.Email = address
+	} else if rss.DublinCoreExt != nil && rss.DublinCoreExt.Author != nil {
+		dcAuthor := t.firstEntry(rss.DublinCoreExt.Author)
+		name, address := shared.ParseNameAddress(dcAuthor)
+		author = &Person{}
+		author.Name = name
+		author.Email = address
+	} else if rss.DublinCoreExt != nil && rss.DublinCoreExt.Creator != nil {
+		dcCreator := t.firstEntry(rss.DublinCoreExt.Creator)
+		name, address := shared.ParseNameAddress(dcCreator)
+		author = &Person{}
+		author.Name = name
+		author.Email = address
+	} else if rss.ITunesExt != nil && rss.ITunesExt.Author != "" {
+		name, address := shared.ParseNameAddress(rss.ITunesExt.Author)
+		author = &Person{}
+		author.Name = name
+		author.Email = address
 	}
 	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedLanguage(rss *rss.Feed) (language string) {
-	return rss.Language
+	if rss.Language != "" {
+		language = rss.Language
+	} else if rss.DublinCoreExt != nil && rss.DublinCoreExt.Language != nil {
+		language = t.firstEntry(rss.DublinCoreExt.Language)
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedImage(rss *rss.Feed) (image *Image) {
@@ -138,12 +181,20 @@ func (t *DefaultRSSTranslator) translateFeedImage(rss *rss.Feed) (image *Image) 
 		image = &Image{}
 		image.Title = rss.Image.Title
 		image.URL = rss.Image.URL
+	} else if rss.ITunesExt != nil && rss.ITunesExt.Image != "" {
+		image = &Image{}
+		image.URL = rss.ITunesExt.Image
 	}
 	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedCopyright(rss *rss.Feed) (rights string) {
-	return rss.Copyright
+	if rss.Copyright != "" {
+		rights = rss.Copyright
+	} else if rss.DublinCoreExt != nil && rss.DublinCoreExt.Rights != nil {
+		rights = t.firstEntry(rss.DublinCoreExt.Rights)
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedGenerator(rss *rss.Feed) (generator string) {
@@ -151,12 +202,39 @@ func (t *DefaultRSSTranslator) translateFeedGenerator(rss *rss.Feed) (generator 
 }
 
 func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categories []string) {
+	cats := []string{}
 	if rss.Categories != nil {
-		categories = []string{}
 		for _, c := range rss.Categories {
-			categories = append(categories, c.Value)
+			cats = append(cats, c.Value)
 		}
 	}
+
+	if rss.ITunesExt != nil && rss.ITunesExt.Keywords != "" {
+		keywords := strings.Split(rss.ITunesExt.Keywords, ",")
+		for _, k := range keywords {
+			cats = append(cats, k)
+		}
+	}
+
+	if rss.ITunesExt != nil && rss.ITunesExt.Categories != nil {
+		for _, c := range rss.ITunesExt.Categories {
+			cats = append(cats, c.Text)
+			if c.Subcategory != nil {
+				cats = append(cats, c.Subcategory.Text)
+			}
+		}
+	}
+
+	if rss.DublinCoreExt != nil && rss.DublinCoreExt.Subject != nil {
+		for _, c := range rss.DublinCoreExt.Subject {
+			cats = append(cats, c)
+		}
+	}
+
+	if len(cats) > 0 {
+		categories = cats
+	}
+
 	return
 }
 
@@ -169,15 +247,43 @@ func (t *DefaultRSSTranslator) translateFeedItems(rss *rss.Feed) (items []*Item)
 }
 
 func (t *DefaultRSSTranslator) translateItemTitle(rssItem *rss.Item) (title string) {
-	return rssItem.Title
+	if rssItem.Title != "" {
+		title = rssItem.Title
+	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Title != nil {
+		title = t.firstEntry(rssItem.DublinCoreExt.Title)
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateItemDescription(rssItem *rss.Item) (desc string) {
-	return rssItem.Description
+	if rssItem.Description != "" {
+		desc = rssItem.Description
+	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Description != nil {
+		desc = t.firstEntry(rssItem.DublinCoreExt.Description)
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateItemLink(rssItem *rss.Item) (link string) {
 	return rssItem.Link
+}
+
+func (t *DefaultRSSTranslator) translateItemUpdated(rssItem *rss.Item) (updated string) {
+	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
+		updated = t.firstEntry(rssItem.DublinCoreExt.Date)
+	}
+	return updated
+}
+
+func (t *DefaultRSSTranslator) translateItemUpdatedParsed(rssItem *rss.Item) (updated *time.Time) {
+	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
+		updatedText := t.firstEntry(rssItem.DublinCoreExt.Date)
+		updatedDate, err := shared.ParseDate(updatedText)
+		if err == nil {
+			updated = &updatedDate
+		}
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateItemPublished(rssItem *rss.Item) (updated string) {
@@ -194,8 +300,25 @@ func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *P
 		author = &Person{}
 		author.Name = name
 		author.Email = address
+	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Author != nil {
+		dcAuthor := t.firstEntry(rssItem.DublinCoreExt.Author)
+		name, address := shared.ParseNameAddress(dcAuthor)
+		author = &Person{}
+		author.Name = name
+		author.Email = address
+	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Creator != nil {
+		dcCreator := t.firstEntry(rssItem.DublinCoreExt.Creator)
+		name, address := shared.ParseNameAddress(dcCreator)
+		author = &Person{}
+		author.Name = name
+		author.Email = address
+	} else if rssItem.ITunesExt != nil && rssItem.ITunesExt.Author != "" {
+		name, address := shared.ParseNameAddress(rssItem.ITunesExt.Author)
+		author = &Person{}
+		author.Name = name
+		author.Email = address
 	}
-	return // TODO: dc and itunes
+	return
 }
 
 func (t *DefaultRSSTranslator) translateItemGuid(rssItem *rss.Item) (guid string) {
@@ -206,16 +329,38 @@ func (t *DefaultRSSTranslator) translateItemGuid(rssItem *rss.Item) (guid string
 }
 
 func (t *DefaultRSSTranslator) translateItemImage(rssItem *rss.Item) (image *Image) {
-	return // TODO: itunes
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Image != "" {
+		image = &Image{}
+		image.URL = rssItem.ITunesExt.Image
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categories []string) {
+	cats := []string{}
 	if rssItem.Categories != nil {
-		categories = []string{}
 		for _, c := range rssItem.Categories {
-			categories = append(categories, c.Value)
+			cats = append(cats, c.Value)
 		}
 	}
+
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Keywords != "" {
+		keywords := strings.Split(rssItem.ITunesExt.Keywords, ",")
+		for _, k := range keywords {
+			cats = append(cats, k)
+		}
+	}
+
+	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Subject != nil {
+		for _, c := range rssItem.DublinCoreExt.Subject {
+			cats = append(cats, c)
+		}
+	}
+
+	if len(cats) > 0 {
+		categories = cats
+	}
+
 	return
 }
 
@@ -243,6 +388,18 @@ func (t *DefaultRSSTranslator) extensionsForKeys(keys []string, extensions ext.E
 		}
 	}
 	return
+}
+
+func (t *DefaultRSSTranslator) firstEntry(entries []string) (value string) {
+	if entries == nil {
+		return
+	}
+
+	if len(entries) == 0 {
+		return
+	}
+
+	return entries[0]
 }
 
 // DefaultAtomTranslator converts an atom.Feed struct

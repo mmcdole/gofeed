@@ -3,6 +3,7 @@ package ext
 type DublinCoreExtension struct {
 	Title       []string `json:"title,omitempty"`
 	Creator     []string `json:"creator,omitempty"`
+	Author      []string `json:"author,omitempty"`
 	Subject     []string `json:"subject,omitempty"`
 	Description []string `json:"description,omitempty"`
 	Publisher   []string `json:"publisher,omitempty"`
@@ -22,6 +23,7 @@ func NewDublinCoreExtension(extensions map[string][]Extension) *DublinCoreExtens
 	dc := &DublinCoreExtension{}
 	dc.Title = parseTextArrayExtension("title", extensions)
 	dc.Creator = parseTextArrayExtension("creator", extensions)
+	dc.Author = parseTextArrayExtension("author", extensions)
 	dc.Subject = parseTextArrayExtension("subject", extensions)
 	dc.Description = parseTextArrayExtension("description", extensions)
 	dc.Publisher = parseTextArrayExtension("publisher", extensions)

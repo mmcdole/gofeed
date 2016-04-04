@@ -14,7 +14,7 @@ type ITunesFeedExtension struct {
 	NewFeedURL string            `json:"newFeedUrl,omitempty"`
 }
 
-type ITunesEntryExtension struct {
+type ITunesItemExtension struct {
 	Author            string `json:"author,omitempty"`
 	Block             string `json:"block,omitempty"`
 	Duration          string `json:"duration,omitempty"`
@@ -57,8 +57,8 @@ func NewITunesFeedExtension(extensions map[string][]Extension) *ITunesFeedExtens
 
 // Parse an iTunes Entry Extension from the "itunes" entry in the
 // extension map.
-func NewITunesEntryExtension(extensions map[string][]Extension) *ITunesEntryExtension {
-	entry := &ITunesEntryExtension{}
+func NewITunesItemExtension(extensions map[string][]Extension) *ITunesItemExtension {
+	entry := &ITunesItemExtension{}
 	entry.Author = parseTextExtension("author", extensions)
 	entry.Block = parseTextExtension("block", extensions)
 	entry.Duration = parseTextExtension("duration", extensions)
