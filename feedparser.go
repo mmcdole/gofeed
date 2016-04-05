@@ -77,7 +77,10 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	return f.ParseFeed(string(body))
+	if err != nil {
+		return nil, err
+	}
+	return f.ParseFeed(string(body)), nil
 }
 
 // ParseFeed takes a feed XML string and parses it into the
