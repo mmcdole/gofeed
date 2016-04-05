@@ -10,19 +10,19 @@ import (
 	"github.com/mmcdole/gofeed/rss"
 )
 
-// Translator converts an atom.Feed struct
+// AtomTranslator converts an atom.Feed struct
 // into the generic Feed struct
 type AtomTranslator interface {
 	Translate(atom *atom.Feed) *Feed
 }
 
-// Translator converts an rss.Feed struct
+// RSSTranslator converts an rss.Feed struct
 // into the generic Feed struct
 type RSSTranslator interface {
 	Translate(rss *rss.Feed) *Feed
 }
 
-// DefaulRSSTranslator converts an rss.Feed struct
+// DefaultRSSTranslator converts an rss.Feed struct
 // into the generic Feed struct.
 //
 // This default implementation defines a set of
@@ -30,6 +30,8 @@ type RSSTranslator interface {
 // for each of the fields in Feed.
 type DefaultRSSTranslator struct{}
 
+// Translate converts an RSS feed into the universal
+// feed type.
 func (t *DefaultRSSTranslator) Translate(rss *rss.Feed) *Feed {
 	feed := &Feed{}
 	feed.Title = t.translateFeedTitle(rss)
@@ -61,7 +63,7 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.Published = t.translateItemPublished(rssItem)
 	item.PublishedParsed = t.translateItemPublishedParsed(rssItem)
 	item.Author = t.translateItemAuthor(rssItem)
-	item.Guid = t.translateItemGuid(rssItem)
+	item.GUID = t.translateItemGUID(rssItem)
 	item.Image = t.translateItemImage(rssItem)
 	item.Categories = t.translateItemCategories(rssItem)
 	item.Enclosures = t.translateItemEnclosures(rssItem)
@@ -321,9 +323,9 @@ func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *P
 	return
 }
 
-func (t *DefaultRSSTranslator) translateItemGuid(rssItem *rss.Item) (guid string) {
-	if rssItem.Guid != nil {
-		guid = rssItem.Guid.Value
+func (t *DefaultRSSTranslator) translateItemGUID(rssItem *rss.Item) (guid string) {
+	if rssItem.GUID != nil {
+		guid = rssItem.GUID.Value
 	}
 	return
 }
@@ -410,6 +412,8 @@ func (t *DefaultRSSTranslator) firstEntry(entries []string) (value string) {
 // for each of the fields in Feed.
 type DefaultAtomTranslator struct{}
 
+// Translate converts an Atom feed into the universal
+// feed type.
 func (t *DefaultAtomTranslator) Translate(atom *atom.Feed) *Feed {
 	feed := &Feed{}
 	feed.Title = t.translateFeedTitle(atom)
@@ -442,7 +446,7 @@ func (t *DefaultAtomTranslator) translateFeedItem(entry *atom.Entry) (item *Item
 	item.Published = t.translateItemPublished(entry)
 	item.PublishedParsed = t.translateItemPublishedParsed(entry)
 	item.Author = t.translateItemAuthor(entry)
-	item.Guid = t.translateItemGuid(entry)
+	item.GUID = t.translateItemGUID(entry)
 	item.Image = t.translateItemImage(entry)
 	item.Categories = t.translateItemCategories(entry)
 	item.Enclosures = t.translateItemEnclosures(entry)
@@ -593,7 +597,7 @@ func (t *DefaultAtomTranslator) translateItemAuthor(entry *atom.Entry) (author *
 	return
 }
 
-func (t *DefaultAtomTranslator) translateItemGuid(entry *atom.Entry) (guid string) {
+func (t *DefaultAtomTranslator) translateItemGUID(entry *atom.Entry) (guid string) {
 	return entry.ID
 }
 

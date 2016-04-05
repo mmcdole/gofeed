@@ -9,8 +9,10 @@ import (
 	"github.com/mmcdole/goxpp"
 )
 
+// Parser is an RSS Parser
 type Parser struct{}
 
+// ParseFeed parses a feed XML into an RSS Feed
 func (rp *Parser) ParseFeed(feed string) (*Feed, error) {
 	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
 
@@ -389,11 +391,11 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				}
 				item.Enclosure = result
 			} else if name == "guid" {
-				result, err := rp.parseGuid(p)
+				result, err := rp.parseGUID(p)
 				if err != nil {
 					return nil, err
 				}
-				item.Guid = result
+				item.GUID = result
 			} else if name == "category" {
 				result, err := rp.parseCategory(p)
 				if err != nil {
@@ -538,12 +540,12 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 	return image, nil
 }
 
-func (rp *Parser) parseGuid(p *xpp.XMLPullParser) (guid *Guid, err error) {
+func (rp *Parser) parseGUID(p *xpp.XMLPullParser) (guid *GUID, err error) {
 	if err = p.Expect(xpp.StartTag, "guid"); err != nil {
 		return nil, err
 	}
 
-	guid = &Guid{}
+	guid = &GUID{}
 	guid.IsPermalink = p.Attribute("isPermalink")
 
 	result, err := shared.ParseText(p)

@@ -6,6 +6,7 @@ import (
 	"github.com/mmcdole/gofeed/extensions"
 )
 
+// Feed is an RSS Feed
 type Feed struct {
 	Title               string                   `json:"title,omitempty"`
 	Link                string                   `json:"link,omitempty"`
@@ -35,6 +36,7 @@ type Feed struct {
 	Version             string                   `json:"version"`
 }
 
+// Item is an RSS Item
 type Item struct {
 	Title         string                   `json:"title,omitempty"`
 	Link          string                   `json:"link,omitempty"`
@@ -43,7 +45,7 @@ type Item struct {
 	Categories    []*Category              `json:"categories,omitempty"`
 	Comments      string                   `json:"comments,omitempty"`
 	Enclosure     *Enclosure               `json:"enclosure,omitempty"`
-	Guid          *Guid                    `json:"guid,omitempty"`
+	GUID          *GUID                    `json:"guid,omitempty"`
 	PubDate       string                   `json:"pubDate,omitempty"`
 	PubDateParsed *time.Time               `json:"pubDateParsed,omitempty"`
 	Source        *Source                  `json:"source,omitempty"`
@@ -52,6 +54,7 @@ type Item struct {
 	Extensions    ext.Extensions           `json:"extensions,omitempty"`
 }
 
+// Image is an image that represents the feed
 type Image struct {
 	URL         string `json:"url,omitempty"`
 	Link        string `json:"link,omitempty"`
@@ -61,27 +64,35 @@ type Image struct {
 	Description string `json:"description,omitempty"`
 }
 
+// Enclosure is a media object that is attached to
+// the item
 type Enclosure struct {
 	URL    string `json:"url,omitempty"`
 	Length string `json:"length,omitempty"`
 	Type   string `json:"type,omitempty"`
 }
 
-type Guid struct {
+// GUID is a unique identifier for an item
+type GUID struct {
 	Value       string `json:"value,omitempty"`
 	IsPermalink string `json:"isPermalink,omitempty"`
 }
 
+// Source contains feed information for another
+// feed if a given item came from that feed
 type Source struct {
 	Title string `json:"title,omitempty"`
 	URL   string `json:"url,omitempty"`
 }
 
+// Category is category metadata for Feeds and Entries
 type Category struct {
 	Domain string `json:"domain,omitempty"`
 	Value  string `json:"value,omitempty"`
 }
 
+// TextInput specifies a text input box that
+// can be displayed with the channel
 type TextInput struct {
 	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
@@ -89,6 +100,10 @@ type TextInput struct {
 	Link        string `json:"link,omitempty"`
 }
 
+// Cloud allows processes to register with a
+// cloud to be notified of updates to the channel,
+// implementing a lightweight publish-subscribe protocol
+// for RSS feeds
 type Cloud struct {
 	Domain            string `json:"domain,omitempty"`
 	Port              string `json:"port,omitempty"`
