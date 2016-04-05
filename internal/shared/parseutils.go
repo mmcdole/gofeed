@@ -14,6 +14,10 @@ var (
 	emailOnlyRgx = regexp.MustCompile(`^([^@()]+@[^@()]+)$`)
 )
 
+// ParseText is a helper function for parsing the text
+// from the current element of the XMLPullParser.
+// This function can handle parsing naked XML text from
+// an element.
 func ParseText(p *xpp.XMLPullParser) (string, error) {
 	var text struct {
 		Type     string `xml:"type,attr"`
@@ -38,6 +42,8 @@ func ParseText(p *xpp.XMLPullParser) (string, error) {
 	return result, nil
 }
 
+// DecodeEntities decodes escaped XML entities
+// in a string and returns the unescaped string
 func DecodeEntities(str string) string {
 	str = strings.Replace(str, "&lt;", "<", -1)
 	str = strings.Replace(str, "&gt;", ">", -1)
@@ -47,6 +53,9 @@ func DecodeEntities(str string) string {
 	return str
 }
 
+// ParseNameAddress parses name/email strings commonly
+// found in RSS feeds of the format "Example Name (example@site.com)"
+// and other variations of this format.
 func ParseNameAddress(nameAddressText string) (name string, address string) {
 	if nameAddressText == "" {
 		return

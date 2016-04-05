@@ -77,6 +77,9 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 	return f.ParseFeed(string(body))
 }
 
