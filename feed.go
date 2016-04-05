@@ -31,7 +31,7 @@ type Feed struct {
 	FeedVersion     string            `json:"feedVersion"`
 }
 
-// Item is the univeral Item type that atom.Entry
+// Item is the universal Item type that atom.Entry
 // and rss.Item gets translated to.  It represents
 // a single entry in a given feed.
 type Item struct {
