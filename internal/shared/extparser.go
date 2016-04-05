@@ -7,7 +7,7 @@ import (
 	"github.com/mmcdole/goxpp"
 )
 
-// Isext.Extension returns wether or not the current
+// IsExtension returns wether or not the current
 // XML element is an extension element (if it has a
 // non empty prefix)
 func IsExtension(p *xpp.XMLPullParser) bool {
@@ -19,6 +19,9 @@ func IsExtension(p *xpp.XMLPullParser) bool {
 	return p.Space != ""
 }
 
+// ParseExtension parses the current element of the
+// XMLPullParser as an extension element and updates
+// the extension map
 func ParseExtension(fe ext.Extensions, p *xpp.XMLPullParser) (ext.Extensions, error) {
 	prefix := prefixForNamespace(p.Space, p)
 
