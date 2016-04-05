@@ -12,14 +12,22 @@ import (
 	"github.com/mmcdole/goxpp"
 )
 
+// FeedType represents one of the possible feed
+// types that we can detect.
 type FeedType int
 
 const (
+	// FeedTypeUnknown represents a feed that could not have its
+	// type determiend.
 	FeedTypeUnknown FeedType = iota
+	// FeedTypeAtom repesents an Atom feed
 	FeedTypeAtom
+	// FeedTypeRSS represents an RSS feed
 	FeedTypeRSS
 )
 
+// DetectFeedType takes a feed XML string and attempts
+// to detect its feed type.
 func DetectFeedType(feed string) FeedType {
 	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
 
@@ -41,6 +49,9 @@ func DetectFeedType(feed string) FeedType {
 	}
 }
 
+// FeedParser is a universal feed parser that detects
+// a given feed type, parsers it, and translates it
+// to the universal feed type.
 type FeedParser struct {
 	AtomTrans AtomTranslator
 	RSSTrans  RSSTranslator
@@ -48,6 +59,7 @@ type FeedParser struct {
 	ap        *atom.Parser
 }
 
+// NewFeedParser creates a FeedParser.
 func NewFeedParser() *FeedParser {
 	fp := FeedParser{
 		rp: &rss.Parser{},
@@ -56,6 +68,8 @@ func NewFeedParser() *FeedParser {
 	return &fp
 }
 
+// ParseFeedURL fetches the contents of a given feed url and
+// parses the feed into the universal feed type.
 func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
 	resp, err := http.Get(feedURL)
 	if err != nil {
@@ -66,6 +80,8 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
 	return f.ParseFeed(string(body))
 }
 
+// ParseFeed takes a feed XML string and parses it into the
+// universal feed type.
 func (f *FeedParser) ParseFeed(feed string) (*Feed, error) {
 	fmt.Println(feed)
 	ft := DetectFeedType(feed)

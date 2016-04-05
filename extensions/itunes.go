@@ -1,5 +1,7 @@
 package ext
 
+// ITunesFeedExtension is a set of extension
+// fields for RSS feeds.
 type ITunesFeedExtension struct {
 	Author     string            `json:"author,omitempty"`
 	Block      string            `json:"block,omitempty"`
@@ -14,6 +16,8 @@ type ITunesFeedExtension struct {
 	NewFeedURL string            `json:"newFeedUrl,omitempty"`
 }
 
+// ITunesItemExtension is a set of extension
+// fields for RSS items.
 type ITunesItemExtension struct {
 	Author            string `json:"author,omitempty"`
 	Block             string `json:"block,omitempty"`
@@ -27,18 +31,20 @@ type ITunesItemExtension struct {
 	Order             string `json:"order,omitempty"`
 }
 
+// ITunesCategory is a category element for itunes feeds.
 type ITunesCategory struct {
 	Text        string          `json:"text,omitempty"`
 	Subcategory *ITunesCategory `json:"subcategory,omitempty"`
 }
 
+// ITunesOwner is the owner of a particular itunes feed.
 type ITunesOwner struct {
 	Email string `json:"email,omitempty"`
 	Name  string `json:"name,omitempty"`
 }
 
-// Parse an iTunes Feed Extension from the "itunes" entry in the
-// extension map.
+// NewITunesFeedExtension creates an ITunesFeedExtension given an
+// extension map for the "itunes" key.
 func NewITunesFeedExtension(extensions map[string][]Extension) *ITunesFeedExtension {
 	feed := &ITunesFeedExtension{}
 	feed.Author = parseTextExtension("author", extensions)
@@ -55,8 +61,8 @@ func NewITunesFeedExtension(extensions map[string][]Extension) *ITunesFeedExtens
 	return feed
 }
 
-// Parse an iTunes Entry Extension from the "itunes" entry in the
-// extension map.
+// NewITunesItemExtension creates an ITunesItemExtension given an
+// extension map for the "itunes" key.
 func NewITunesItemExtension(extensions map[string][]Extension) *ITunesItemExtension {
 	entry := &ITunesItemExtension{}
 	entry.Author = parseTextExtension("author", extensions)

@@ -6,6 +6,9 @@ import (
 	"github.com/mmcdole/gofeed/extensions"
 )
 
+// Feed is the universal Feed type that atom.Feed
+// and rss.Feed gets translated to. It represents
+// a web feed.
 type Feed struct {
 	Title           string            `json:"title,omitempty"`
 	Description     string            `json:"description,omitempty"`
@@ -28,6 +31,9 @@ type Feed struct {
 	FeedVersion     string            `json:"feedVersion"`
 }
 
+// Item is the univeral Item type that atom.Entry
+// and rss.Item gets translated to.  It represents
+// a single entry in a given feed.
 type Item struct {
 	Title           string            `json:"title,omitempty"`
 	Description     string            `json:"description,omitempty"`
@@ -38,7 +44,7 @@ type Item struct {
 	Published       string            `json:"published,omitempty"`
 	PublishedParsed *time.Time        `json:"publishedParsed,omitempty"`
 	Author          *Person           `json:"author,omitempty"`
-	Guid            string            `json:"guid,omitempty"`
+	GUID            string            `json:"guid,omitempty"`
 	Image           *Image            `json:"image,omitempty"`
 	Categories      []string          `json:"categories,omitempty"`
 	Enclosures      []*Enclosure      `json:"enclosures,omitempty"`
@@ -46,16 +52,21 @@ type Item struct {
 	Custom          map[string]string `json:"custom,omitempty"`
 }
 
+// Person is an individual specified in a feed
+// (e.g. an author)
 type Person struct {
 	Name  string `json:"name,omitempty"`
 	Email string `json:"email,omitempty"`
 }
 
+// Image is an image that is the artwork for a given
+// feed or item.
 type Image struct {
 	URL   string `json:"url,omitempty"`
 	Title string `json:"title,omitempty"`
 }
 
+// Enclosure is a file associated with a given Item.
 type Enclosure struct {
 	URL    string `json:"url,omitempty"`
 	Length string `json:"length,omitempty"`

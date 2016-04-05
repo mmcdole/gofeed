@@ -1,5 +1,7 @@
 package ext
 
+// DublinCoreExtension represents a feed extension
+// for the Dublin Core specification.
 type DublinCoreExtension struct {
 	Title       []string `json:"title,omitempty"`
 	Creator     []string `json:"creator,omitempty"`
@@ -19,6 +21,8 @@ type DublinCoreExtension struct {
 	Rights      []string `json:"rights,omitempty"`
 }
 
+// NewDublinCoreExtension creates a new DublinCoreExtension
+// given the generic extension map for the "dc" prefix.
 func NewDublinCoreExtension(extensions map[string][]Extension) *DublinCoreExtension {
 	dc := &DublinCoreExtension{}
 	dc.Title = parseTextArrayExtension("title", extensions)

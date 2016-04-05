@@ -10,8 +10,10 @@ import (
 	"github.com/mmcdole/goxpp"
 )
 
+// Parser is an Atom Parser
 type Parser struct{}
 
+// ParseFeed parses a feed XML into an Atom feed
 func (ap *Parser) ParseFeed(feed string) (*Feed, error) {
 	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
 
