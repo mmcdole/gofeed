@@ -38,3 +38,12 @@ func TestDetectFeedType(t *testing.T) {
 		}
 	}
 }
+
+func ExampleDetectFeedType() {
+	feedData := `<rss version="2.0">
+<channel>
+<title>Sample Feed</title>
+</channel>
+</rss>`
+	feedType := gofeed.DetectFeedType(feedata)
+}
