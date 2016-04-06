@@ -46,5 +46,30 @@ func ExampleDetectFeedType() {
 </channel>
 </rss>`
 	feedType := gofeed.DetectFeedType(feedData)
-	// Output: gofeed.FeedTypeRSS
+	if feedType == gofeed.FeedTypeRSS {
+		fmt.Println("RSS")
+	}
+}
+
+func ExampleFeedParser_ParseFeedURL() {
+	fp := gofeed.NewFeedParser()
+	feed, err := fp.ParseFeedURL("http://feeds.twit.tv/twit.xml")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(feed.Title)
+}
+
+func ExampleFeedParser_ParseFeed() {
+	feedData := `<rss version="2.0">
+<channel>
+<title>Sample Feed</title>
+</channel>
+</rss>`
+	fp := gofeed.NewFeedParser()
+	feed, err := fp.ParseFeed(feedData)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(feed.Title)
 }
