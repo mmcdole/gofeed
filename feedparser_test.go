@@ -45,5 +45,6 @@ func ExampleDetectFeedType() {
 <title>Sample Feed</title>
 </channel>
 </rss>`
-	feedType := gofeed.DetectFeedType(feedata)
+	feedType := gofeed.DetectFeedType(feedData)
+	// Output: gofeed.FeedTypeRSS
 }
