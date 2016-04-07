@@ -84,6 +84,44 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 	}
 }
 
+func TestFeedParser_ParseFeedString(t *testing.T) {
+	var feedTests = []struct {
+		file      string
+		feedType  string
+		feedTitle string
+		hasError  bool
+	}{
+		{"atom03_feed.xml", "atom", "Atom Title", false},
+		{"atom10_feed.xml", "atom", "Atom Title", false},
+		{"rss_feed.xml", "rss", "RSS Title", false},
+		{"rdf_feed.xml", "rss", "RDF Title", false},
+		{"unknown_feed.xml", "", "", true},
+		{"empty_feed.xml", "", "", true},
+	}
+
+	for _, test := range feedTests {
+		fmt.Printf("Testing %s... ", test.file)
+
+		// Get feed content
+		path := fmt.Sprintf("testdata/parser/feed/%s", test.file)
+		f, _ := ioutil.ReadFile(path)
+
+		// Get actual value
+		fp := gofeed.NewFeedParser()
+		feed, err := fp.ParseFeedString(string(f))
+
+		if test.hasError {
+			assert.NotNil(t, err)
+			assert.Nil(t, feed)
+		} else {
+			assert.NotNil(t, feed)
+			assert.Nil(t, err)
+			assert.Equal(t, feed.FeedType, test.feedType)
+			assert.Equal(t, feed.Title, test.feedTitle)
+		}
+	}
+}
+
 func TestFeedParser_ParseFeedURL_Success(t *testing.T) {
 	var feedTests = []struct {
 		file      string

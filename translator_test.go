@@ -50,6 +50,13 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 	}
 }
 
+func TestDefaultRSSTranslator_Translate_WrongType(t *testing.T) {
+	translator := &gofeed.DefaultRSSTranslator{}
+	af, err := translator.Translate("wrong type")
+	assert.Nil(t, af)
+	assert.NotNil(t, err)
+}
+
 func TestDefaultAtomTranslator_Translate(t *testing.T) {
 	files, _ := filepath.Glob("testdata/translator/atom/*.xml")
 	for _, f := range files {
@@ -83,4 +90,11 @@ func TestDefaultAtomTranslator_Translate(t *testing.T) {
 			fmt.Printf("Failed\n")
 		}
 	}
+}
+
+func TestDefaultAtomTranslator_Translate_WrongType(t *testing.T) {
+	translator := &gofeed.DefaultAtomTranslator{}
+	af, err := translator.Translate("wrong type")
+	assert.Nil(t, af)
+	assert.NotNil(t, err)
 }
