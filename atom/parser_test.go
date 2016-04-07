@@ -1,6 +1,7 @@
 package atom_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +12,8 @@ import (
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/stretchr/testify/assert"
 )
+
+// Tests
 
 func TestAtomParser_ParseFeed(t *testing.T) {
 	files, _ := filepath.Glob("../testdata/parser/atom/*.xml")
@@ -26,7 +29,7 @@ func TestAtomParser_ParseFeed(t *testing.T) {
 
 		// Parse actual feed
 		fp := &atom.Parser{}
-		actual, _ := fp.ParseFeed(string(f))
+		actual, _ := fp.ParseFeed(bytes.NewReader(f))
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/atom/%s.json", name)
@@ -43,3 +46,5 @@ func TestAtomParser_ParseFeed(t *testing.T) {
 		}
 	}
 }
+
+// TODO: Examples

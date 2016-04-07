@@ -1,12 +1,14 @@
 package gofeed_test
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/mmcdole/gofeed"
@@ -34,7 +36,7 @@ func TestDetectFeedType(t *testing.T) {
 		f, _ := ioutil.ReadFile(path)
 
 		// Get actual value
-		actual := gofeed.DetectFeedType(string(f))
+		actual := gofeed.DetectFeedType(bytes.NewReader(f))
 
 		if assert.Equal(t, actual, test.expected, "Feed file %s did not match expected type %d", test.file, test.expected) {
 			fmt.Printf("OK\n")
@@ -68,7 +70,45 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 
 		// Get actual value
 		fp := gofeed.NewFeedParser()
-		feed, err := fp.ParseFeed(string(f))
+		feed, err := fp.ParseFeed(bytes.NewReader(f))
+
+		if test.hasError {
+			assert.NotNil(t, err)
+			assert.Nil(t, feed)
+		} else {
+			assert.NotNil(t, feed)
+			assert.Nil(t, err)
+			assert.Equal(t, feed.FeedType, test.feedType)
+			assert.Equal(t, feed.Title, test.feedTitle)
+		}
+	}
+}
+
+func TestFeedParser_ParseFeedString(t *testing.T) {
+	var feedTests = []struct {
+		file      string
+		feedType  string
+		feedTitle string
+		hasError  bool
+	}{
+		{"atom03_feed.xml", "atom", "Atom Title", false},
+		{"atom10_feed.xml", "atom", "Atom Title", false},
+		{"rss_feed.xml", "rss", "RSS Title", false},
+		{"rdf_feed.xml", "rss", "RDF Title", false},
+		{"unknown_feed.xml", "", "", true},
+		{"empty_feed.xml", "", "", true},
+	}
+
+	for _, test := range feedTests {
+		fmt.Printf("Testing %s... ", test.file)
+
+		// Get feed content
+		path := fmt.Sprintf("testdata/parser/feed/%s", test.file)
+		f, _ := ioutil.ReadFile(path)
+
+		// Get actual value
+		fp := gofeed.NewFeedParser()
+		feed, err := fp.ParseFeedString(string(f))
 
 		if test.hasError {
 			assert.NotNil(t, err)
@@ -131,40 +171,7 @@ func TestFeedParser_ParseFeedURL_Failure(t *testing.T) {
 	assert.Nil(t, feed)
 }
 
-func ExampleDetectFeedType() {
-	feedData := `<rss version="2.0">
-<channel>
-<title>Sample Feed</title>
-</channel>
-</rss>`
-	feedType := gofeed.DetectFeedType(feedData)
-	if feedType == gofeed.FeedTypeRSS {
-		fmt.Println("Wow! This is an RSS feed!")
-	}
-}
-
-func ExampleFeedParser_ParseFeedURL() {
-	fp := gofeed.NewFeedParser()
-	feed, err := fp.ParseFeedURL("http://feeds.twit.tv/twit.xml")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(feed.Title)
-}
-
-func ExampleFeedParser_ParseFeed() {
-	feedData := `<rss version="2.0">
-<channel>
-<title>Sample Feed</title>
-</channel>
-</rss>`
-	fp := gofeed.NewFeedParser()
-	feed, err := fp.ParseFeed(feedData)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(feed.Title)
-}
+// Test Helpers
 
 func mockServerResponse(code int, body string) (*httptest.Server, *http.Client) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -181,4 +188,55 @@ func mockServerResponse(code int, body string) (*httptest.Server, *http.Client) 
 
 	client := &http.Client{Transport: transport}
 	return server, client
+}
+
+// Examples
+
+func ExampleDetectFeedType() {
+	feedData := `<rss version="2.0">
+<channel>
+<title>Sample Feed</title>
+</channel>
+</rss>`
+	feedType := gofeed.DetectFeedType(strings.NewReader(feedData))
+	if feedType == gofeed.FeedTypeRSS {
+		fmt.Println("Wow! This is an RSS feed!")
+	}
+}
+
+func ExampleFeedParser_ParseFeed() {
+	feedData := `<rss version="2.0">
+<channel>
+<title>Sample Feed</title>
+</channel>
+</rss>`
+	fp := gofeed.NewFeedParser()
+	feed, err := fp.ParseFeed(strings.NewReader(feedData))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(feed.Title)
+}
+
+func ExampleFeedParser_ParseFeedURL() {
+	fp := gofeed.NewFeedParser()
+	feed, err := fp.ParseFeedURL("http://feeds.twit.tv/twit.xml")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(feed.Title)
+}
+
+func ExampleFeedParser_ParseFeedString() {
+	feedData := `<rss version="2.0">
+<channel>
+<title>Sample Feed</title>
+</channel>
+</rss>`
+	fp := gofeed.NewFeedParser()
+	feed, err := fp.ParseFeedString(feedData)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(feed.Title)
 }

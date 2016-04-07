@@ -2,6 +2,7 @@ package rss
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/mmcdole/gofeed/extensions"
@@ -9,12 +10,12 @@ import (
 	"github.com/mmcdole/goxpp"
 )
 
-// Parser is an RSS Parser
+// Parser is a RSS Parser
 type Parser struct{}
 
-// ParseFeed parses a feed XML into an RSS Feed
-func (rp *Parser) ParseFeed(feed string) (*Feed, error) {
-	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
+// ParseFeed parses an xml feed into an rss.Feed
+func (rp *Parser) ParseFeed(feed io.Reader) (*Feed, error) {
+	p := xpp.NewXMLPullParser(feed, false)
 
 	_, err := p.NextTag()
 	if err != nil {

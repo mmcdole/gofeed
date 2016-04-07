@@ -1,6 +1,7 @@
 package rss_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -26,7 +27,7 @@ func TestRSSParser_ParseFeed(t *testing.T) {
 
 		// Parse actual feed
 		fp := &rss.Parser{}
-		actual, _ := fp.ParseFeed(string(f))
+		actual, _ := fp.ParseFeed(bytes.NewReader(f))
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/rss/%s.json", name)
@@ -43,3 +44,5 @@ func TestRSSParser_ParseFeed(t *testing.T) {
 		}
 	}
 }
+
+// TODO: Examples
