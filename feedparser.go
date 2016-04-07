@@ -55,6 +55,7 @@ func DetectFeedType(feed string) FeedType {
 type FeedParser struct {
 	AtomTrans AtomTranslator
 	RSSTrans  RSSTranslator
+	Client    *http.Client
 	rp        *rss.Parser
 	ap        *atom.Parser
 }
@@ -71,7 +72,8 @@ func NewFeedParser() *FeedParser {
 // ParseFeedURL fetches the contents of a given feed url and
 // parses the feed into the universal feed type.
 func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
-	resp, err := http.Get(feedURL)
+	client := f.httpClient()
+	resp, err := client.Get(feedURL)
 	if err != nil {
 		return nil, err
 	}
@@ -130,4 +132,12 @@ func (f *FeedParser) rssTrans() RSSTranslator {
 	}
 	f.RSSTrans = &DefaultRSSTranslator{}
 	return f.RSSTrans
+}
+
+func (f *FeedParser) httpClient() *http.Client {
+	if f.Client != nil {
+		return f.Client
+	}
+	f.Client = &http.Client{}
+	return f.Client
 }
