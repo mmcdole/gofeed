@@ -23,6 +23,7 @@ func TestDetectFeedType(t *testing.T) {
 		{"rss_feed.xml", gofeed.FeedTypeRSS},
 		{"rdf_feed.xml", gofeed.FeedTypeRSS},
 		{"unknown_feed.xml", gofeed.FeedTypeUnknown},
+		{"empty_feed.xml", gofeed.FeedTypeUnknown},
 	}
 
 	for _, test := range feedTypeTests {
@@ -55,6 +56,7 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 		{"rss_feed.xml", "rss", "RSS Title", false},
 		{"rdf_feed.xml", "rss", "RDF Title", false},
 		{"unknown_feed.xml", "", "", true},
+		{"empty_feed.xml", "", "", true},
 	}
 
 	for _, test := range feedTests {
@@ -80,7 +82,7 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 	}
 }
 
-func TestFeedParser_ParseFeedURL(t *testing.T) {
+func TestFeedParser_ParseFeedURL_Success(t *testing.T) {
 	var feedTests = []struct {
 		file      string
 		feedType  string
@@ -117,6 +119,16 @@ func TestFeedParser_ParseFeedURL(t *testing.T) {
 			assert.Equal(t, feed.Title, test.feedTitle)
 		}
 	}
+}
+
+func TestFeedParser_ParseFeedURL_Failure(t *testing.T) {
+	server, client := mockServerResponse(404, "")
+	fp := gofeed.NewFeedParser()
+	fp.Client = client
+	feed, err := fp.ParseFeedURL(server.URL)
+
+	assert.NotNil(t, err)
+	assert.Nil(t, feed)
 }
 
 func ExampleDetectFeedType() {
