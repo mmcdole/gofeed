@@ -33,6 +33,7 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	atom := &Feed{}
 	atom.Entries = []*Entry{}
 	atom.Version = ap.parseVersion(p)
+	atom.Language = ap.parseLanguage(p)
 
 	contributors := []*Person{}
 	authors := []*Person{}
@@ -678,6 +679,10 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	}
 
 	return result, nil
+}
+
+func (ap *Parser) parseLanguage(p *xpp.XMLPullParser) string {
+	return p.Attribute("lang")
 }
 
 func (ap *Parser) parseVersion(p *xpp.XMLPullParser) string {
