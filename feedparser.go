@@ -26,8 +26,7 @@ const (
 	FeedTypeRSS
 )
 
-// DetectFeedType takes a feed reader and attempts
-// to detect its feed type.
+// DetectFeedType attempts to detect the feed type
 func DetectFeedType(feed io.Reader) FeedType {
 	p := xpp.NewXMLPullParser(feed, false)
 
@@ -69,6 +68,9 @@ func NewFeedParser() *FeedParser {
 	return &fp
 }
 
+// ParseFeed parses a RSS or Atom feed into
+// the universal gofeed.Feed.  It takes an
+// io.Reader which should return the xml feed
 func (f *FeedParser) ParseFeed(feed io.Reader) (*Feed, error) {
 	// Wrap the feed io.Reader in a io.TeeReader
 	// so we can capture all the bytes read by the
@@ -92,19 +94,24 @@ func (f *FeedParser) ParseFeed(feed io.Reader) (*Feed, error) {
 	return nil, errors.New("Failed to detect feed type")
 }
 
-// ParseFeedURL fetches the contents of a given feed url and
-// parses the feed into the universal feed type.
-func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
+// ParseFeedURL fetches the contents of a given url and
+// attempts to parse the response into the universal feed type.
+func (f *FeedParser) ParseFeedURL(feedURL string) (feed *Feed, err error) {
 	client := f.httpClient()
 	resp, err := client.Get(feedURL)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		ce := resp.Body.Close()
+		if ce != nil {
+			err = ce
+		}
+	}()
 	return f.ParseFeed(resp.Body)
 }
 
-// ParseFeed takes a feed XML string and parses it into the
+// ParseFeedString parses a feed XML string and into the
 // universal feed type.
 func (f *FeedParser) ParseFeedString(feed string) (*Feed, error) {
 	return f.ParseFeed(strings.NewReader(feed))

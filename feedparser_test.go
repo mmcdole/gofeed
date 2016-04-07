@@ -1,13 +1,13 @@
 package gofeed_test
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"strings"
 	"testing"
 
@@ -33,11 +33,10 @@ func TestDetectFeedType(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/feed/%s", test.file)
-		f, _ := os.Open(path)
-		defer f.Close()
+		f, _ := ioutil.ReadFile(path)
 
 		// Get actual value
-		actual := gofeed.DetectFeedType(f)
+		actual := gofeed.DetectFeedType(bytes.NewReader(f))
 
 		if assert.Equal(t, actual, test.expected, "Feed file %s did not match expected type %d", test.file, test.expected) {
 			fmt.Printf("OK\n")
@@ -67,12 +66,11 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/feed/%s", test.file)
-		f, _ := os.Open(path)
-		defer f.Close()
+		f, _ := ioutil.ReadFile(path)
 
 		// Get actual value
 		fp := gofeed.NewFeedParser()
-		feed, err := fp.ParseFeed(f)
+		feed, err := fp.ParseFeed(bytes.NewReader(f))
 
 		if test.hasError {
 			assert.NotNil(t, err)
@@ -135,6 +133,27 @@ func TestFeedParser_ParseFeedURL_Failure(t *testing.T) {
 	assert.Nil(t, feed)
 }
 
+// Test Helpers
+
+func mockServerResponse(code int, body string) (*httptest.Server, *http.Client) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(code)
+		w.Header().Set("Content-Type", "application/xml")
+		io.WriteString(w, body)
+	}))
+
+	transport := &http.Transport{
+		Proxy: func(req *http.Request) (*url.URL, error) {
+			return url.Parse(server.URL)
+		},
+	}
+
+	client := &http.Client{Transport: transport}
+	return server, client
+}
+
+// Examples
+
 func ExampleDetectFeedType() {
 	feedData := `<rss version="2.0">
 <channel>
@@ -182,21 +201,4 @@ func ExampleFeedParser_ParseFeedString() {
 		panic(err)
 	}
 	fmt.Println(feed.Title)
-}
-
-func mockServerResponse(code int, body string) (*httptest.Server, *http.Client) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(code)
-		w.Header().Set("Content-Type", "application/xml")
-		io.WriteString(w, body)
-	}))
-
-	transport := &http.Transport{
-		Proxy: func(req *http.Request) (*url.URL, error) {
-			return url.Parse(server.URL)
-		},
-	}
-
-	client := &http.Client{Transport: transport}
-	return server, client
 }
