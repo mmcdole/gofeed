@@ -48,7 +48,7 @@ The most common usage scenario will be to use ```gofeed.FeedParser``` to parse a
 
 ```go
 fp := gofeed.NewFeedParser()
-feed := fp.ParseFeedURL("http://feeds.twit.tv/twit.xml")
+feed, _ := fp.ParseFeedURL("http://feeds.twit.tv/twit.xml")
 fmt.Println(feed.Title)
 ```
 
@@ -61,7 +61,17 @@ feedData := `<rss version="2.0">
 </channel>
 </rss>`
 fp := gofeed.NewFeedParser()
-feed := fp.ParseFeed(feedData)
+feed, _ := fp.ParseFeedString(feedData)
+fmt.Println(feed.Title)
+```
+
+##### Parse a feed from an io.Reader:
+
+```go
+file, _ := os.Open("/path/to/a/file.xml")
+defer file.Close()
+fp := gofeed.NewFeedParser()
+feed, _ := fp.ParseFeed(file)
 fmt.Println(feed.Title)
 ```
 
@@ -78,7 +88,7 @@ feedData := `<rss version="2.0">
 </channel>
 </rss>`
 fp := rss.Parser{}
-rssFeed := fp.ParseFeed(feedData)
+rssFeed, _ := fp.ParseFeedString(feedData)
 fmt.Println(rssFeed.WebMaster)
 ```
 
@@ -89,7 +99,7 @@ feedData := `<feed xmlns="http://www.w3.org/2005/Atom">
 <subtitle>Example Atom</subtitle>
 </feed>`
 fp := atom.Parser{}
-atomFeed := fp.ParseFeed(feedData)
+atomFeed, _ := fp.ParseFeedString(feedData)
 fmt.Println(atomFeed.Subtitle)
 ```
 
@@ -136,7 +146,7 @@ func main() {
     
     fp := gofeed.NewFeedParser()
     fp.RSSTrans = NewMyCustomTranslator()
-    feed := fp.ParseFeed(feedData)
+    feed, _ := fp.ParseFeedString(feedData)
     fmt.Println(feed.Author) // Valentine Wiggin
 }
 ```
