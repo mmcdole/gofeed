@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/mmcdole/gofeed"
@@ -31,10 +33,11 @@ func TestDetectFeedType(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/feed/%s", test.file)
-		f, _ := ioutil.ReadFile(path)
+		f, _ := os.Open(path)
+		defer f.Close()
 
 		// Get actual value
-		actual := gofeed.DetectFeedType(string(f))
+		actual := gofeed.DetectFeedType(f)
 
 		if assert.Equal(t, actual, test.expected, "Feed file %s did not match expected type %d", test.file, test.expected) {
 			fmt.Printf("OK\n")
@@ -64,11 +67,12 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/feed/%s", test.file)
-		f, _ := ioutil.ReadFile(path)
+		f, _ := os.Open(path)
+		defer f.Close()
 
 		// Get actual value
 		fp := gofeed.NewFeedParser()
-		feed, err := fp.ParseFeed(string(f))
+		feed, err := fp.ParseFeed(f)
 
 		if test.hasError {
 			assert.NotNil(t, err)
@@ -137,10 +141,24 @@ func ExampleDetectFeedType() {
 <title>Sample Feed</title>
 </channel>
 </rss>`
-	feedType := gofeed.DetectFeedType(feedData)
+	feedType := gofeed.DetectFeedType(strings.NewReader(feedData))
 	if feedType == gofeed.FeedTypeRSS {
 		fmt.Println("Wow! This is an RSS feed!")
 	}
+}
+
+func ExampleFeedParser_ParseFeed() {
+	feedData := `<rss version="2.0">
+<channel>
+<title>Sample Feed</title>
+</channel>
+</rss>`
+	fp := gofeed.NewFeedParser()
+	feed, err := fp.ParseFeed(strings.NewReader(feedData))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(feed.Title)
 }
 
 func ExampleFeedParser_ParseFeedURL() {
@@ -152,14 +170,14 @@ func ExampleFeedParser_ParseFeedURL() {
 	fmt.Println(feed.Title)
 }
 
-func ExampleFeedParser_ParseFeed() {
+func ExampleFeedParser_ParseFeedString() {
 	feedData := `<rss version="2.0">
 <channel>
 <title>Sample Feed</title>
 </channel>
 </rss>`
 	fp := gofeed.NewFeedParser()
-	feed, err := fp.ParseFeed(feedData)
+	feed, err := fp.ParseFeedString(feedData)
 	if err != nil {
 		panic(err)
 	}

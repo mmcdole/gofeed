@@ -1,6 +1,7 @@
 package gofeed
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -10,16 +11,10 @@ import (
 	"github.com/mmcdole/gofeed/rss"
 )
 
-// AtomTranslator converts an atom.Feed struct
+// Translator converts a particular feed (atom.Feed or rss.Feed)
 // into the generic Feed struct
-type AtomTranslator interface {
-	Translate(atom *atom.Feed) *Feed
-}
-
-// RSSTranslator converts an rss.Feed struct
-// into the generic Feed struct
-type RSSTranslator interface {
-	Translate(rss *rss.Feed) *Feed
+type Translator interface {
+	Translate(feed interface{}) (*Feed, error)
 }
 
 // DefaultRSSTranslator converts an rss.Feed struct
@@ -32,27 +27,32 @@ type DefaultRSSTranslator struct{}
 
 // Translate converts an RSS feed into the universal
 // feed type.
-func (t *DefaultRSSTranslator) Translate(rss *rss.Feed) *Feed {
-	feed := &Feed{}
-	feed.Title = t.translateFeedTitle(rss)
-	feed.Description = t.translateFeedDescription(rss)
-	feed.Link = t.translateFeedLink(rss)
-	feed.FeedLink = t.translateFeedFeedLink(rss)
-	feed.Updated = t.translateFeedUpdated(rss)
-	feed.UpdatedParsed = t.translateFeedUpdatedParsed(rss)
-	feed.Published = t.translateFeedPublished(rss)
-	feed.PublishedParsed = t.translateFeedPublishedParsed(rss)
-	feed.Author = t.translateFeedAuthor(rss)
-	feed.Language = t.translateFeedLanguage(rss)
-	feed.Image = t.translateFeedImage(rss)
-	feed.Copyright = t.translateFeedCopyright(rss)
-	feed.Generator = t.translateFeedGenerator(rss)
-	feed.Categories = t.translateFeedCategories(rss)
-	feed.Items = t.translateFeedItems(rss)
-	feed.Extensions = rss.Extensions
-	feed.FeedVersion = rss.Version
-	feed.FeedType = "rss"
-	return feed
+func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
+	rss, found := feed.(*rss.Feed)
+	if !found {
+		return nil, fmt.Errorf("Feed did not match expected type of *rss.Feed")
+	}
+
+	result := &Feed{}
+	result.Title = t.translateFeedTitle(rss)
+	result.Description = t.translateFeedDescription(rss)
+	result.Link = t.translateFeedLink(rss)
+	result.FeedLink = t.translateFeedFeedLink(rss)
+	result.Updated = t.translateFeedUpdated(rss)
+	result.UpdatedParsed = t.translateFeedUpdatedParsed(rss)
+	result.Published = t.translateFeedPublished(rss)
+	result.PublishedParsed = t.translateFeedPublishedParsed(rss)
+	result.Author = t.translateFeedAuthor(rss)
+	result.Language = t.translateFeedLanguage(rss)
+	result.Image = t.translateFeedImage(rss)
+	result.Copyright = t.translateFeedCopyright(rss)
+	result.Generator = t.translateFeedGenerator(rss)
+	result.Categories = t.translateFeedCategories(rss)
+	result.Items = t.translateFeedItems(rss)
+	result.Extensions = rss.Extensions
+	result.FeedVersion = rss.Version
+	result.FeedType = "rss"
+	return result, nil
 }
 
 func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item) {
@@ -414,25 +414,30 @@ type DefaultAtomTranslator struct{}
 
 // Translate converts an Atom feed into the universal
 // feed type.
-func (t *DefaultAtomTranslator) Translate(atom *atom.Feed) *Feed {
-	feed := &Feed{}
-	feed.Title = t.translateFeedTitle(atom)
-	feed.Description = t.translateFeedDescription(atom)
-	feed.Link = t.translateFeedLink(atom)
-	feed.FeedLink = t.translateFeedFeedLink(atom)
-	feed.Updated = t.translateFeedUpdated(atom)
-	feed.UpdatedParsed = t.translateFeedUpdatedParsed(atom)
-	feed.Author = t.translateFeedAuthor(atom)
-	feed.Language = t.translateFeedLanguage(atom)
-	feed.Image = t.translateFeedImage(atom)
-	feed.Copyright = t.translateFeedCopyright(atom)
-	feed.Categories = t.translateFeedCategories(atom)
-	feed.Generator = t.translateFeedGenerator(atom)
-	feed.Items = t.translateFeedItems(atom)
-	feed.Extensions = atom.Extensions
-	feed.FeedVersion = atom.Version
-	feed.FeedType = "atom"
-	return feed
+func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
+	atom, found := feed.(*atom.Feed)
+	if !found {
+		return nil, fmt.Errorf("Feed did not match expected type of *atom.Feed")
+	}
+
+	result := &Feed{}
+	result.Title = t.translateFeedTitle(atom)
+	result.Description = t.translateFeedDescription(atom)
+	result.Link = t.translateFeedLink(atom)
+	result.FeedLink = t.translateFeedFeedLink(atom)
+	result.Updated = t.translateFeedUpdated(atom)
+	result.UpdatedParsed = t.translateFeedUpdatedParsed(atom)
+	result.Author = t.translateFeedAuthor(atom)
+	result.Language = t.translateFeedLanguage(atom)
+	result.Image = t.translateFeedImage(atom)
+	result.Copyright = t.translateFeedCopyright(atom)
+	result.Categories = t.translateFeedCategories(atom)
+	result.Generator = t.translateFeedGenerator(atom)
+	result.Items = t.translateFeedItems(atom)
+	result.Extensions = atom.Extensions
+	result.FeedVersion = atom.Version
+	result.FeedType = "atom"
+	return result, nil
 }
 
 func (t *DefaultAtomTranslator) translateFeedItem(entry *atom.Entry) (item *Item) {

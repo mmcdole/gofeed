@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -24,13 +25,14 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 
 		// Get actual source feed
 		ff := fmt.Sprintf("testdata/translator/rss/%s.xml", name)
-		f, _ := ioutil.ReadFile(ff)
+		f, _ := os.Open(ff)
+		defer f.Close()
 
 		// Parse actual feed
 		translator := &gofeed.DefaultRSSTranslator{}
 		fp := &rss.Parser{}
-		rssFeed, _ := fp.ParseFeed(string(f))
-		actual := translator.Translate(rssFeed)
+		rssFeed, _ := fp.ParseFeed(f)
+		actual, _ := translator.Translate(rssFeed)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/rss/%s.json", name)
@@ -58,13 +60,14 @@ func TestDefaultAtomTranslator_Translate(t *testing.T) {
 
 		// Get actual source feed
 		ff := fmt.Sprintf("testdata/translator/atom/%s.xml", name)
-		f, _ := ioutil.ReadFile(ff)
+		f, _ := os.Open(ff)
+		defer f.Close()
 
 		// Parse actual feed
 		translator := &gofeed.DefaultAtomTranslator{}
 		fp := &atom.Parser{}
-		atomFeed, _ := fp.ParseFeed(string(f))
-		actual := translator.Translate(atomFeed)
+		atomFeed, _ := fp.ParseFeed(f)
+		actual, _ := translator.Translate(atomFeed)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/atom/%s.json", name)

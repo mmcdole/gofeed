@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -22,11 +23,12 @@ func TestAtomParser_ParseFeed(t *testing.T) {
 
 		// Get actual source feed
 		ff := fmt.Sprintf("../testdata/parser/atom/%s.xml", name)
-		f, _ := ioutil.ReadFile(ff)
+		f, _ := os.Open(ff)
+		defer f.Close()
 
 		// Parse actual feed
 		fp := &atom.Parser{}
-		actual, _ := fp.ParseFeed(string(f))
+		actual, _ := fp.ParseFeed(f)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/atom/%s.json", name)

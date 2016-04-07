@@ -1,9 +1,9 @@
 package gofeed
 
 import (
+	"bytes"
 	"errors"
-	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -26,10 +26,10 @@ const (
 	FeedTypeRSS
 )
 
-// DetectFeedType takes a feed XML string and attempts
+// DetectFeedType takes a feed reader and attempts
 // to detect its feed type.
-func DetectFeedType(feed string) FeedType {
-	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
+func DetectFeedType(feed io.Reader) FeedType {
+	p := xpp.NewXMLPullParser(feed, false)
 
 	_, err := p.NextTag()
 	if err != nil {
@@ -53,11 +53,11 @@ func DetectFeedType(feed string) FeedType {
 // a given feed type, parsers it, and translates it
 // to the universal feed type.
 type FeedParser struct {
-	AtomTrans AtomTranslator
-	RSSTrans  RSSTranslator
-	Client    *http.Client
-	rp        *rss.Parser
-	ap        *atom.Parser
+	AtomTranslator Translator
+	RSSTranslator  Translator
+	Client         *http.Client
+	rp             *rss.Parser
+	ap             *atom.Parser
 }
 
 // NewFeedParser creates a FeedParser.
@@ -69,6 +69,29 @@ func NewFeedParser() *FeedParser {
 	return &fp
 }
 
+func (f *FeedParser) ParseFeed(feed io.Reader) (*Feed, error) {
+	// Wrap the feed io.Reader in a io.TeeReader
+	// so we can capture all the bytes read by the
+	// DetectFeedType function and construct a new
+	// reader with those bytes intact for when we
+	// attempt to parse the feeds.
+	var buf bytes.Buffer
+	tee := io.TeeReader(feed, &buf)
+	feedType := DetectFeedType(tee)
+
+	// Glue the read bytes from the detect function
+	// back into a new reader
+	r := io.MultiReader(&buf, feed)
+
+	switch feedType {
+	case FeedTypeAtom:
+		return f.parseAtomFeed(r)
+	case FeedTypeRSS:
+		return f.parseRSSFeed(r)
+	}
+	return nil, errors.New("Failed to detect feed type")
+}
+
 // ParseFeedURL fetches the contents of a given feed url and
 // parses the feed into the universal feed type.
 func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
@@ -78,60 +101,46 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (*Feed, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return f.ParseFeed(string(body))
+	return f.ParseFeed(resp.Body)
 }
 
 // ParseFeed takes a feed XML string and parses it into the
 // universal feed type.
-func (f *FeedParser) ParseFeed(feed string) (*Feed, error) {
-	fmt.Println(feed)
-	ft := DetectFeedType(feed)
-	switch ft {
-	case FeedTypeAtom:
-		return f.parseFeedFromAtom(feed)
-	case FeedTypeRSS:
-		return f.parseFeedFromRSS(feed)
-	}
-	return nil, errors.New("Failed to detect feed type")
+func (f *FeedParser) ParseFeedString(feed string) (*Feed, error) {
+	return f.ParseFeed(strings.NewReader(feed))
 }
 
-func (f *FeedParser) parseFeedFromAtom(feed string) (*Feed, error) {
+func (f *FeedParser) parseAtomFeed(feed io.Reader) (*Feed, error) {
 	af, err := f.ap.ParseFeed(feed)
 	if err != nil {
 		return nil, err
 	}
-	result := f.atomTrans().Translate(af)
-	return result, nil
+	return f.atomTrans().Translate(af)
 }
 
-func (f *FeedParser) parseFeedFromRSS(feed string) (*Feed, error) {
+func (f *FeedParser) parseRSSFeed(feed io.Reader) (*Feed, error) {
 	rf, err := f.rp.ParseFeed(feed)
 	if err != nil {
 		return nil, err
 	}
 
-	result := f.rssTrans().Translate(rf)
-	return result, nil
+	return f.rssTrans().Translate(rf)
 }
 
-func (f *FeedParser) atomTrans() AtomTranslator {
-	if f.AtomTrans != nil {
-		return f.AtomTrans
+func (f *FeedParser) atomTrans() Translator {
+	if f.AtomTranslator != nil {
+		return f.AtomTranslator
 	}
-	f.AtomTrans = &DefaultAtomTranslator{}
-	return f.AtomTrans
+	f.AtomTranslator = &DefaultAtomTranslator{}
+	return f.AtomTranslator
 }
 
-func (f *FeedParser) rssTrans() RSSTranslator {
-	if f.RSSTrans != nil {
-		return f.RSSTrans
+func (f *FeedParser) rssTrans() Translator {
+	if f.RSSTranslator != nil {
+		return f.RSSTranslator
 	}
-	f.RSSTrans = &DefaultRSSTranslator{}
-	return f.RSSTrans
+	f.RSSTranslator = &DefaultRSSTranslator{}
+	return f.RSSTranslator
 }
 
 func (f *FeedParser) httpClient() *http.Client {

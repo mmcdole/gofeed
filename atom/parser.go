@@ -2,6 +2,7 @@ package atom
 
 import (
 	"encoding/base64"
+	"io"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -13,9 +14,8 @@ import (
 // Parser is an Atom Parser
 type Parser struct{}
 
-// ParseFeed parses a feed XML into an Atom feed
-func (ap *Parser) ParseFeed(feed string) (*Feed, error) {
-	p := xpp.NewXMLPullParser(strings.NewReader(feed), false)
+func (ap *Parser) ParseFeed(feed io.Reader) (*Feed, error) {
+	p := xpp.NewXMLPullParser(feed, false)
 
 	_, err := p.NextTag()
 	if err != nil {

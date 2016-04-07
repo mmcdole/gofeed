@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -22,11 +23,12 @@ func TestRSSParser_ParseFeed(t *testing.T) {
 
 		// Get actual source feed
 		ff := fmt.Sprintf("../testdata/parser/rss/%s.xml", name)
-		f, _ := ioutil.ReadFile(ff)
+		f, _ := os.Open(ff)
+		defer f.Close()
 
 		// Parse actual feed
 		fp := &rss.Parser{}
-		actual, _ := fp.ParseFeed(string(f))
+		actual, _ := fp.ParseFeed(f)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/rss/%s.json", name)
