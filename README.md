@@ -36,7 +36,7 @@ When using the `gofeed` library as a [universal feed parser](#universal-feed-par
 
 ![Diagram](https://raw.githubusercontent.com/mmcdole/gofeed/master/docs/sequence.png)
 
-Default translators (`DefaultRSSTranslator` and `DefaultAtomTranslator`) have been provided for you and are used transparently behind the scenes when you use `gofeed.FeedParser` with its default settings.  You can see how they translate fields from ```atom.Feed``` or ```rss.Feed``` to the universal ```gofeed.Feed``` struct in the [Default Mappings](#default-mappings) section.  However, should you disagree with the way certain fields are translated you can easily supply your own `RSSTranslator` or `AtomTranslator` and override this behavior.  See the [Advanced Usage](#advanced-usage) section for an example how to do this.
+Default translators (`DefaultRSSTranslator` and `DefaultAtomTranslator`) have been provided for you and are used transparently behind the scenes when you use `gofeed.FeedParser` with its default settings.  You can see how they translate fields from ```atom.Feed``` or ```rss.Feed``` to the universal ```gofeed.Feed``` struct in the [Default Mappings](#default-mappings) section.  However, should you disagree with the way certain fields are translated you can easily supply your own `Translator` and override this behavior.  See the [Advanced Usage](#advanced-usage) section for an example how to do this.
 
 ## Basic Usage
 
@@ -109,7 +109,7 @@ fmt.Println(atomFeed.Subtitle)
 
 The mappings and precedence order that are outlined in the [Default Mappings](#default-mappings) section are provided by the following two structs: `DefaultRSSTranslator` and `DefaultAtomTranslator`.  If you have fields that you think should have a different precedence, or if you want to make a translator that is aware of an unsupported extension you can do this by specifying your own RSS or Atom translator when using the `gofeed.FeedParser`.
 
-Here is a simple example of creating a custom `RSSTranslator` that makes the `/rss/channel/itunes:author` extension field have a higher precedence than the `/rss/channel/managingEditor` field.  We will wrap the existing `DefaultRSSTranslator` since we only want to change the behavior for a single field.
+Here is a simple example of creating a custom `Translator` that makes the `/rss/channel/itunes:author` extension field have a higher precedence than the `/rss/channel/managingEditor` field in RSS feeds.  We will wrap the existing `DefaultRSSTranslator` since we only want to change the behavior for a single field.
 
 ```go
 type MyCustomTranslator struct {
@@ -125,8 +125,16 @@ func NewMyCustomTranslator() *MyCustomTranslator {
   return t
 }
 
-func (ct* MyCustomTranslator) Translate(rss *rss.Feed) *Feed {
-  f := ct.Translate(rss)
+func (ct* MyCustomTranslator) Translate(feed interface{}) (*Feed, error) {
+	rss, found := feed.(*rss.Feed)
+	if !found {
+		return nil, fmt.Errorf("Feed did not match expected type of *rss.Feed")
+	}
+
+  f, err := ct.Translate(rss)
+  if err != nil {
+    return nil, err
+  }
   
   if rss.ITunesExt != nil && rss.ITunesExt.Author != "" {
       f.Author = rss.ITunesExt.Author
