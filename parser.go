@@ -48,10 +48,10 @@ func DetectFeedType(feed io.Reader) FeedType {
 	}
 }
 
-// FeedParser is a universal feed parser that detects
+// Parser is a universal feed parser that detects
 // a given feed type, parsers it, and translates it
 // to the universal feed type.
-type FeedParser struct {
+type Parser struct {
 	AtomTranslator Translator
 	RSSTranslator  Translator
 	Client         *http.Client
@@ -59,19 +59,19 @@ type FeedParser struct {
 	ap             *atom.Parser
 }
 
-// NewFeedParser creates a FeedParser.
-func NewFeedParser() *FeedParser {
-	fp := FeedParser{
+// NewParser creates a universal feed parser.
+func NewParser() *Parser {
+	fp := Parser{
 		rp: &rss.Parser{},
 		ap: &atom.Parser{},
 	}
 	return &fp
 }
 
-// ParseFeed parses a RSS or Atom feed into
+// Parse parses a RSS or Atom feed into
 // the universal gofeed.Feed.  It takes an
-// io.Reader which should return the xml feed
-func (f *FeedParser) ParseFeed(feed io.Reader) (*Feed, error) {
+// io.Reader which should return the xml content.
+func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 	// Wrap the feed io.Reader in a io.TeeReader
 	// so we can capture all the bytes read by the
 	// DetectFeedType function and construct a new
@@ -94,9 +94,9 @@ func (f *FeedParser) ParseFeed(feed io.Reader) (*Feed, error) {
 	return nil, errors.New("Failed to detect feed type")
 }
 
-// ParseFeedURL fetches the contents of a given url and
+// ParseURL fetches the contents of a given url and
 // attempts to parse the response into the universal feed type.
-func (f *FeedParser) ParseFeedURL(feedURL string) (feed *Feed, err error) {
+func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 	client := f.httpClient()
 	resp, err := client.Get(feedURL)
 	if err != nil {
@@ -108,25 +108,25 @@ func (f *FeedParser) ParseFeedURL(feedURL string) (feed *Feed, err error) {
 			err = ce
 		}
 	}()
-	return f.ParseFeed(resp.Body)
+	return f.Parse(resp.Body)
 }
 
-// ParseFeedString parses a feed XML string and into the
+// ParseString parses a feed XML string and into the
 // universal feed type.
-func (f *FeedParser) ParseFeedString(feed string) (*Feed, error) {
-	return f.ParseFeed(strings.NewReader(feed))
+func (f *Parser) ParseString(feed string) (*Feed, error) {
+	return f.Parse(strings.NewReader(feed))
 }
 
-func (f *FeedParser) parseAtomFeed(feed io.Reader) (*Feed, error) {
-	af, err := f.ap.ParseFeed(feed)
+func (f *Parser) parseAtomFeed(feed io.Reader) (*Feed, error) {
+	af, err := f.ap.Parse(feed)
 	if err != nil {
 		return nil, err
 	}
 	return f.atomTrans().Translate(af)
 }
 
-func (f *FeedParser) parseRSSFeed(feed io.Reader) (*Feed, error) {
-	rf, err := f.rp.ParseFeed(feed)
+func (f *Parser) parseRSSFeed(feed io.Reader) (*Feed, error) {
+	rf, err := f.rp.Parse(feed)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (f *FeedParser) parseRSSFeed(feed io.Reader) (*Feed, error) {
 	return f.rssTrans().Translate(rf)
 }
 
-func (f *FeedParser) atomTrans() Translator {
+func (f *Parser) atomTrans() Translator {
 	if f.AtomTranslator != nil {
 		return f.AtomTranslator
 	}
@@ -142,7 +142,7 @@ func (f *FeedParser) atomTrans() Translator {
 	return f.AtomTranslator
 }
 
-func (f *FeedParser) rssTrans() Translator {
+func (f *Parser) rssTrans() Translator {
 	if f.RSSTranslator != nil {
 		return f.RSSTranslator
 	}
@@ -150,7 +150,7 @@ func (f *FeedParser) rssTrans() Translator {
 	return f.RSSTranslator
 }
 
-func (f *FeedParser) httpClient() *http.Client {
+func (f *Parser) httpClient() *http.Client {
 	if f.Client != nil {
 		return f.Client
 	}

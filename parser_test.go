@@ -69,8 +69,8 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 		f, _ := ioutil.ReadFile(path)
 
 		// Get actual value
-		fp := gofeed.NewFeedParser()
-		feed, err := fp.ParseFeed(bytes.NewReader(f))
+		fp := gofeed.NewParser()
+		feed, err := fp.Parse(bytes.NewReader(f))
 
 		if test.hasError {
 			assert.NotNil(t, err)
@@ -107,8 +107,8 @@ func TestFeedParser_ParseFeedString(t *testing.T) {
 		f, _ := ioutil.ReadFile(path)
 
 		// Get actual value
-		fp := gofeed.NewFeedParser()
-		feed, err := fp.ParseFeedString(string(f))
+		fp := gofeed.NewParser()
+		feed, err := fp.ParseString(string(f))
 
 		if test.hasError {
 			assert.NotNil(t, err)
@@ -145,9 +145,9 @@ func TestFeedParser_ParseFeedURL_Success(t *testing.T) {
 
 		// Get actual value
 		server, client := mockServerResponse(200, string(f))
-		fp := gofeed.NewFeedParser()
+		fp := gofeed.NewParser()
 		fp.Client = client
-		feed, err := fp.ParseFeedURL(server.URL)
+		feed, err := fp.ParseURL(server.URL)
 
 		if test.hasError {
 			assert.NotNil(t, err)
@@ -163,9 +163,9 @@ func TestFeedParser_ParseFeedURL_Success(t *testing.T) {
 
 func TestFeedParser_ParseFeedURL_Failure(t *testing.T) {
 	server, client := mockServerResponse(404, "")
-	fp := gofeed.NewFeedParser()
+	fp := gofeed.NewParser()
 	fp.Client = client
-	feed, err := fp.ParseFeedURL(server.URL)
+	feed, err := fp.ParseURL(server.URL)
 
 	assert.NotNil(t, err)
 	assert.Nil(t, feed)
@@ -210,8 +210,8 @@ func ExampleFeedParser_ParseFeed() {
 <title>Sample Feed</title>
 </channel>
 </rss>`
-	fp := gofeed.NewFeedParser()
-	feed, err := fp.ParseFeed(strings.NewReader(feedData))
+	fp := gofeed.NewParser()
+	feed, err := fp.Parse(strings.NewReader(feedData))
 	if err != nil {
 		panic(err)
 	}
@@ -219,8 +219,8 @@ func ExampleFeedParser_ParseFeed() {
 }
 
 func ExampleFeedParser_ParseFeedURL() {
-	fp := gofeed.NewFeedParser()
-	feed, err := fp.ParseFeedURL("http://feeds.twit.tv/twit.xml")
+	fp := gofeed.NewParser()
+	feed, err := fp.ParseURL("http://feeds.twit.tv/twit.xml")
 	if err != nil {
 		panic(err)
 	}
@@ -233,8 +233,8 @@ func ExampleFeedParser_ParseFeedString() {
 <title>Sample Feed</title>
 </channel>
 </rss>`
-	fp := gofeed.NewFeedParser()
-	feed, err := fp.ParseFeedString(feedData)
+	fp := gofeed.NewParser()
+	feed, err := fp.ParseString(feedData)
 	if err != nil {
 		panic(err)
 	}

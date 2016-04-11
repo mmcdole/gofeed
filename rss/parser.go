@@ -13,8 +13,8 @@ import (
 // Parser is a RSS Parser
 type Parser struct{}
 
-// ParseFeed parses an xml feed into an rss.Feed
-func (rp *Parser) ParseFeed(feed io.Reader) (*Feed, error) {
+// Parse parses an xml feed into an rss.Feed
+func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false)
 
 	_, err := p.NextTag()
