@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mmcdole/gofeed.svg?branch=master)](https://travis-ci.org/mmcdole/gofeed) [![Coverage Status](https://coveralls.io/repos/github/mmcdole/gofeed/badge.svg?branch=master)](https://coveralls.io/github/mmcdole/gofeed?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/mmcdole/gofeed)](https://goreportcard.com/report/github.com/mmcdole/gofeed) [![](https://godoc.org/github.com/mmcdole/gofeed?status.svg)](http://godoc.org/github.com/mmcdole/gofeed) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
-The `gofeed` library is a robust feed parser that supports parsing both [RSS](https://en.wikipedia.org/wiki/RSS) and [Atom](https://en.wikipedia.org/wiki/Atom_(standard)) feeds.  These can be parsed faithfully into their respective ```atom.Feed``` and ```rss.Feed``` representations using the ```atom.Parser``` or ```rss.Parser```. You can also parse them with the universal ```gofeed.FeedParser``` that will detect the feed type, parse it and then normalize both types of feeds into a hybrid ```gofeed.Feed``` representation.
+The `gofeed` library is a robust feed parser that supports parsing both [RSS](https://en.wikipedia.org/wiki/RSS) and [Atom](https://en.wikipedia.org/wiki/Atom_(standard)) feeds.  These can be parsed faithfully into their respective ```atom.Feed``` and ```rss.Feed``` representations using the ```atom.Parser``` or ```rss.Parser```. You can also parse them with the universal ```gofeed.Parser``` that will detect the feed type, parse it and then normalize either types of feeds into a hybrid ```gofeed.Feed``` representation.
 
 ##### Supported feed types:
 * RSS 0.90
