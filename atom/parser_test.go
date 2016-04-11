@@ -15,7 +15,7 @@ import (
 
 // Tests
 
-func TestAtomParser_ParseFeed(t *testing.T) {
+func TestParser_Parse(t *testing.T) {
 	files, _ := filepath.Glob("../testdata/parser/atom/*.xml")
 	for _, f := range files {
 		base := filepath.Base(f)

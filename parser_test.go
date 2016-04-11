@@ -46,7 +46,7 @@ func TestDetectFeedType(t *testing.T) {
 	}
 }
 
-func TestFeedParser_ParseFeed(t *testing.T) {
+func TestParser_Parse(t *testing.T) {
 	var feedTests = []struct {
 		file      string
 		feedType  string
@@ -84,7 +84,7 @@ func TestFeedParser_ParseFeed(t *testing.T) {
 	}
 }
 
-func TestFeedParser_ParseFeedString(t *testing.T) {
+func TestParser_ParseString(t *testing.T) {
 	var feedTests = []struct {
 		file      string
 		feedType  string
@@ -122,7 +122,7 @@ func TestFeedParser_ParseFeedString(t *testing.T) {
 	}
 }
 
-func TestFeedParser_ParseFeedURL_Success(t *testing.T) {
+func TestParser_ParseURL_Success(t *testing.T) {
 	var feedTests = []struct {
 		file      string
 		feedType  string
@@ -161,7 +161,7 @@ func TestFeedParser_ParseFeedURL_Success(t *testing.T) {
 	}
 }
 
-func TestFeedParser_ParseFeedURL_Failure(t *testing.T) {
+func TestParser_ParseURL_Failure(t *testing.T) {
 	server, client := mockServerResponse(404, "")
 	fp := gofeed.NewParser()
 	fp.Client = client
@@ -204,7 +204,7 @@ func ExampleDetectFeedType() {
 	}
 }
 
-func ExampleFeedParser_ParseFeed() {
+func ExampleParser_Parse() {
 	feedData := `<rss version="2.0">
 <channel>
 <title>Sample Feed</title>
@@ -218,7 +218,7 @@ func ExampleFeedParser_ParseFeed() {
 	fmt.Println(feed.Title)
 }
 
-func ExampleFeedParser_ParseFeedURL() {
+func ExampleParser_ParseURL() {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseURL("http://feeds.twit.tv/twit.xml")
 	if err != nil {
@@ -227,7 +227,7 @@ func ExampleFeedParser_ParseFeedURL() {
 	fmt.Println(feed.Title)
 }
 
-func ExampleFeedParser_ParseFeedString() {
+func ExampleParser_ParseString() {
 	feedData := `<rss version="2.0">
 <channel>
 <title>Sample Feed</title>

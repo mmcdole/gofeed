@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRSSParser_ParseFeed(t *testing.T) {
+func TestParser_Parse(t *testing.T) {
 	files, _ := filepath.Glob("../testdata/parser/rss/*.xml")
 	for _, f := range files {
 		base := filepath.Base(f)
