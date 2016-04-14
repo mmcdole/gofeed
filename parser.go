@@ -9,44 +9,7 @@ import (
 
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/mmcdole/goxpp"
 )
-
-// FeedType represents one of the possible feed
-// types that we can detect.
-type FeedType int
-
-const (
-	// FeedTypeUnknown represents a feed that could not have its
-	// type determiend.
-	FeedTypeUnknown FeedType = iota
-	// FeedTypeAtom repesents an Atom feed
-	FeedTypeAtom
-	// FeedTypeRSS represents an RSS feed
-	FeedTypeRSS
-)
-
-// DetectFeedType attempts to detect the feed type
-func DetectFeedType(feed io.Reader) FeedType {
-	p := xpp.NewXMLPullParser(feed, false)
-
-	_, err := p.NextTag()
-	if err != nil {
-		return FeedTypeUnknown
-	}
-
-	name := strings.ToLower(p.Name)
-	switch name {
-	case "rdf":
-		return FeedTypeRSS
-	case "rss":
-		return FeedTypeRSS
-	case "feed":
-		return FeedTypeAtom
-	default:
-		return FeedTypeUnknown
-	}
-}
 
 // Parser is a universal feed parser that detects
 // a given feed type, parsers it, and translates it
