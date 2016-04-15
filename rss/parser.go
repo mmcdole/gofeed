@@ -8,6 +8,7 @@ import (
 	"github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/goxpp"
+	"golang.org/x/net/html/charset"
 )
 
 // Parser is a RSS Parser
@@ -15,7 +16,7 @@ type Parser struct{}
 
 // Parse parses an xml feed into an rss.Feed
 func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
-	p := xpp.NewXMLPullParser(feed, false)
+	p := xpp.NewXMLPullParser(feed, false, charset.NewReaderLabel)
 
 	_, err := p.NextTag()
 	if err != nil {
