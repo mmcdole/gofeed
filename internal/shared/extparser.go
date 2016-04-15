@@ -7,7 +7,7 @@ import (
 	"github.com/mmcdole/goxpp"
 )
 
-// IsExtension returns wether or not the current
+// IsExtension returns whether or not the current
 // XML element is an extension element (if it has a
 // non empty prefix)
 func IsExtension(p *xpp.XMLPullParser) bool {
