@@ -16,9 +16,7 @@ type Parser struct{}
 
 // Parse parses an xml feed into an rss.Feed
 func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
-	p := xpp.NewXMLPullParser(feed)
-	p.Decoder.CharsetReader = charset.NewReaderLabel
-	p.Decoder.Strict = false
+	p := xpp.NewXMLPullParser(feed, false, charset.NewReaderLabel)
 
 	_, err := p.NextTag()
 	if err != nil {
