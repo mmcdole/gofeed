@@ -19,7 +19,7 @@ type Parser struct{}
 func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, charset.NewReaderLabel)
 
-	_, err := p.NextTag()
+	_, err := shared.FindRoot(p)
 	if err != nil {
 		return nil, err
 	}
