@@ -8,8 +8,9 @@ install:
 - go get github.com/mmcdole/goxpp
 - go get github.com/PuerkitoBio/goquery
 - go get github.com/stretchr/testify/assert
-- go get golang.org/x/tools/cmd/cover
 - go get github.com/mattn/goveralls
+- go get golang.org/x/tools/cmd/cover
+- go get golang.org/x/text/encoding
 script:
 - go test -v -covermode=count -coverprofile=coverage.out
 - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
