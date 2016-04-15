@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/mmcdole/goxpp"
+	"golang.org/x/net/html/charset"
 )
 
 // FeedType represents one of the possible feed
@@ -25,7 +26,9 @@ const (
 // by looking for specific xml elements unique to the
 // various feed types.
 func DetectFeedType(feed io.Reader) FeedType {
-	p := xpp.NewXMLPullParser(feed, false)
+	p := xpp.NewXMLPullParser(feed)
+	p.Decoder.CharsetReader = charset.NewReaderLabel
+	p.Decoder.Strict = false
 
 	_, err := p.NextTag()
 	if err != nil {
