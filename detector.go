@@ -4,6 +4,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/goxpp"
 	"golang.org/x/net/html/charset"
 )
@@ -28,7 +29,7 @@ const (
 func DetectFeedType(feed io.Reader) FeedType {
 	p := xpp.NewXMLPullParser(feed, false, charset.NewReaderLabel)
 
-	_, err := p.NextTag()
+	_, err := shared.FindRoot(p)
 	if err != nil {
 		return FeedTypeUnknown
 	}

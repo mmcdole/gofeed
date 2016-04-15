@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -13,6 +14,23 @@ var (
 	nameOnlyRgx  = regexp.MustCompile(`^([^@()]+)$`)
 	emailOnlyRgx = regexp.MustCompile(`^([^@()]+@[^@()]+)$`)
 )
+
+// FindRoot iterates through the tokens of an xml document until
+// it encounters its first StartTag event.  It returns an error
+// if it reaches EndDocument before finding a tag.
+func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
+	for {
+		event, err = p.Next()
+		if event == xpp.StartTag {
+			break
+		}
+
+		if event == xpp.EndDocument {
+			return event, fmt.Errorf("Failed to find root node before document end.")
+		}
+	}
+	return
+}
 
 // ParseText is a helper function for parsing the text
 // from the current element of the XMLPullParser.
