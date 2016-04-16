@@ -33,7 +33,7 @@ It also provides support for parsing several popular extension modules, includin
 
 #### Universal Feed Parser
 
-The universal `gofeed.Parser` works in 3 stages: detection, parsing and translation.  It first detects the feed type that it is currently parsing.  Then it uses a feed specific parser to parse the feed into its true representation which will be either a `rss.Feed` or `atom.Feed`.  These models cover every field possible for their respective feed types.  Finally, they are *translated* into a `gofeed.Feed` model that is a hybrid of both feed types.  Performing the universal feed parsing in these 3 stages allows for more flexibility and keeps the code base more maintainable by seperating RSS and Atom parsing into seperate packages.
+The universal `gofeed.Parser` works in 3 stages: detection, parsing and translation.  It first detects the feed type that it is currently parsing.  Then it uses a feed specific parser to parse the feed into its true representation which will be either a `rss.Feed` or `atom.Feed`.  These models cover every field possible for their respective feed types.  Finally, they are *translated* into a `gofeed.Feed` model that is a hybrid of both feed types.  Performing the universal feed parsing in these 3 stages allows for more flexibility and keeps the code base more maintainable by separating RSS and Atom parsing into seperate packages.
 
 ![Diagram](https://raw.githubusercontent.com/mmcdole/gofeed/master/docs/sequence.png)
 
