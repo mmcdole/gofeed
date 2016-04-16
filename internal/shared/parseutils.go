@@ -48,13 +48,10 @@ func ParseText(p *xpp.XMLPullParser) (string, error) {
 		return "", err
 	}
 
-	result := ""
-	if len(text.Body) > 0 {
-		result = text.Body
-	} else if len(text.InnerXML) > 0 {
-		result = text.InnerXML
-	}
-
+	result := text.InnerXML
+	result = strings.TrimSpace(result)
+	result = strings.TrimPrefix(result, "<![CDATA[")
+	result = strings.TrimSuffix(result, "]]>")
 	result = strings.TrimSpace(result)
 	result = DecodeEntities(result)
 	return result, nil
