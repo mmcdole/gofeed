@@ -654,16 +654,14 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 		return "", err
 	}
 
-	result := ""
-	if len(text.InnerXML) > 0 {
-		result = text.InnerXML
-	} else if len(text.Body) > 0 {
-		result = text.Body
-	}
+	result := text.InnerXML
+	result = strings.TrimSpace(result)
+	result = strings.TrimPrefix(result, "<![CDATA[")
+	result = strings.TrimSuffix(result, "]]>")
+	result = strings.TrimSpace(result)
 
 	lowerType := strings.ToLower(text.Type)
 	lowerMode := strings.ToLower(text.Mode)
-	result = strings.TrimSpace(result)
 
 	if lowerType == "html" {
 		result = shared.DecodeEntities(result)
