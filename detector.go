@@ -27,7 +27,8 @@ const (
 // by looking for specific xml elements unique to the
 // various feed types.
 func DetectFeedType(feed io.Reader) FeedType {
-	p := xpp.NewXMLPullParser(feed, false, charset.NewReaderLabel)
+	fr := shared.NewXMLSanitizerReader(feed)
+	p := xpp.NewXMLPullParser(fr, false, charset.NewReaderLabel)
 
 	_, err := shared.FindRoot(p)
 	if err != nil {
