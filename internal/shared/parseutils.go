@@ -49,10 +49,10 @@ func ParseText(p *xpp.XMLPullParser) (string, error) {
 	}
 
 	result := ""
-	if len(text.InnerXML) > 0 {
-		result = text.InnerXML
-	} else if len(text.Body) > 0 {
+	if len(text.Body) > 0 {
 		result = text.Body
+	} else if len(text.InnerXML) > 0 {
+		result = text.InnerXML
 	}
 
 	result = strings.TrimSpace(result)
