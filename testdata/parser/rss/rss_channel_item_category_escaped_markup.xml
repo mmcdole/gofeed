@@ -1,0 +1,11 @@
+<!--
+Description: item categories - escaped markup
+-->
+<rss version="2.0">
+<channel>
+<item>
+<category domain="http://www.example.com/1">&lt;p&gt;Example category 1&lt;/p&gt;</category>
+<category domain="http://www.example.com/2">&lt;p&gt;Example category 2&lt;/p&gt;</category>
+</item>
+</channel>
+</rss>

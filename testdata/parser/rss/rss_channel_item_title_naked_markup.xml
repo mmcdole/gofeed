@@ -1,0 +1,10 @@
+<!--
+Description: item title - escaped markup
+-->
+<rss version="2.0">
+<channel>
+<item>
+<title><p>Item 1 title</p></title>
+</item>
+</channel>
+</rss>
