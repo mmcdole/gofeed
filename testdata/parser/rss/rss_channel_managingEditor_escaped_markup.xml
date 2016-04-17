@@ -1,0 +1,8 @@
+<!--
+Description: channel managingEditor - escaped markup
+-->
+<rss version="2.0">
+<channel>
+<managingEditor>&lt;p&gt;Example editor&lt;/p&gt;</managingEditor>
+</channel>
+</rss>

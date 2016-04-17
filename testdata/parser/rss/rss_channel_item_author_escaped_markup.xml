@@ -1,0 +1,10 @@
+<!--
+Description: item author - escaped markup
+-->
+<rss version="2.0">
+<channel>
+<item>
+<author>&lt;p&gt;Example editor&lt;/p&gt;</author>
+</item>
+</channel>
+</rss>

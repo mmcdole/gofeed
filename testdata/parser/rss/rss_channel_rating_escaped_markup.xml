@@ -1,0 +1,8 @@
+<!--
+Description: channel rating - escaped markup
+-->
+<rss version="2.0">
+<channel>
+<rating>&lt;p&gt;(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l gen true comment "RSACi North America Server" for "http://www.rsac.org" on "1996.04.16T08:15-0500" r (n 0 s 0 v 0 l 0))&lt;/p&gt;</rating>
+</channel>
+</rss>
