@@ -2,9 +2,9 @@
 Description: item author
 -->
 <rss version="2.0">
-<channel>
-<item>
-<author>Example name</author>
-</item>
-</channel>
+  <channel>
+    <item>
+      <author>Author Name</author>
+    </item>
+  </channel>
 </rss>

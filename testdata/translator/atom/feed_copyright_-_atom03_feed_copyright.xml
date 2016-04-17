@@ -1,7 +1,6 @@
 <!--
 Description: feed copyright
-Expect:      not bozo and feed['copyright'] == 'Example Atom'
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
-  <copyright>Example Atom</copyright>
+  <copyright>Feed Copyright</copyright>
 </feed>

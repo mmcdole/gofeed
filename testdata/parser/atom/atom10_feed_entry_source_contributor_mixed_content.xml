@@ -2,12 +2,12 @@
 Description: entry source contributor - mixed content
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-<entry>
-<source>
-  <contributor>
-    <name>Example contributor</name>
-    Example mixed content
-  </contributor>
-</source>
-</entry>
+  <entry>
+    <source>
+      <contributor>
+        <name>Contributor Name</name>
+        Mixed content
+      </contributor>
+    </source>
+  </entry>
 </feed>

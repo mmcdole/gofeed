@@ -1,10 +1,10 @@
 <!--
-Description: item description - cdata escaped markup 
+Description: rss item description - cdata escaped markup 
 -->
 <rss version="2.0">
-<channel>
-<item>
-<description><![CDATA[&lt;p&gt;Example description&lt;/p&gt;]]></description>
-</item>
-</channel>
+  <channel>
+    <item>
+      <description><![CDATA[&lt;p&gt;Item Description&lt;/p&gt;]]></description>
+    </item>
+  </channel>
 </rss>

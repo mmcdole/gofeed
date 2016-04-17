@@ -1,8 +1,8 @@
 <!--
-Description: channel title - normal
+Description: rss feed 
 -->
 <rss version="2.0">
-<channel>
-<title>RSS Title</title>
-</channel>
+  <channel>
+    <title>Feed Title</title>
+  </channel>
 </rss>

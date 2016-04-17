@@ -1,12 +1,12 @@
 {
     "categories": [
         {
-            "domain": "http://www.example.com/1",
-            "value": "<p>Example category 1</p>"
+            "domain": "http://www.example.org/cat/1",
+            "value": "<p>Feed Category 1</p>"
         },
         {
-            "domain": "http://www.example.com/2",
-            "value": "<p>Example category 2</p>"
+            "domain": "http://www.example.org/cat/2",
+            "value": "<p>Feed Category 2</p>"
         }
     ],
     "items": [],

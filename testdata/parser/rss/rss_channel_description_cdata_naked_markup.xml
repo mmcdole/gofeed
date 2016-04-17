@@ -1,8 +1,8 @@
 <!--
-Description: channel description - cdata naked markup
+Description: rss channel description - cdata naked markup
 -->
 <rss version="2.0">
-<channel>
-<description><![CDATA[<p>Example description</p>]]></description>
-</channel>
+  <channel>
+    <description><![CDATA[<p>Feed Description</p>]]></description>
+  </channel>
 </rss>

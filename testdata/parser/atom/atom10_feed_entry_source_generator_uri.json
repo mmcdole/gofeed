@@ -3,8 +3,8 @@
         {
             "source": {
                 "generator": {
-                    "value": "Example generator",
-                    "uri": "http://example.com/"
+                    "value": "Source Generator",
+                    "uri": "http://example.org"
                 }
             }
         }

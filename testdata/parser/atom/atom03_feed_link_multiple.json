@@ -1,12 +1,12 @@
 {
     "links": [
         {
-            "href": "http://www.example.com/",
+            "href": "http://www.example.org",
             "rel": "alternate",
             "type": "application/xhtml+xml"
         },
         {
-            "href": "http://www.example.com/post",
+            "href": "http://www.example.org/post",
             "rel": "service.post",
             "type": "application/atom+xml"
         }

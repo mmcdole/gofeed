@@ -2,9 +2,9 @@
 Description: item link
 -->
 <rss version="2.0">
-<channel>
-<item>
-<link>http://example.com/</link>
-</item>
-</channel>
+  <channel>
+    <item>
+      <link>http://example.org</link>
+    </item>
+  </channel>
 </rss>

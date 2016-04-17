@@ -1,7 +1,7 @@
 {
     "items": [
         {
-            "description": "<p>Example description</p>"
+            "description": "<p>Item Description</p>"
         }
     ],
     "version": "1.0"

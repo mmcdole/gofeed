@@ -2,7 +2,7 @@
 Description: channel title - normal
 -->
 <rss version="2.0">
-<channel>
-<title>Example feed</title>
-</channel>
+  <channel>
+    <title>Feed Title</title>
+  </channel>
 </rss>

@@ -3,7 +3,7 @@
         {
             "source": {
                 "generator": {
-                    "value": "Example generator",
+                    "value": "Source Generator",
                     "version": "2.65"
                 }
             }

@@ -3,7 +3,7 @@
         "title": "textInput title",
         "description": "textInput description",
         "name": "textInput name",
-        "link": "http://example.com/"
+        "link": "http://example.org"
     },
     "items": [],
     "version": "2.0"

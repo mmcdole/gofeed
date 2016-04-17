@@ -2,10 +2,10 @@
 Description: entry contributor - mixed content
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
-<entry>
-  <contributor>
-    <name>Example contributor</name>
-    Example mixed content
-  </contributor>
-</entry>
+  <entry>
+    <contributor>
+      <name>Contributor Name</name>
+      Mixed content
+    </contributor>
+  </entry>
 </feed>

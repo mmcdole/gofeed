@@ -1,10 +1,10 @@
 <!--
-Description: item guid - cdata escaped markup
+Description: rss item guid - cdata escaped markup
 -->
 <rss version="2.0">
-<channel>
-<item>
-<guid isPermaLink="false"><![CDATA[&lt;p&gt;abc&lt;/p&gt;]]></guid>
-</item>
-</channel>
+  <channel>
+    <item>
+      <guid isPermaLink="false"><![CDATA[&lt;p&gt;abc123&lt;/p&gt;]]></guid>
+    </item>
+  </channel>
 </rss>

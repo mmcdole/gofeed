@@ -1,7 +1,6 @@
 <!--
 Description: feed rights
-Expect:      not bozo and feed['rights'] == 'Example Atom'
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <rights>Example Atom</rights>
+  <rights>Feed Rights</rights>
 </feed>

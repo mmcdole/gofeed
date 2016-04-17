@@ -1,6 +1,6 @@
 <!--
-Description: feed title
+Description: atom03 feed 
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
-  <title>Atom Title</title>
+  <title>Feed Title</title>
 </feed>

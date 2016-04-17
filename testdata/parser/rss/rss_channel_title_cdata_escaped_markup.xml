@@ -1,8 +1,8 @@
 <!--
-Description: channel title - cdata escaped markup
+Description: rss channel title - cdata escaped markup
 -->
 <rss version="2.0">
-<channel>
-<title><![CDATA[&lt;p&gt;Example feed&lt;/p&gt;]]></title>
-</channel>
+  <channel>
+    <title><![CDATA[&lt;p&gt;Feed Title&lt;/p&gt;]]></title>
+  </channel>
 </rss>
