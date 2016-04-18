@@ -21,6 +21,9 @@ var (
 func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
 	for {
 		event, err = p.Next()
+		if err != nil {
+			return event, err
+		}
 		if event == xpp.StartTag {
 			break
 		}
