@@ -28,7 +28,7 @@ func TestDetectFeedType(t *testing.T) {
 		fmt.Printf("Testing %s... ", test.file)
 
 		// Get feed content
-		path := fmt.Sprintf("testdata/parser/feed/%s", test.file)
+		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
 		f, _ := ioutil.ReadFile(path)
 
 		// Get actual value
