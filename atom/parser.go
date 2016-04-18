@@ -645,7 +645,6 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	var text struct {
 		Type     string `xml:"type,attr"`
 		Mode     string `xml:"mode,attr"`
-		Body     string `xml:",chardata"`
 		InnerXML string `xml:",innerxml"`
 	}
 
@@ -663,16 +662,11 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	lowerType := strings.ToLower(text.Type)
 	lowerMode := strings.ToLower(text.Mode)
 
-	if lowerType == "html" {
-		result = shared.DecodeEntities(result)
-	}
-
 	if lowerType == "text" ||
 		strings.HasPrefix(lowerType, "text/") ||
 		(lowerType == "" && lowerMode == "") {
 		result = shared.DecodeEntities(result)
-	} else if strings.Contains(lowerType, "xhtml") ||
-		lowerType == "html" {
+	} else if strings.Contains(lowerType, "xhtml") {
 		r := strings.NewReader(result)
 		doc, err := goquery.NewDocumentFromReader(r)
 		if err == nil {
@@ -684,6 +678,8 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 				}
 			}
 		}
+	} else if lowerType == "html" {
+		result = shared.DecodeEntities(result)
 	} else {
 		decodedStr, err := base64.StdEncoding.DecodeString(result)
 		if err == nil {
