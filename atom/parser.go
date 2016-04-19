@@ -655,9 +655,13 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 
 	result := text.InnerXML
 	result = strings.TrimSpace(result)
-	result = strings.TrimPrefix(result, "<![CDATA[")
-	result = strings.TrimSuffix(result, "]]>")
-	result = strings.TrimSpace(result)
+
+	if strings.HasPrefix(result, "<![CDATA[") &&
+		strings.HasSuffix(result, "]]>") {
+		result = strings.TrimPrefix(result, "<![CDATA[")
+		result = strings.TrimSuffix(result, "]]>")
+		return result, nil
+	}
 
 	lowerType := strings.ToLower(text.Type)
 	lowerMode := strings.ToLower(text.Mode)
@@ -667,18 +671,9 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 		(lowerType == "" && lowerMode == "") {
 		result = shared.DecodeEntities(result)
 	} else if strings.Contains(lowerType, "xhtml") {
-		r := strings.NewReader(result)
-		doc, err := goquery.NewDocumentFromReader(r)
-		if err == nil {
-			outerElement := doc.Find("div").First()
-			if outerElement.Is("div") {
-				html, err := outerElement.Unwrap().Html()
-				if err == nil {
-					result = html
-				}
-			}
-		}
+		result = ap.stripWrappingDiv(result)
 	} else if lowerType == "html" {
+		result = ap.stripWrappingDiv(result)
 		result = shared.DecodeEntities(result)
 	} else {
 		decodedStr, err := base64.StdEncoding.DecodeString(result)
@@ -710,4 +705,20 @@ func (ap *Parser) parseVersion(p *xpp.XMLPullParser) string {
 	}
 
 	return ""
+}
+
+func (ap *Parser) stripWrappingDiv(content string) (result string) {
+	result = content
+	r := strings.NewReader(result)
+	doc, err := goquery.NewDocumentFromReader(r)
+	if err == nil {
+		root := doc.Find("body").Children()
+		if root.Is("div") && root.Siblings().Size() == 0 {
+			html, err := root.Unwrap().Html()
+			if err == nil {
+				result = html
+			}
+		}
+	}
+	return
 }
