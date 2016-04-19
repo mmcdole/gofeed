@@ -43,7 +43,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	ver := rp.parseVersion(p)
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +65,6 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 			if name == "channel" {
 				channel, err = rp.parseChannel(p)
 				if err != nil {
-					fmt.Printf("error in channel: %s\n", err)
 					return nil, err
 				}
 			} else if name == "item" {
@@ -130,7 +129,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 	categories := []*Category{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -321,7 +320,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 	categories := []*Category{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -486,7 +485,7 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 	image = &Image{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return image, err
 		}
@@ -598,7 +597,7 @@ func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
 	ti := &TextInput{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -655,7 +654,7 @@ func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
 	hours := []string{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -693,7 +692,7 @@ func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 	days := []string{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -735,7 +734,7 @@ func (rp *Parser) parseCloud(p *xpp.XMLPullParser) (*Cloud, error) {
 	cloud.RegisterProcedure = p.Attribute("registerProcedure")
 	cloud.Protocol = p.Attribute("protocol")
 
-	p.NextTag()
+	shared.NextTag(p)
 
 	if err := p.Expect(xpp.EndTag, "cloud"); err != nil {
 		return nil, err
