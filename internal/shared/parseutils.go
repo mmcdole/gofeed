@@ -42,7 +42,6 @@ func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
 func ParseText(p *xpp.XMLPullParser) (string, error) {
 	var text struct {
 		Type     string `xml:"type,attr"`
-		Body     string `xml:",chardata"`
 		InnerXML string `xml:",innerxml"`
 	}
 
@@ -53,9 +52,14 @@ func ParseText(p *xpp.XMLPullParser) (string, error) {
 
 	result := text.InnerXML
 	result = strings.TrimSpace(result)
-	result = strings.TrimPrefix(result, "<![CDATA[")
-	result = strings.TrimSuffix(result, "]]>")
-	result = strings.TrimSpace(result)
+
+	if strings.HasPrefix(result, "<![CDATA[") &&
+		strings.HasSuffix(result, "]]>") {
+		result = strings.TrimPrefix(result, "<![CDATA[")
+		result = strings.TrimSuffix(result, "]]>")
+		return result, nil
+	}
+
 	result = DecodeEntities(result)
 	return result, nil
 }
