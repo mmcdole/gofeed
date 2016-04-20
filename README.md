@@ -121,8 +121,16 @@ Here is a simple example of creating a custom `Translator` that makes the `/rss/
 First we must define a custom translator:
 
 ```go
+
+import (
+    "fmt"
+
+    "github.com/mmcdole/gofeed"
+    "github.com/mmcdole/gofeed/rss"
+)
+
 type MyCustomTranslator struct {
-    defaultTranslator *DefaultRSSTranslator
+    defaultTranslator *gofeed.DefaultRSSTranslator
 }
 
 func NewMyCustomTranslator() *MyCustomTranslator {
@@ -130,17 +138,17 @@ func NewMyCustomTranslator() *MyCustomTranslator {
   
   // We create a DefaultRSSTranslator internally so we can wrap its Translate
   // call since we only want to modify the precedence for a single field.
-  t.defaultTranslator = &DefaultRSSTranslator{}
+  t.defaultTranslator = &gofeed.DefaultRSSTranslator{}
   return t
 }
 
-func (ct* MyCustomTranslator) Translate(feed interface{}) (*Feed, error) {
+func (ct* MyCustomTranslator) Translate(feed interface{}) (*gofeed.Feed, error) {
 	rss, found := feed.(*rss.Feed)
 	if !found {
 		return nil, fmt.Errorf("Feed did not match expected type of *rss.Feed")
 	}
 
-  f, err := ct.Translate(rss)
+  f, err := ct.defaultTranslator.Translate(rss)
   if err != nil {
     return nil, err
   }
@@ -165,7 +173,7 @@ feedData := `<rss version="2.0">
 </rss>`
     
 fp := gofeed.NewParser()
-fp.RSSTrans = NewMyCustomTranslator()
+fp.RSSTranslator = NewMyCustomTranslator()
 feed, _ := fp.ParseString(feedData)
 fmt.Println(feed.Author) // Valentine Wiggin
 ```
