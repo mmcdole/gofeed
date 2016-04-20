@@ -45,7 +45,7 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	extensions := ext.Extensions{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -199,7 +199,7 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 	extensions := ext.Extensions{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -354,7 +354,7 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 	extensions := ext.Extensions{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -512,7 +512,7 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 	person := &Person{}
 
 	for {
-		tok, err := p.NextTag()
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
