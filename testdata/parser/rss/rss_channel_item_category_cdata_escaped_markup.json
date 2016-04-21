@@ -1,0 +1,17 @@
+{
+    "items": [
+        {
+            "categories": [
+                {
+                    "domain": "http://www.example.com/1",
+                    "value": "&lt;p&gt;Example category 1&lt;/p&gt;"
+                },
+                {
+                    "domain": "http://www.example.com/2",
+                    "value": "&lt;p&gt;Example category 2&lt;/p&gt;"
+                }
+            ]
+        }
+    ],
+    "version": "2.0"
+}

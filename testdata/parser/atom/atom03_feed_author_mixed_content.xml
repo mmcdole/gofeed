@@ -1,0 +1,9 @@
+<!--
+Description: feed author - mixed content
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <author>
+    <name>Example author</name>
+    Example mixed content
+  </author>
+</feed>

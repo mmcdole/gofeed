@@ -104,5 +104,5 @@ type Source struct {
 	Contributors  []*Person      `json:"contributors,omitempty"`
 	Authors       []*Person      `json:"authors,omitempty"`
 	Categories    []*Category    `json:"categories,omitempty"`
-	Extensions    ext.Extensions `json:"extensions"`
+	Extensions    ext.Extensions `json:"extensions,omitempty"`
 }

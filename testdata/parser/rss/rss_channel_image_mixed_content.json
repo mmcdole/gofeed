@@ -1,0 +1,12 @@
+{
+    "image": {
+        "url": "http://example.org/url",
+        "link": "http://example.org/link",
+        "title": "Sample image",
+        "width": "80",
+        "height": "15",
+        "description": "Available in Netscape RSS 0.91"
+    },
+    "items": [],
+    "version": "0.91"
+}
