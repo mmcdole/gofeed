@@ -1,0 +1,6 @@
+<!--
+Description: feed generator name
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<generator>Feed Generator</generator>
+</feed>

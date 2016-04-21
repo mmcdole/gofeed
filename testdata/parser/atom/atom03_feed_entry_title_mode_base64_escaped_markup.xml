@@ -1,0 +1,8 @@
+<!--
+Description: feed entry title - base64 w/ escaped markup
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<title mode="base64">RW50cnkgJmx0O2ImZ3Q7VGl0bGUmbHQ7LyZndDs=<title>
+	</entry>
+</feed>

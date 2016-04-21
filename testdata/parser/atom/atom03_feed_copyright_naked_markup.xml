@@ -1,0 +1,6 @@
+<!--
+Description: feed copyright - naked markup 
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <copyright><p>Feed Copyright</p></copyright>
+</feed>

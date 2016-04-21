@@ -1,0 +1,8 @@
+<!--
+Description: feed contributor name
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <contributor>
+    <name>Contributor Name</name>
+  </contributor>
+</feed>

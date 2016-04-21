@@ -1,0 +1,15 @@
+<!--
+Description: feed contributors
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <contributor>
+    <name>Contributor Name 1</name>
+    <email>email@example.org</email>
+    <url>http://example.org/1</url>
+  </contributor>
+  <contributor>
+    <name>Contributor Name 2</name>
+    <email>email2@example.org</email>
+    <url>http://example.org/2</url>
+  </contributor>
+</feed>
