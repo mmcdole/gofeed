@@ -1,0 +1,10 @@
+{
+    "textInput": {
+        "title": "textInput title",
+        "description": "textInput description",
+        "name": "textInput name",
+        "link": "http://example.com/"
+    },
+    "items": [],
+    "version": "2.0"
+}

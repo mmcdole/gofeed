@@ -1,0 +1,10 @@
+{
+    "textInput": {
+        "title": "Search XML.com",
+        "description": "Search XML.com's XML collection",
+        "name": "Test Name",
+        "link": "http://search.xml.com"
+    },
+    "items": [],
+    "version": "1.0"
+}

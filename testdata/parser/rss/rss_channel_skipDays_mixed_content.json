@@ -1,0 +1,8 @@
+{
+    "skipDays": [
+        "Saturday",
+        "Sunday"
+    ],
+    "items": [],
+    "version": "2.0"
+}

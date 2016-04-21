@@ -1,0 +1,12 @@
+<!--
+Description: channel skipDays - mixed content
+-->
+<rss version="2.0">
+<channel>
+<skipDays>
+<day>Saturday</day>
+<day>Sunday</day>
+Example mixed content
+</skipDays>
+</channel>
+</rss>
