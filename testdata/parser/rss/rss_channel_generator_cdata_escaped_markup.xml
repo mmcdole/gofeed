@@ -1,0 +1,8 @@
+<!--
+Description: channel generator - cdata escaped markup
+-->
+<rss version="2.0">
+<channel>
+<generator><![CDATA[&lt;p&gt;Example generator&lt;/p&gt;]]></generator>
+</channel>
+</rss>
