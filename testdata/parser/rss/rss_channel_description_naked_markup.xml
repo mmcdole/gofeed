@@ -1,8 +1,0 @@
-<!--
-Description: naked markup in description
--->
-<rss version="2.0">
-<channel>
-<description><p>Example description</p></description>
-</channel>
-</rss>

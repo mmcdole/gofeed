@@ -1,7 +1,0 @@
-<!--
-Description: feed link href
-Expect:      not bozo and feed['links'][0]['href'] == 'http://www.example.com/'
--->
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <link href="http://www.example.com/"/>
-</feed>

@@ -1,8 +1,0 @@
-<!--
-Description: channel webMaster - escaped markup
--->
-<rss version="2.0">
-<channel>
-<webMaster>&lt;p&gt;Example editor&lt;/p&gt;</webMaster>
-</channel>
-</rss>

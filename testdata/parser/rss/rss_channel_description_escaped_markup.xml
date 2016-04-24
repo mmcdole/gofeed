@@ -1,8 +1,0 @@
-<!--
-Description: channel description - escaped markup
--->
-<rss version="2.0">
-<channel>
-<description>&lt;p&gt;Example description&lt;/p&gt;</description>
-</channel>
-</rss>

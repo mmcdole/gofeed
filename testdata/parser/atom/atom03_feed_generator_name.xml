@@ -1,7 +1,0 @@
-<!--
-Description: feed generator name
-Expect:      not bozo and feed['generator_detail']['name'] == 'Example generator'
--->
-<feed version="0.3" xmlns="http://purl.org/atom/ns#">
-  <generator>Example generator</generator>
-</feed>

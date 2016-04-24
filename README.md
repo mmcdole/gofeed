@@ -241,7 +241,7 @@ This project is licensed under the [MIT License](https://raw.githubusercontent.c
 
 ## Credits
 
-* [Mark Pilgrim](https://en.wikipedia.org/wiki/Mark_Pilgrim) for his work on the excellent [Universal Feed Parser](https://github.com/kurtmckee/feedparser) Python library.  This library was referenced several times during the development of `gofeed`.  Many of its unit test cases were also ported to the `gofeed` project as well.
+* [Mark Pilgrim](https://en.wikipedia.org/wiki/Mark_Pilgrim) for his work on the excellent [Universal Feed Parser](https://github.com/kurtmckee/feedparser) Python library.  This library was referenced several times during the development of `gofeed`.  
 * [Dan MacTough](http://blog.mact.me) for his work on [node-feedparser](https://github.com/danmactough/node-feedparser).  It provided inspiration for the set of fields that should be covered in the hybrid `gofeed.Feed` model.
 * [Matt Jibson](https://mattjibson.com/) for his date parsing function in the [goread](https://github.com/mjibson/goread) project.
 * [Jim Teeuwen](https://github.com/jteeuwen) for his method of representing arbitrary feed extensions in the [go-pkg-rss](https://github.com/jteeuwen/go-pkg-rss) library.
