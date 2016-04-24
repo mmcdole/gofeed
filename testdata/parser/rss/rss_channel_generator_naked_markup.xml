@@ -1,8 +1,0 @@
-<!--
-Description: channel generator - naked markup
--->
-<rss version="2.0">
-<channel>
-<generator><p>Example generator</p></generator>
-</channel>
-</rss>
