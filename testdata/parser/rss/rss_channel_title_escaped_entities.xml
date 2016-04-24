@@ -1,8 +1,0 @@
-<!--
-Description: channel title - contains escaped entities
--->
-<rss version="0.91">
-<channel>
-<title>1 &lt; 2 but 3 &gt; 2</title>
-</channel>
-</rss>

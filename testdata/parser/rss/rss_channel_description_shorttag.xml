@@ -1,9 +1,0 @@
-<!--
-Description: channel description - shorttag and link following
--->
-<rss version="2.0">
-<channel>
-<description/>
-<link>http://example.com/</link>
-</channel>
-</rss>
