@@ -1,0 +1,10 @@
+<!--
+Description: rss item source 
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <source url="http://example.org">Source Title</source>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,10 @@
+<!--
+Description: rss item pubDate 
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <pubDate>Sun, 06 Jul 2014 12:56:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
