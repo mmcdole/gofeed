@@ -1,0 +1,10 @@
+<!--
+Description: rss item author 
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <author>Item Author</author>
+    </item>
+  </channel>
+</rss>

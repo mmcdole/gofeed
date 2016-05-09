@@ -1,0 +1,16 @@
+<!--
+Description: rss channel image - mixed content
+-->
+<rss version="0.91">
+  <channel>
+    <image>
+      <title>Image Title</title>
+      <url>http://example.org/url</url>
+      <link>http://example.org/link</link>
+      <width>256</width>
+      <height>512</height>
+      <description>Image Description</description>
+      Mixed content
+    </image>
+  </channel>
+</rss>
