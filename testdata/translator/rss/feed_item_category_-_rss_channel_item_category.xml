@@ -2,10 +2,10 @@
 Description: item categories
 -->
 <rss version="2.0">
-<channel>
-<item>
-<category domain="http://www.example.com/1">Example category 1</category>
-<category domain="http://www.example.com/2">Example category 2</category>
-</item>
-</channel>
+  <channel>
+    <item>
+      <category domain="http://www.example.org/cat/1">Item Category 1</category>
+      <category domain="http://www.example.org/cat/2">Item Category 2</category>
+    </item>
+  </channel>
 </rss>

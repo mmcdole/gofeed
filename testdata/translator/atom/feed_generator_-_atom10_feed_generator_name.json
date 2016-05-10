@@ -1,5 +1,5 @@
 {
-    "generator": "Example generator v1.2 http://example.com",
+    "generator": "Feed Generator v1.2 http://example.org",
     "items": [],
     "feedType": "atom",
     "feedVersion": "1.0"

@@ -1,0 +1,11 @@
+<!--
+Description: rss channel skipDays 
+-->
+<rss version="2.0">
+  <channel>
+    <skipDays>
+      <day>Thursday</day>
+      <day>Friday</day>
+    </skipDays>
+  </channel>
+</rss>

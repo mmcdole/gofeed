@@ -1,0 +1,13 @@
+<!--
+Description: entry source author - mixed content 
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <author>
+        <name>Author Name</name>
+        Mixed content
+      </author>
+    </source>
+  </entry>
+</feed>

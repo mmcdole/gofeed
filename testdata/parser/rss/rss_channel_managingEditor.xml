@@ -1,0 +1,8 @@
+<!--
+Description: rss managingEditor 
+-->
+<rss version="2.0">
+  <channel>
+    <managingEditor>Feed Editor</managingEditor>
+  </channel>
+</rss>

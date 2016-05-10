@@ -3,12 +3,12 @@
         {
             "categories": [
                 {
-                    "domain": "http://www.example.com/1",
-                    "value": "Example category 1"
+                    "domain": "http://www.example.org/cat/1",
+                    "value": "Item Category 1"
                 },
                 {
-                    "domain": "http://www.example.com/2",
-                    "value": "Example category 2"
+                    "domain": "http://www.example.org/cat/2",
+                    "value": "Item Category 2"
                 }
             ]
         }

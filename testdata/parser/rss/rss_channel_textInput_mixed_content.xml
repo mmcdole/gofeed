@@ -1,0 +1,14 @@
+<!--
+Description: rss channel textInput - mixed content
+-->
+<rss version="2.0">
+  <channel>
+    <textInput>
+      <title>textInput title</title>
+      <name>textInput name</name>
+      <link>http://example.org</link>
+      <description>textInput description</description>
+      Mixed content
+    </textInput>
+  </channel>
+</rss>

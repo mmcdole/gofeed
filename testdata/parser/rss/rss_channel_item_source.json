@@ -2,8 +2,8 @@
     "items": [
         {
             "source": {
-                "title": "Example source",
-                "url": "http://example.com/"
+                "title": "Source Title",
+                "url": "http://example.org"
             }
         }
     ],

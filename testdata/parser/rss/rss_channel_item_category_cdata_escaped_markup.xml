@@ -1,0 +1,11 @@
+<!--
+Description: rss item categories - cdata escaped markup
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <category domain="http://www.example.org/cat/1"><![CDATA[&lt;p&gt;Item Category 1&lt;/p&gt;]]></category>
+      <category domain="http://www.example.org/cat/2"><![CDATA[&lt;p&gt;Item Category 2&lt;/p&gt;]]></category>
+    </item>
+  </channel>
+</rss>

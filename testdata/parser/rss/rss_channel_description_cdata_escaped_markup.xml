@@ -1,0 +1,8 @@
+<!--
+Description: rss channel description - cdata escaped markup
+-->
+<rss version="2.0">
+  <channel>
+    <description><![CDATA[&lt;p&gt;Feed Description&lt;/p&gt;]]></description>
+  </channel>
+</rss>

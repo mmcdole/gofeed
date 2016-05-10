@@ -2,7 +2,7 @@
 Description: channel webMaster
 -->
 <rss version="2.0">
-<channel>
-<webMaster>Example name (example@site.com)</webMaster>
-</channel>
+  <channel>
+    <webMaster>Feed WebMaster (email@example.org)</webMaster>
+  </channel>
 </rss>

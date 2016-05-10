@@ -1,0 +1,15 @@
+<!--
+Description: rdf item description - cdata naked markup
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+  <channel rdf:about="http://example.org/index.rdf">
+    <items>
+      <rdf:Seq>
+        <rdf:li resource="http://example.org/entry/1"/>
+      </rdf:Seq>
+    </items>
+  </channel>
+  <item rdf:about="http://example.org/entry/1">
+    <description><![CDATA[<p>Item Description</p>]]></description>
+  </item>
+</rdf:RDF>

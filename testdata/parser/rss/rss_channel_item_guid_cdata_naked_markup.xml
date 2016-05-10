@@ -1,0 +1,10 @@
+<!--
+Description: rss item guid - cdata naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <guid isPermaLink="false"><![CDATA[<p>abc123</p>]]></guid>
+    </item>
+  </channel>
+</rss>

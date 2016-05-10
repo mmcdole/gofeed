@@ -4,10 +4,10 @@
             "source": {
                 "authors": [
                     {
-                        "email": "one@one.com"
+                        "email": "email@example.org"
                     },
                     {
-                        "email": "two@two.com"
+                        "email": "email2@example.org"
                     }
                 ]
             }

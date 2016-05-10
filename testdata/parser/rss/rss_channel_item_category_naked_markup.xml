@@ -1,0 +1,11 @@
+<!--
+Description: rss item categories - naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <category domain="http://www.example.org/cat/1"><p>Item Category 1</p></category>
+      <category domain="http://www.example.org/cat/2"><p>Item Category 2</p></category>
+    </item>
+  </channel>
+</rss>

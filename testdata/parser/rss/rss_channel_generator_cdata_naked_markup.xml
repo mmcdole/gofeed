@@ -1,0 +1,8 @@
+<!--
+Description: rss channel generator - cdata naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <generator><![CDATA[<p>Feed Generator</p>]]></generator>
+  </channel>
+</rss>

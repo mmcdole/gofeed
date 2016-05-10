@@ -1,0 +1,10 @@
+<!--
+Description: rss item guid - naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <guid isPermaLink="false"><p>abc123</p></guid>
+    </item>
+  </channel>
+</rss>

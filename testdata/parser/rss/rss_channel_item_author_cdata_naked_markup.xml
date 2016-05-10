@@ -1,0 +1,10 @@
+<!--
+Description: rss item author - cdata naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <author><![CDATA[<p>Item Author</p>]]></author>
+    </item>
+  </channel>
+</rss>

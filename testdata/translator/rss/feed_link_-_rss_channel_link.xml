@@ -2,7 +2,7 @@
 Description: normal link
 -->
 <rss version="2.0">
-<channel>
-<link>http://example.com/</link>
-</channel>
+  <channel>
+    <link>http://example.org</link>
+  </channel>
 </rss>

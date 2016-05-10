@@ -1,0 +1,9 @@
+<!--
+Description: rss channel categories - escaped markup
+-->
+<rss version="2.0">
+  <channel>
+    <category domain="http://www.example.org/cat/1">&lt;p&gt;Feed Category 1&lt;/p&gt;</category>
+    <category domain="http://www.example.org/cat/2">&lt;p&gt;Feed Category 2&lt;/p&gt;</category>
+  </channel>
+</rss>

@@ -1,7 +1,7 @@
 {
     "items": [
         {
-            "description": "Example description"
+            "description": "Item Description"
         }
     ],
     "feedType": "rss",

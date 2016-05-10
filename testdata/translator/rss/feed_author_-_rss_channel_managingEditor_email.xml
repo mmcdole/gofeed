@@ -2,7 +2,7 @@
 Description: channel managingEditor
 -->
 <rss version="2.0">
-<channel>
-<managingEditor>example@site.com</managingEditor>
-</channel>
+  <channel>
+    <managingEditor>email@example.org</managingEditor>
+  </channel>
 </rss>

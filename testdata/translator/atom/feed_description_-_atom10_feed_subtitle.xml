@@ -1,7 +1,6 @@
 <!--
 Description: feed subtitle
-Expect:      not bozo and feed['subtitle'] == 'Example Atom'
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <subtitle>Example Atom</subtitle>
+  <subtitle>Feed Subtitle</subtitle>
 </feed>

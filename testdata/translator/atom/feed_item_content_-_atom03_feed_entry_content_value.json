@@ -1,7 +1,7 @@
 {
     "items": [
         {
-            "content": "Example Atom"
+            "content": "Entry Content"
         }
     ],
     "feedType": "atom",

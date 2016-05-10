@@ -4,10 +4,10 @@
             "source": {
                 "authors": [
                     {
-                        "uri": "http://one.com/"
+                        "uri": "http://example.org/1"
                     },
                     {
-                        "uri": "http://two.com/"
+                        "uri": "http://example.org/2"
                     }
                 ]
             }

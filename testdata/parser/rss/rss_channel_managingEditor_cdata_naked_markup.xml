@@ -1,0 +1,8 @@
+<!--
+Description: channel managingEditor - cdata naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <managingEditor><![CDATA[<p>Feed Editor</p>]]></managingEditor>
+  </channel>
+</rss>

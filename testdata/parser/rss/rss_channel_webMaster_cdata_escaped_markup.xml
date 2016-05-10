@@ -1,0 +1,8 @@
+<!--
+Description: rss channel webMaster - cdata escaped markup
+-->
+<rss version="2.0">
+  <channel>
+    <webMaster><![CDATA[&lt;p&gt;Feed WebMaster&lt;/p&gt;]]></webMaster>
+  </channel>
+</rss>

@@ -1,0 +1,9 @@
+<!--
+Description: rss channel categories - cdata naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <category domain="http://www.example.org/cat/1"><![CDATA[<p>Feed Category 1</p>]]></category>
+    <category domain="http://www.example.org/cat/2"><![CDATA[<p>Feed Category 2</p>]]></category>
+  </channel>
+</rss>

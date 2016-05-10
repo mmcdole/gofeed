@@ -3,7 +3,7 @@
         {
             "enclosures": [
                 {
-                    "url": "http://example.com/file.mp3",
+                    "url": "http://example.org/podcast.mp3",
                     "length": "123456",
                     "type": "audio/mpeg"
                 }

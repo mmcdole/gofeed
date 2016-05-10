@@ -1,0 +1,8 @@
+<!--
+Description: rss channel ttl 
+-->
+<rss version="2.0">
+  <channel>
+    <ttl>60</ttl>
+  </channel>
+</rss>

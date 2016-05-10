@@ -1,0 +1,8 @@
+<!--
+Description: rss channel copyright - cdata naked markup
+-->
+<rss version="2.0">
+  <channel>
+    <copyright><![CDATA[<p>Feed Copyright</p>]]></copyright>
+  </channel>
+</rss>

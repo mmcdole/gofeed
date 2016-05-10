@@ -2,8 +2,8 @@
     "items": [
         {
             "author": {
-                "name": "Example name",
-                "email": "example@site.com"
+                "name": "Author Name",
+                "email": "email@example.org"
             }
         }
     ],

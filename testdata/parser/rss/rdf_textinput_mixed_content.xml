@@ -1,0 +1,15 @@
+<!--
+Description: rdf textinput - mixed content
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+  <channel rdf:about="http://example.org/index.rdf">
+    <textinput rdf:resource="http://example.org/search" />
+  </channel>
+  <textinput rdf:about="http://example.org/search">
+    <title>TextInput Title</title>
+    <description>TextInput Description</description>
+    <name>TextInput Name</name>
+    <link>http://example.org/search</link>
+    Mixed content
+  </textinput>
+</rdf:RDF>
