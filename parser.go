@@ -3,6 +3,7 @@ package gofeed
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -10,6 +11,16 @@ import (
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/rss"
 )
+
+// HTTPError represents an HTTP error returned by a server.
+type HTTPError struct {
+	StatusCode int
+	Status     string
+}
+
+func (err HTTPError) Error() string {
+	return fmt.Sprintf("http error: %s", err.Status)
+}
 
 // Parser is a universal feed parser that detects
 // a given feed type, parsers it, and translates it
@@ -65,6 +76,14 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, HTTPError{
+			StatusCode: resp.StatusCode,
+			Status:     resp.Status,
+		}
+	}
+
 	defer func() {
 		ce := resp.Body.Close()
 		if ce != nil {
