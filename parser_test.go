@@ -137,6 +137,7 @@ func TestParser_ParseURL_Failure(t *testing.T) {
 	feed, err := fp.ParseURL(server.URL)
 
 	assert.NotNil(t, err)
+	assert.IsType(t, gofeed.HTTPError{}, err)
 	assert.Nil(t, feed)
 }
 
