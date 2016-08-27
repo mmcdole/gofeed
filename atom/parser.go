@@ -9,7 +9,6 @@ import (
 	"github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/goxpp"
-	"golang.org/x/net/html/charset"
 )
 
 // Parser is an Atom Parser
@@ -17,8 +16,7 @@ type Parser struct{}
 
 // Parse parses an xml feed into an atom.Feed
 func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
-	fr := shared.NewXMLSanitizerReader(feed)
-	p := xpp.NewXMLPullParser(fr, false, charset.NewReaderLabel)
+	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
 
 	_, err := shared.FindRoot(p)
 	if err != nil {
