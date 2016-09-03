@@ -1,0 +1,8 @@
+<!--
+Description: feed entry summary - base64 w/ escaped markup
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<summary mode="base64">Jmx0O3AmZ3Q7RW50cnkgU3VtbWFyeSZsdDsvcCZndDs=</summary>
+	</entry>
+</feed>

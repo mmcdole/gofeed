@@ -1,0 +1,10 @@
+<!--
+Description: feed entry author homepage
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <entry>
+    <author>
+      <homepage>http://example.org</homepage>
+    </author>
+  </entry>
+</feed>

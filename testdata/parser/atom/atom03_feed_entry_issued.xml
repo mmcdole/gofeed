@@ -1,0 +1,8 @@
+<!--
+Description: feed entry issued
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <entry>
+    <issued>Sun, 06 Jul 2014 12:56:00 GMT</issued>
+  </entry>
+</feed>

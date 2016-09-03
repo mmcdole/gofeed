@@ -1,0 +1,6 @@
+<!--
+Description: feed link type
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<link type="text/html" />
+</feed>

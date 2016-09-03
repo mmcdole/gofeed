@@ -1,0 +1,8 @@
+<!--
+Description: feed entry summary - naked markup
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<summary><p>Entry Summary</p></summary>
+	</entry>
+</feed>

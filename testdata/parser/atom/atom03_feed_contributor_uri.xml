@@ -1,0 +1,8 @@
+<!--
+Description: feed contributor uri
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <contributor>
+    <uri>http://example.org</uri>
+  </contributor>
+</feed>

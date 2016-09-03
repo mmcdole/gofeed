@@ -1,0 +1,6 @@
+<!--
+Description: feed title - xhtml w/ inline markup
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<title type="application/xhtml+xml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Feed Title</p></div></title>
+</feed>

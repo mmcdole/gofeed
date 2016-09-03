@@ -1,0 +1,6 @@
+<!--
+Description: feed title - naked markup
+-->
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<title><p>Feed Title</p></title>
+</feed>
