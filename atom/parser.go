@@ -667,12 +667,12 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	if lowerType == "text" ||
 		strings.HasPrefix(lowerType, "text/") ||
 		(lowerType == "" && lowerMode == "") {
-		result = shared.DecodeEntities(result)
+		result, err = shared.DecodeEntities(result)
 	} else if strings.Contains(lowerType, "xhtml") {
 		result = ap.stripWrappingDiv(result)
 	} else if lowerType == "html" {
 		result = ap.stripWrappingDiv(result)
-		result = shared.DecodeEntities(result)
+		result, err = shared.DecodeEntities(result)
 	} else {
 		decodedStr, err := base64.StdEncoding.DecodeString(result)
 		if err == nil {
@@ -680,7 +680,7 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 		}
 	}
 
-	return result, nil
+	return result, err
 }
 
 func (ap *Parser) parseLanguage(p *xpp.XMLPullParser) string {
