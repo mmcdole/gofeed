@@ -1,7 +1,7 @@
 {
     "entries": [
         {
-            "summary": "&gt;p&lt;Entry Summary&gt;/p&lt;"
+            "summary": "&lt;p&gt;Entry Summary&lt;/p&gt;"
         }
     ],
     "version": "0.3"

@@ -2,5 +2,5 @@
 Description: feed tagline - xhtml w/ escaped markup
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
-	<tagline type="application/xhtml+xml"><div xmlns="http://www.w3.org/1999/xhtml">&gt;p&lt;Feed Tagline&lt;/p&gt;</div></tagline>
+	<tagline type="application/xhtml+xml"><div xmlns="http://www.w3.org/1999/xhtml">&lt;p&gt;Feed Tagline&lt;/p&gt;</div></tagline>
 </feed>
