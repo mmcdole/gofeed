@@ -1,5 +1,6 @@
 <!--
-Description: feed 
+Description: feed tagline - escaped markup
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<tagline type="text/html" mode="escaped">&lt;p&gt;Feed Tagline&lt;/p&gt;</tagline>
 </feed>
