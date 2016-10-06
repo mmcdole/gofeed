@@ -1,7 +1,6 @@
 package shared
 
 import (
-	"fmt"
 	"io"
 
 	"golang.org/x/net/html/charset"
