@@ -74,6 +74,10 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 	client := f.httpClient()
 	resp, err := client.Get(feedURL)
 
+	if err != nil {
+		return nil, err
+	}
+
 	if resp != nil {
 		defer func() {
 			ce := resp.Body.Close()
@@ -81,10 +85,6 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 				err = ce
 			}
 		}()
-	}
-
-	if err != nil {
-		return nil, err
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
