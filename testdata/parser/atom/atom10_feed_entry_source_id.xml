@@ -2,4 +2,9 @@
 Description: 
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+    	<id>http://example.org</id>
+    </source>
+  </entry>
 </feed>

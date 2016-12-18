@@ -1,5 +1,10 @@
 <!--
-Description: 
+Description: entry source link - rel
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <link rel="self"></link>
+    </source>
+  </entry>
 </feed>
