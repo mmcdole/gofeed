@@ -4,7 +4,7 @@
             "source": {
                 "links": [
                     {
-                        "href": "http://www.example.org",
+                        "href": "http://example.org",
                         "rel": "alternate"
                     }
                 ]

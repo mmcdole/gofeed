@@ -5,7 +5,7 @@ Description: entry source contributor - uri
   <entry>
     <source>
       <contributor>
-        <uri>https://example.org</uri>
+        <uri>http://example.org</uri>
       </contributor>
     </source>
   </entry>
