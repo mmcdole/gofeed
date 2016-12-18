@@ -2,7 +2,7 @@
 Description: feed entry modified date
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
-	<entry>
-		<modified>Sun, 06 Jul 2014 12:56:00 GMT</modified>
-	</entry>
+  <entry>
+    <modified>Sun, 06 Jul 2014 12:56:00 GMT</modified>
+  </entry>
 </feed>

@@ -2,10 +2,10 @@
 Description: rdf image title - cdata escaped markup
 -->
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
-	<channel rdf:about="http://example.org/index.rdf">
-		<image rdf:resource="http://example.org/image.gif" />
-	</channel>
-	<image rdf:about="http://example.org/image.gif">
-		<title><![CDATA[&lt;p&gt;Image Title&lt;/p&gt;]]></title>
-	</image>
+  <channel rdf:about="http://example.org/index.rdf">
+    <image rdf:resource="http://example.org/image.gif" />
+  </channel>
+  <image rdf:about="http://example.org/image.gif">
+    <title><![CDATA[&lt;p&gt;Image Title&lt;/p&gt;]]></title>
+  </image>
 </rdf:RDF>

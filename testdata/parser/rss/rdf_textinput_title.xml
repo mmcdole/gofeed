@@ -5,7 +5,7 @@ Description: rdf textinput title
   <channel rdf:about="http://example.org/index.rdf">
     <textinput rdf:resource="http://example.org/search" />
   </channel>
-	<textinput rdf:about="http://example.org/search">
-		<title>TextInput Title</title>
-	</textinput>
+  <textinput rdf:about="http://example.org/search">
+    <title>TextInput Title</title>
+  </textinput>
 </rdf:RDF>

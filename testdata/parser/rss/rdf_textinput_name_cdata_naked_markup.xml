@@ -5,7 +5,7 @@ Description: rdf textinput name - cdata naked markup
   <channel rdf:about="http://example.org/index.rdf">
     <textinput rdf:resource="http://example.org/search" />
   </channel>
-	<textinput rdf:about="http://example.org/search">
+  <textinput rdf:about="http://example.org/search">
     <name><![CDATA[<p>TextInput Name</p>]]></name>
-	</textinput>
+  </textinput>
 </rdf:RDF>
