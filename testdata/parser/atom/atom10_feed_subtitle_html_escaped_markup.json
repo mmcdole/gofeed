@@ -1,5 +1,5 @@
 {
-    "subtitle": "Feed <b>Subtitle</b>",
+    "subtitle": "<p>Feed Subtitle</p>",
     "entries": [],
     "version": "1.0"
 }

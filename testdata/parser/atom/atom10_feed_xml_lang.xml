@@ -1,5 +1,5 @@
 <!--
-Description: 
+Description: feed language
 -->
-<feed xmlns="http://www.w3.org/2005/Atom">
+<feed xmlns="http://www.w3.org/2005/Atom"  xml:lang="en">
 </feed>
