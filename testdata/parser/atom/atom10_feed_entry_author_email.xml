@@ -1,0 +1,10 @@
+<!--
+Description: entry author email
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<author>
+			<email>email@example.org</email>
+		</author>
+	</entry>
+</feed>

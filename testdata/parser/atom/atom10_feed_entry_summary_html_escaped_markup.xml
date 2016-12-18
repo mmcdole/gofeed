@@ -1,0 +1,8 @@
+<!--
+Description: entry summary - html w/ escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+  	<summary type="html">&lt;p&gt;Entry Summary&lt;/p&gt;</summary>
+  </entry>
+</feed>

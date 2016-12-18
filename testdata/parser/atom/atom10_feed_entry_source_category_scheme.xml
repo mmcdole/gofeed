@@ -1,0 +1,11 @@
+<!--
+Description: entry source category - scheme
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+	  <category scheme="http://example.org/categories"/>
+	</source>
+  </entry>
+</feed>
+

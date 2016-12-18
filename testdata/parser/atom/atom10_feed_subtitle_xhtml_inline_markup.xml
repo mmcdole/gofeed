@@ -1,0 +1,6 @@
+<!--
+Description: feed subtitle - xhtml w/ inline markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<subtitle type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Feed Subtitle</p></div></subtitle>
+</feed>

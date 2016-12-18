@@ -1,0 +1,10 @@
+<!--
+Description: entry contributor uri
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<contributor>
+			<uri>http://example.org</uri>
+		</contributor>
+	</entry>
+</feed>

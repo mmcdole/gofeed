@@ -1,0 +1,8 @@
+<!--
+Description: entry title - text
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<title type="text">Entry Title</title>
+	</entry>
+</feed>

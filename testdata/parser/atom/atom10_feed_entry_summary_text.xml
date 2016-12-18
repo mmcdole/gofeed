@@ -1,0 +1,8 @@
+<!--
+Description: entry summary - text
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+  	<summary type="text">Entry Summary</summary>
+  </entry>
+</feed>

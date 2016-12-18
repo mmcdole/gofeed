@@ -1,0 +1,14 @@
+{
+    "entries": [
+        {
+            "source": {
+                "authors": [
+                    {
+                        "uri": "http://example.org"
+                    }
+                ]
+            }
+        }
+    ],
+    "version": "1.0"
+}

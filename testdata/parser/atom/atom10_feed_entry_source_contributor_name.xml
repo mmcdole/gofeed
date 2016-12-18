@@ -1,0 +1,13 @@
+<!--
+Description: entry source contributor - name
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <contributor>
+        <name>Contributor Name</name>
+      </contributor>
+    </source>
+  </entry>
+</feed>
+

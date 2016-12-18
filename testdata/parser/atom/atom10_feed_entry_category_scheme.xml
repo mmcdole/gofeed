@@ -1,0 +1,8 @@
+<!--
+Description: entry category scheme
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<category scheme="http://example.org/scheme" />
+	</entry>
+</feed>

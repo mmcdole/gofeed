@@ -1,0 +1,21 @@
+{
+    "entries": [
+        {
+            "source": {
+                "authors": [
+                    {
+                        "name":"Author Name 1",
+                        "uri":"http://example.org/1",
+                        "email": "email@example.org"
+                    },
+                    {
+                        "name":"Author Name 2",
+                        "uri":"http://example.org/2",
+                        "email": "email2@example.org"
+                    }
+                ]
+            }
+        }
+    ],
+    "version": "1.0"
+}

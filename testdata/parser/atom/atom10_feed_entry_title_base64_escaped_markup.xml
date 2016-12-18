@@ -1,0 +1,8 @@
+<!--
+Description: entry title - base64 w/ escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <title type="application/octet-stream">Jmx0O3AmZ3Q7RW50cnkgVGl0bGUmbHQ7L3AmZ3Q7</title>
+  </entry>
+</feed>

@@ -1,0 +1,10 @@
+<!--
+Description: entry source subtitle - html w/ escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <subtitle type="html">&lt;p&gt;Source Subtitle&lt;/p&gt;</subtitle>
+    </source>
+  </entry>
+</feed>
