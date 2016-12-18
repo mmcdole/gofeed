@@ -2,7 +2,7 @@
 Description: entry link - rel
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<entry>
-		<link rel="self"></link>
-	</entry>
+  <entry>
+    <link rel="self"></link>
+  </entry>
 </feed>

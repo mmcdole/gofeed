@@ -2,7 +2,7 @@
 Description: entry rights
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<entry>
-		<rights>Entry Rights</rights>
-	</entry>
+  <entry>
+    <rights>Entry Rights</rights>
+  </entry>
 </feed>

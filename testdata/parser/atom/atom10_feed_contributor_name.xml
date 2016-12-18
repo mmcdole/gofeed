@@ -2,7 +2,7 @@
 Description: feed contributor name
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<contributor>
-		<name>Contributor Name</name>
-	</contributor>
+  <contributor>
+    <name>Contributor Name</name>
+  </contributor>
 </feed>

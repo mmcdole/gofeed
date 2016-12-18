@@ -2,5 +2,5 @@
 Description: feed title - xhtml w/ escaped markup
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
-	<title type="application/xhtml+xml"><div xmlns="http://www.w3.org/1999/xhtml">&lt;p&gt;Feed Title&lt;/p&gt;</div></title>
+  <title type="application/xhtml+xml"><div xmlns="http://www.w3.org/1999/xhtml">&lt;p&gt;Feed Title&lt;/p&gt;</div></title>
 </feed>

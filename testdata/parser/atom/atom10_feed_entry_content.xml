@@ -2,9 +2,9 @@
 Description: entry content
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<entry>
-		<content>
-			Entry Content
-		</content>
-	</entry>
+  <entry>
+    <content>
+      Entry Content
+    </content>
+  </entry>
 </feed>

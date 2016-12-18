@@ -2,7 +2,7 @@
 Description: feed author url
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<author>
-		<url>http://example.org</url>
-	</author>
+  <author>
+    <url>http://example.org</url>
+  </author>
 </feed>

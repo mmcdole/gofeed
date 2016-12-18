@@ -2,7 +2,7 @@
 Description: entry content - html w/ escaped markup
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<entry>
-		<content type="html">&lt;p&gt;Entry Content&lt;/p&gt;</content>
-	</entry>
+  <entry>
+    <content type="html">&lt;p&gt;Entry Content&lt;/p&gt;</content>
+  </entry>
 </feed>

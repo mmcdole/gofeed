@@ -4,7 +4,7 @@ Description: entry source category - term
 <feed xmlns="http://www.w3.org/2005/Atom">
   <entry>
     <source>
-    	<category term="Category Term"></category>
+      <category term="Category Term"></category>
     </source>
   </entry>
 </feed>

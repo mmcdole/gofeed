@@ -2,7 +2,7 @@
 Description: entry link - length
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<entry>
-		<link length="1024"></link>
-	</entry>
+  <entry>
+    <link length="1024"></link>
+  </entry>
 </feed>

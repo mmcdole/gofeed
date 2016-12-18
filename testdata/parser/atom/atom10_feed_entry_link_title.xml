@@ -2,7 +2,7 @@
 Description: entry link - title
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<entry>
-		<link title="Link Title"></link>
-	</entry>
+  <entry>
+    <link title="Link Title"></link>
+  </entry>
 </feed>

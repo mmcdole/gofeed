@@ -7,7 +7,7 @@ Description: feed contributor - multiple
     <email>email@example.org</email>
     <uri>http://example.org/1</uri>
   </contributor>
-   <contributor>
+  <contributor>
     <name>Contributor Name 2</name>
     <email>email2@example.org</email>
     <uri>http://example.org/2</uri>
