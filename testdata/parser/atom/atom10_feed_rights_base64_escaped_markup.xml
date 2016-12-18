@@ -1,0 +1,6 @@
+<!--
+Description: feed rights - base64 w/ escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<rights type="application/octet-stream">Jmx0O3AmZ3Q7RmVlZCBSaWdodHMmbHQ7L3AmZ3Q7</rights>
+</feed>

@@ -1,0 +1,6 @@
+<!--
+Description: feed generator url
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<generator url="http://example.org"></generator>
+</feed>

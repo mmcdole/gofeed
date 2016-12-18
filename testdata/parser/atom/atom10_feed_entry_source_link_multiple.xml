@@ -1,0 +1,12 @@
+<!--
+Description: entry source link - multiple
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <link href="http://example.org/1" rel="alternate" type="application/xhtml+xml"></link>
+      <link href="http://example.org/2" rel="service.post" type="application/atom+xml"></link>
+    </source>
+  </entry>
+</feed>
+

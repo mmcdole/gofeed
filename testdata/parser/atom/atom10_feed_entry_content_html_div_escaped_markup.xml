@@ -1,0 +1,10 @@
+<!--
+Description: entry content - div escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<content type="html">
+			<div xmlns="http://www.w3.org/1999/xhtml">&lt;p&gt;Entry Content&lt;/p&gt;</div>
+		</content>
+	</entry>
+</feed>

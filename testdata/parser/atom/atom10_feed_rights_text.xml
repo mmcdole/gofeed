@@ -1,0 +1,6 @@
+<!--
+Description: feed rights - text
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<rights type="text">Feed Rights</rights>
+</feed>

@@ -1,0 +1,10 @@
+<!--
+Description: entry source rights - base64 w/ escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <rights type="application/octet-stream">Jmx0O3AmZ3Q7U291cmNlIFJpZ2h0cyZsdDsvcCZndDs=</rights>
+    </source>
+  </entry>
+</feed>

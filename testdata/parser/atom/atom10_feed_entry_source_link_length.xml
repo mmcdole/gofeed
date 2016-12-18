@@ -1,0 +1,11 @@
+<!--
+Description: entry source link - length
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <link length="1024"></link>
+    </source>
+  </entry>
+</feed>
+
