@@ -1,0 +1,11 @@
+<!--
+Description: feed authors uri
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<author>
+		<uri>http://example.org/1</uri>
+	</author>
+	<author>
+		<uri>http://example.org/2</uri>
+	</author>
+</feed>

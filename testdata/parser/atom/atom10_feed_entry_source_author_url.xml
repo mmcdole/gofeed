@@ -1,10 +1,12 @@
 <!--
-Description: entry source category - term
+Description: entry source author - url
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
   <entry>
     <source>
-    	<category term="Category Term"></category>
+      <author>
+        <url>http://example.org</url>
+      </author>
     </source>
   </entry>
 </feed>

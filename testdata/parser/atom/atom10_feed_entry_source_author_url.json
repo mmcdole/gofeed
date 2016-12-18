@@ -2,9 +2,9 @@
     "entries": [
         {
             "source": {
-                "categories": [
+                "authors": [
                     {
-                        "term": "Freiräume"
+                        "uri": "http://example.org"
                     }
                 ]
             }

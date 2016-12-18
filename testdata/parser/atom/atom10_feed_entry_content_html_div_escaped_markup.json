@@ -2,7 +2,7 @@
     "entries": [
         {
             "content": {
-                "type": "xhtml",
+                "type": "html",
                 "value": "<p>Entry Content</p>"
             }
         }

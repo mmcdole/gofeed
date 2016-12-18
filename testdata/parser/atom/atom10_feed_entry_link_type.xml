@@ -1,8 +1,8 @@
 <!--
-Description: entry link - title
+Description: entry link - type
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
-		<link title="Link Title"></link>
+		<link type="text/html"></link>
 	</entry>
 </feed>
