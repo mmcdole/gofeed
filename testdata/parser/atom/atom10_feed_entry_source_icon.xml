@@ -1,0 +1,10 @@
+<!--
+Description: entry source - icon
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<source>
+			<icon>http://example.org/icon.png</icon>
+		</source>
+	</entry>
+</feed>

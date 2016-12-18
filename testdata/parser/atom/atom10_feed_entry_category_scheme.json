@@ -3,7 +3,7 @@
         {
             "categories": [
                 {
-                    "scheme": "http://feedparser.org/tests/"
+                    "scheme": "http://example.org/scheme"
                 }
             ]
         }

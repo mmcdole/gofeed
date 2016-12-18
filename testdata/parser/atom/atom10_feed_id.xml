@@ -1,0 +1,6 @@
+<!--
+Description: feed id
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<id>http://example.org</id>
+</feed>

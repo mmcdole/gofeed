@@ -1,0 +1,10 @@
+<!--
+Description: entry source category - label
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+	  <category label="Category Label"/>
+	</source>
+  </entry>
+</feed>

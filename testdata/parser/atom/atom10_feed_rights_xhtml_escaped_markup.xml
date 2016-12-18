@@ -1,0 +1,6 @@
+<!--
+Description: feed rights - xhtml w/ escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<rights type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">&lt;p&gt;Feed Rights&lt;/p&gt;</div></rights>
+</feed>

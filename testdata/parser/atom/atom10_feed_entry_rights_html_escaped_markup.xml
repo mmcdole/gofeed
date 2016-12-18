@@ -1,0 +1,8 @@
+<!--
+Description: entry rights - html w/ escaped markup
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<rights type="html">&lt;p&gt;Entry Rights&lt;/p&gt;</rights>
+	</entry>
+</feed>

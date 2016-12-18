@@ -1,0 +1,8 @@
+<!--
+Description: entry summary - base64
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+  	<summary type="application/octet-stream">PHA+RW50cnkgU3VtbWFyeTwvcD4=</summary>
+  </entry>
+</feed>

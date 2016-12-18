@@ -1,0 +1,15 @@
+<!--
+Description: feed contributor - multiple
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <contributor>
+    <name>Contributor Name 1</name>
+    <email>email@example.org</email>
+    <uri>http://example.org/1</uri>
+  </contributor>
+   <contributor>
+    <name>Contributor Name 2</name>
+    <email>email2@example.org</email>
+    <uri>http://example.org/2</uri>
+  </contributor>
+</feed>

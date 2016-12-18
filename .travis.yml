@@ -5,15 +5,12 @@ go:
 - 1.5
 - 1.4
 install:
-- go get github.com/mmcdole/goxpp
-- go get github.com/PuerkitoBio/goquery
-- go get github.com/stretchr/testify/assert
+- go get -t -v ./...
+- go get github.com/go-playground/overalls
 - go get github.com/mattn/goveralls
 - go get golang.org/x/tools/cmd/cover
-- go get golang.org/x/text/encoding
 script:
-- echo 'mode: atomic' > coverage.out && go list ./... | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=coverage.tmp {} && tail -n +2 coverage.tmp >> coverage.out' && rm coverage.tmp
-- $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
-env:
-  global:
-    secure: bq83WiMou7PNDPo6jKhS4iCQ7z5LBz4yaF0pyXfUTuq6LZqNzQ3RLmd0I2f7x0tSLR3EqU+gLcMEuGBtszOGY1WhWdGxgQNQVKAGnNr71bGUM9Ag9jC4GXR+UJxil/bIr/IfxESuSMPeKCc7DMmsA+JnBhJrjku4uT/ZPE4DHa56W9et/KqM+n8FuXPKy/HhYSxavh2KiIuYL1ondRODNd7VtcqDsK6Akb5xSAAkqouCn7VGIeJPd3mqxo7oomBVBwJMrsS0nNy0GSXIaX+CRJAD2cQPxRDeC2+mMYk4biYi/4Osnq2P6ZgEL3g77NVAWzCCazrMvx1htxJnf2g7uFoZffDK5zLyOV6CLaFEstIS+s7AzzHb0yTl4l6yv50uiCeZcsjcVq/bKozGsorrAxtOjdcYF4pVzmPsdUFr7h6jMm1285hMjqY8RJLcAXRncbfbmHt4z7IpGR7JqaD0vuJqKfaXL0DfSmwucgDWxL0j/gsW+EV1YSygqPkeGb94hMcT1xFJi6WBAxU2XtPvQxCnPBHet1jQ896WbrkdUZF1iuyxoDRd87dv3Sk9GD2iVBY+UVyFjw7xGKAmgB+xVdG4Ro7gvrfxi4o7MVtKKWvh/dXsK24k3tOKFcpYW/EyQpNEdyfqkwerbp1IQ6EkRbBUFpAlu9SYxw1DmUdABDs=
+- go test -v ./...
+- $GOPATH/bin/overalls -project=github.com/mmcdole/gofeed -covermode=count -ignore=.git,vendor -debug
+after_success:
+    - $GOPATH/bin/goveralls -coverprofile=overalls.coverprofile -service=travis-ci

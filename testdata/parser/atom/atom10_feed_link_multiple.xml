@@ -1,0 +1,7 @@
+<!--
+Description: feed link - multiple
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<link href="http://www.example.org/1" type="application/xhtml+xml" rel="self"></link>
+	<link href="http://www.example.org/2" type="application/atom+xml" rel="service.post"></link>
+</feed>

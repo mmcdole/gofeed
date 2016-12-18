@@ -1,0 +1,10 @@
+<!--
+Description: entry source rights
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <source>
+      <rights>Source Rights</rights>
+    </source>
+  </entry>
+</feed>

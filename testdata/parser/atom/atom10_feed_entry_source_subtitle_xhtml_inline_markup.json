@@ -2,7 +2,7 @@
     "entries": [
         {
             "source": {
-                "subtitle": "Source <b>Subtitle</b>"
+                "subtitle": "<p>Source Subtitle</p>"
             }
         }
     ],

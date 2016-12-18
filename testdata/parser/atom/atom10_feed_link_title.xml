@@ -1,0 +1,6 @@
+<!--
+Description: feed link title
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<link title="Link Title"></link>
+</feed>
