@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/rss"
@@ -140,6 +141,8 @@ func (f *Parser) httpClient() *http.Client {
 	if f.Client != nil {
 		return f.Client
 	}
-	f.Client = &http.Client{}
+	f.Client = &http.Client{
+		Timeout: time.Duration(15 * time.Second),
+	}
 	return f.Client
 }
