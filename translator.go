@@ -49,6 +49,8 @@ func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Generator = t.translateFeedGenerator(rss)
 	result.Categories = t.translateFeedCategories(rss)
 	result.Items = t.translateFeedItems(rss)
+	result.ITunesExt = rss.ITunesExt
+	result.DublinCoreExt = rss.DublinCoreExt
 	result.Extensions = rss.Extensions
 	result.FeedVersion = rss.Version
 	result.FeedType = "rss"
@@ -67,6 +69,8 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.Image = t.translateItemImage(rssItem)
 	item.Categories = t.translateItemCategories(rssItem)
 	item.Enclosures = t.translateItemEnclosures(rssItem)
+	item.DublinCoreExt = rssItem.DublinCoreExt
+	item.ITunesExt = rssItem.ITunesExt
 	item.Extensions = rssItem.Extensions
 	return
 }

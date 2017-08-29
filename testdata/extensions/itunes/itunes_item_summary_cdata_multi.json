@@ -1,0 +1,23 @@
+{
+    "items": [
+        {
+            "itunesExt": {
+                "summary": "Line 1\n            Line 2\n            Line 3"
+            },
+            "extensions": {
+                "itunes": {
+                    "summary": [
+                        {
+                            "name": "summary",
+                            "value": "Line 1\n            Line 2\n            Line 3",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

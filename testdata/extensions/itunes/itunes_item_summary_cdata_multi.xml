@@ -1,0 +1,16 @@
+<!--
+Description: rss item itunes summary - cdata multiline 
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <itunes:summary>
+          <![CDATA[
+            Line 1
+            Line 2
+            Line 3
+          ]]>
+        </itunes:summary>
+    </item>
+  </channel>
+</rss>
