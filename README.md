@@ -222,7 +222,7 @@ Description | /rss/channel/item/description<br>/rdf:RDF/item/description<br>/rss
 Content | | /feed/entry/content
 Link | /rss/channel/item/link<br>/rdf:RDF/item/link | /feed/entry/link[@rel=”alternate”]/@href<br>/feed/entry/link[not(@rel)]/@href
 Updated | /rss/channel/item/dc:date<br>/rdf:RDF/rdf:item/dc:date | /feed/entry/modified<br>/feed/entry/updated
-Published | /rss/channel/item/pubDate | /feed/entry/published<br>/feed/entry/issued
+Published | /rss/channel/item/pubDate<br>/rss/channel/item/dc:date | /feed/entry/published<br>/feed/entry/issued
 Author | /rss/channel/item/author<br>/rss/channel/item/dc:author<br>/rdf:RDF/item/dc:author<br>/rss/channel/item/dc:creator<br>/rdf:RDF/item/dc:creator<br>/rss/channel/item/itunes:author | /feed/entry/author
 Guid |  /rss/channel/item/guid | /feed/entry/id
 Image | /rss/channel/item/itunes:image<br>/rss/channel/item/media:image |

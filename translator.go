@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed/atom"
-	"github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/gofeed/rss"
 )
@@ -292,12 +291,26 @@ func (t *DefaultRSSTranslator) translateItemUpdatedParsed(rssItem *rss.Item) (up
 	return
 }
 
-func (t *DefaultRSSTranslator) translateItemPublished(rssItem *rss.Item) (updated string) {
-	return rssItem.PubDate
+func (t *DefaultRSSTranslator) translateItemPublished(rssItem *rss.Item) (pubDate string) {
+	if rssItem.PubDate != "" {
+		return rssItem.PubDate
+	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
+		return t.firstEntry(rssItem.DublinCoreExt.Date)
+	}
+	return
 }
 
-func (t *DefaultRSSTranslator) translateItemPublishedParsed(rssItem *rss.Item) (updated *time.Time) {
-	return rssItem.PubDateParsed
+func (t *DefaultRSSTranslator) translateItemPublishedParsed(rssItem *rss.Item) (pubDate *time.Time) {
+	if rssItem.PubDateParsed != nil {
+		return rssItem.PubDateParsed
+	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
+		pubDateText := t.firstEntry(rssItem.DublinCoreExt.Date)
+		pubDateParsed, err := shared.ParseDate(pubDateText)
+		if err == nil {
+			pubDate = &pubDateParsed
+		}
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *Person) {
