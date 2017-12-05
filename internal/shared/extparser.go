@@ -13,7 +13,7 @@ import (
 func IsExtension(p *xpp.XMLPullParser) bool {
 	space := strings.TrimSpace(p.Space)
 	if prefix, ok := p.Spaces[space]; ok {
-		return !(prefix == "" || prefix == "rss" || prefix == "rdf")
+		return !(prefix == "" || prefix == "rss" || prefix == "rdf" || prefix == "content")
 	}
 
 	return p.Space != ""
