@@ -308,7 +308,6 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 }
 
 func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
-	var isContent bool
 
 	if err = p.Expect(xpp.StartTag, "item"); err != nil {
 		return nil, err
@@ -332,11 +331,6 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 
 			name := strings.ToLower(p.Name)
 
-			space := strings.TrimSpace(p.Space)
-			if prefix, ok := p.Spaces[space]; ok {
-				isContent = prefix == "content"
-			}
-
 			if shared.IsExtension(p) {
 				ext, err := shared.ParseExtension(extensions, p)
 				if err != nil {
@@ -355,12 +349,15 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 					return nil, err
 				}
 				item.Description = result
-			} else if isContent && name == "encoded" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
+			} else if name == "encoded" {
+				space := strings.TrimSpace(p.Space)
+				if prefix, ok := p.Spaces[space]; ok && prefix == "content" {
+					result, err := shared.ParseText(p)
+					if err != nil {
+						return nil, err
+					}
+					item.Content = result
 				}
-				item.Content = result
 			} else if name == "link" {
 				result, err := shared.ParseText(p)
 				if err != nil {
