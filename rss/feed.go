@@ -47,6 +47,7 @@ type Item struct {
 	Title         string                   `json:"title,omitempty"`
 	Link          string                   `json:"link,omitempty"`
 	Description   string                   `json:"description,omitempty"`
+	Content       string                   `json:"content,omitempty"`
 	Author        string                   `json:"author,omitempty"`
 	Categories    []*Category              `json:"categories,omitempty"`
 	Comments      string                   `json:"comments,omitempty"`

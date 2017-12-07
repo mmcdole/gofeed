@@ -61,6 +61,7 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item = &Item{}
 	item.Title = t.translateItemTitle(rssItem)
 	item.Description = t.translateItemDescription(rssItem)
+	item.Content = t.translateItemContent(rssItem)
 	item.Link = t.translateItemLink(rssItem)
 	item.Published = t.translateItemPublished(rssItem)
 	item.PublishedParsed = t.translateItemPublishedParsed(rssItem)
@@ -268,6 +269,10 @@ func (t *DefaultRSSTranslator) translateItemDescription(rssItem *rss.Item) (desc
 		desc = t.firstEntry(rssItem.DublinCoreExt.Description)
 	}
 	return
+}
+
+func (t *DefaultRSSTranslator) translateItemContent(rssItem *rss.Item) (content string) {
+	return rssItem.Content
 }
 
 func (t *DefaultRSSTranslator) translateItemLink(rssItem *rss.Item) (link string) {
