@@ -36,7 +36,7 @@ It also provides support for parsing several popular predefined extension module
 
 The universal `gofeed.Parser` works in 3 stages: detection, parsing and translation.  It first detects the feed type that it is currently parsing.  Then it uses a feed specific parser to parse the feed into its true representation which will be either a `rss.Feed` or `atom.Feed`.  These models cover every field possible for their respective feed types.  Finally, they are *translated* into a `gofeed.Feed` model that is a hybrid of both feed types.  Performing the universal feed parsing in these 3 stages allows for more flexibility and keeps the code base more maintainable by separating RSS and Atom parsing into seperate packages.
 
-![Diagram](https://raw.githubusercontent.com/mmcdole/gofeed/master/docs/sequence.png)
+![Diagram](docs/sequence.png)
 
 The translation step is done by anything which adheres to the `gofeed.Translator` interface.  The `DefaultRSSTranslator` and `DefaultAtomTranslator` are used behind the scenes when you use the `gofeed.Parser` with its default settings.  You can see how they translate fields from ```atom.Feed``` or ```rss.Feed``` to the universal ```gofeed.Feed``` struct in the [Default Mappings](#default-mappings) section.  However, should you disagree with the way certain fields are translated you can easily supply your own `gofeed.Translator` and override this behavior.  See the [Advanced Usage](#advanced-usage) section for an example how to do this.
 
