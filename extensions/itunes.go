@@ -71,6 +71,7 @@ func NewITunesItemExtension(extensions map[string][]Extension) *ITunesItemExtens
 	entry.Explicit = parseTextExtension("explicit", extensions)
 	entry.Subtitle = parseTextExtension("subtitle", extensions)
 	entry.Summary = parseTextExtension("summary", extensions)
+	entry.Keywords = parseTextExtension("keywords", extensions)
 	entry.Image = parseImage(extensions)
 	entry.IsClosedCaptioned = parseTextExtension("isClosedCaptioned", extensions)
 	entry.Order = parseTextExtension("order", extensions)
