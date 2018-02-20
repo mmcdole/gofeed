@@ -220,7 +220,7 @@ Categories | /rss/channel/category<br>/rss/channel/itunes:category<br>/rss/chann
 --- | --- | ---
 Title | /rss/channel/item/title<br>/rdf:RDF/item/title<br>/rdf:RDF/item/dc:title<br>/rss/channel/item/dc:title | /feed/entry/title
 Description | /rss/channel/item/description<br>/rdf:RDF/item/description<br>/rss/channel/item/dc:description<br>/rdf:RDF/item/dc:description | /feed/entry/summary
-Content | | /feed/entry/content
+Content | /rss/channel/item/content:encoded | /feed/entry/content
 Link | /rss/channel/item/link<br>/rdf:RDF/item/link | /feed/entry/link[@rel=”alternate”]/@href<br>/feed/entry/link[not(@rel)]/@href
 Updated | /rss/channel/item/dc:date<br>/rdf:RDF/rdf:item/dc:date | /feed/entry/modified<br>/feed/entry/updated
 Published | /rss/channel/item/pubDate<br>/rss/channel/item/dc:date | /feed/entry/published<br>/feed/entry/issued
