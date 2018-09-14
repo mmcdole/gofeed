@@ -77,7 +77,10 @@ func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 // attempts to parse the response into the universal feed type.
 func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 	client := f.httpClient()
-	resp, err := client.Get(feedURL)
+
+	req, _ := http.NewRequest("GET", feedURL, nil)
+	req.Header.Set("User-Agent", "Gofeed/1.0")
+	resp, err := client.Do(req)
 
 	if err != nil {
 		return nil, err
