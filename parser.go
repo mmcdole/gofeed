@@ -79,7 +79,7 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 	client := f.httpClient()
 
 	req, _ := http.NewRequest("GET", feedURL, nil)
-	req.Header.Set("User-Agent", "GoFeed RSS Reader 1.0")
+	req.Header.Set("User-Agent", "Gofeed/1.0")
 	resp, err := client.Do(req)
 
 	if err != nil {
