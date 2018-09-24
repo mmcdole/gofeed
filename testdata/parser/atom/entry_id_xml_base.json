@@ -1,0 +1,8 @@
+{
+    "entries": [
+        {
+            "id": "http://example.com/test/relative/link"
+        }
+    ],
+    "version": "1.0"
+}

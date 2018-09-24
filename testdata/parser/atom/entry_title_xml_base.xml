@@ -1,0 +1,8 @@
+<!--
+Description: entry title content xml:base
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+<entry>
+  <title type="html" xml:base="http://example.com/test/">Example <a href="test.html">test</a></title>
+</entry>
+</feed>

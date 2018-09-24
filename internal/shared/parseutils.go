@@ -21,49 +21,6 @@ var (
 	InvalidNumericReference = errors.New("invalid numeric reference")
 )
 
-// FindRoot iterates through the tokens of an xml document until
-// it encounters its first StartTag event.  It returns an error
-// if it reaches EndDocument before finding a tag.
-func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
-	for {
-		event, err = p.Next()
-		if err != nil {
-			return event, err
-		}
-		if event == xpp.StartTag {
-			break
-		}
-
-		if event == xpp.EndDocument {
-			return event, fmt.Errorf("Failed to find root node before document end.")
-		}
-	}
-	return
-}
-
-// NextTag iterates through the tokens until it reaches a StartTag or EndTag
-// It is similar to goxpp's NextTag method except it wont throw an error if
-// the next immediate token isnt a Start/EndTag.  Instead, it will continue to
-// consume tokens until it hits a Start/EndTag or EndDocument.
-func NextTag(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
-	for {
-		event, err = p.Next()
-		if err != nil {
-			return event, err
-		}
-
-		if event == xpp.StartTag || event == xpp.EndTag {
-			break
-		}
-
-		if event == xpp.EndDocument {
-			return event, fmt.Errorf("Failed to find NextTag before reaching the end of the document.")
-		}
-
-	}
-	return
-}
-
 // ParseText is a helper function for parsing the text
 // from the current element of the XMLPullParser.
 // This function can handle parsing naked XML text from

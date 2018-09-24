@@ -1,0 +1,6 @@
+<!--
+Description: feed copyright content xml:base inherited from parent element
+-->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/test/">
+  <rights type="html">Example <a href="test.html">test</a></rights>
+</feed>

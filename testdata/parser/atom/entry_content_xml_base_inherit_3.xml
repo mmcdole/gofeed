@@ -1,0 +1,8 @@
+<!--
+Description: entry content xml:base resets properly on new element
+-->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/parent/">
+<entry>
+  <content type="html" xml:base="http://example.com/test/">Example <a href="test.html">test</a></content>
+</entry>
+</feed>

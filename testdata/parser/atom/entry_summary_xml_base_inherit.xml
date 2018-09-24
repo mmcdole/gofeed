@@ -1,0 +1,8 @@
+<!--
+Description: entry summary content xml:base inherited from parent element
+-->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/test/">
+<entry>
+  <summary type="html">Example <a href="test.html">test</a></summary>
+</entry>
+</feed>

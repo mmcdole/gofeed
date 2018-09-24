@@ -1,0 +1,8 @@
+<!--
+Description: entry id relative to xml:base
+-->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/test/">
+<entry>
+  <id>relative/link</id>
+</entry>
+</feed>
