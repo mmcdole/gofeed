@@ -1,0 +1,11 @@
+<!--
+Description: entry author url relative to Content-Location header, ignoring sibling base, and resolving absolute path.
+-->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/test/">
+    <entry>
+        <author>
+            <name xml:base="http://example.com/">Name</name>
+            <uri>/relative/link</uri>
+        </author>
+    </entry>
+</feed>

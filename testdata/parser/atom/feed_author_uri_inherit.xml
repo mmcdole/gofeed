@@ -1,0 +1,6 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.org">
+    <author xml:base="http://github.com">
+        <name>John Doe</name>
+        <uri>john</uri>
+    </author>
+</feed>

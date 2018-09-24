@@ -28,7 +28,8 @@ const (
 func DetectFeedType(feed io.Reader) FeedType {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
 
-	_, err := shared.FindRoot(p)
+	xmlBase := shared.XMLBase{}
+	_, err := xmlBase.FindRoot(p)
 	if err != nil {
 		return FeedTypeUnknown
 	}

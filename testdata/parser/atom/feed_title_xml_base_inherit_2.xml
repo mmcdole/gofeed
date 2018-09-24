@@ -1,0 +1,6 @@
+<!--
+Description: feed title content xml:base overrides parent element
+-->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/parent/">
+  <title type="html" xml:base="http://example.com/test/">Example <a href="test.html">test</a></title>
+</feed>

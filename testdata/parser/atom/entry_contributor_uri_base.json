@@ -1,0 +1,12 @@
+{
+    "entries": [
+        {
+            "contributors": [
+                {
+                    "uri": "http://example.com/relative/link"
+                }
+            ]
+        }
+    ],
+    "version": "1.0"
+}
