@@ -37,9 +37,9 @@ func TestParser_Parse(t *testing.T) {
 
 		// Unmarshal expected feed
 		expected := &atom.Feed{}
-		json.Unmarshal(e, &expected)
+		json.Unmarshal(e, expected)
 
-		if assert.Equal(t, actual, expected, "Feed file %s.xml did not match expected output %s.json", name, name) {
+		if assert.Equal(t, expected, actual, "Feed file %s.xml did not match expected output %s.json", name, name) {
 			fmt.Printf("OK\n")
 		} else {
 			fmt.Printf("Failed\n")
