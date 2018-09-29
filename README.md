@@ -248,6 +248,7 @@ Bitcoin: 1CXrjBBkxgVNgKXRAq5MnsR7zzZbHvUHkJ
 
 ## Credits
 
+* [cristoper](https://github.com/cristoper) for his work on implementing xml:base relative URI handling.
 * [Mark Pilgrim](https://en.wikipedia.org/wiki/Mark_Pilgrim) and [Kurt McKee](http://kurtmckee.org) for their work on the excellent [Universal Feed Parser](https://github.com/kurtmckee/feedparser) Python library.  This library was the inspiration for the `gofeed` library.
 * [Dan MacTough](http://blog.mact.me) for his work on [node-feedparser](https://github.com/danmactough/node-feedparser).  It provided inspiration for the set of fields that should be covered in the hybrid `gofeed.Feed` model.
 * [Matt Jibson](https://mattjibson.com/) for his date parsing function in the [goread](https://github.com/mjibson/goread) project.
