@@ -27,7 +27,6 @@ It also provides support for parsing several popular predefined extension module
 - [Default Mappings](#default-mappings)
 - [Dependencies](#dependencies)
 - [License](#license)
-- [Donate](#donate)
 - [Credits](#credits)
 
 ## Overview
@@ -239,12 +238,6 @@ Enclosures | /rss/channel/item/enclosure | /feed/entry/link[@rel=”enclosure”
 ## License
 
 This project is licensed under the [MIT License](https://raw.githubusercontent.com/mmcdole/gofeed/master/LICENSE)
-
-## Donate
-
-I write open source software for fun. However, if you want to buy me a beer because you found something I wrote useful, feel free!
-
-Bitcoin: 1CXrjBBkxgVNgKXRAq5MnsR7zzZbHvUHkJ
 
 ## Credits
 
