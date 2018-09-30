@@ -224,7 +224,7 @@ Link | /rss/channel/item/link<br>/rdf:RDF/item/link | /feed/entry/link[@rel=”a
 Updated | /rss/channel/item/dc:date<br>/rdf:RDF/rdf:item/dc:date | /feed/entry/modified<br>/feed/entry/updated
 Published | /rss/channel/item/pubDate<br>/rss/channel/item/dc:date | /feed/entry/published<br>/feed/entry/issued
 Author | /rss/channel/item/author<br>/rss/channel/item/dc:author<br>/rdf:RDF/item/dc:author<br>/rss/channel/item/dc:creator<br>/rdf:RDF/item/dc:creator<br>/rss/channel/item/itunes:author | /feed/entry/author
-Guid |  /rss/channel/item/guid | /feed/entry/id
+GUID |  /rss/channel/item/guid | /feed/entry/id
 Image | /rss/channel/item/itunes:image<br>/rss/channel/item/media:image |
 Categories | /rss/channel/item/category<br>/rss/channel/item/dc:subject<br>/rss/channel/item/itunes:keywords<br>/rdf:RDF/channel/item/dc:subject | /feed/entry/category
 Enclosures | /rss/channel/item/enclosure | /feed/entry/link[@rel=”enclosure”]
