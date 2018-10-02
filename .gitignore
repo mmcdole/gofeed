@@ -24,3 +24,5 @@ _testmain.go
 *.prof
 
 .DS_STORE
+
+cmd/ftest/ftest
