@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mmcdole/gofeed.svg?branch=master)](https://travis-ci.org/mmcdole/gofeed) [![Coverage Status](https://coveralls.io/repos/github/mmcdole/gofeed/badge.svg?branch=master)](https://coveralls.io/github/mmcdole/gofeed?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/mmcdole/gofeed)](https://goreportcard.com/report/github.com/mmcdole/gofeed) [![](https://godoc.org/github.com/mmcdole/gofeed?status.svg)](http://godoc.org/github.com/mmcdole/gofeed) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
-The `gofeed` library is a robust feed parser that supports parsing both [RSS](https://en.wikipedia.org/wiki/RSS) and [Atom](https://en.wikipedia.org/wiki/Atom_(standard)) feeds.  The universal `gofeed.Parser` will parse and convert all feed types into a hybrid `gofeed.Feed` model.  You also have the option of parsing them into their respective `atom.Feed` and `rss.Feed` models using the feed specific `atom.Parser` or `rss.Parser`.  
+The `gofeed` library is a robust feed parser that supports parsing both [RSS](https://en.wikipedia.org/wiki/RSS) and [Atom](https://en.wikipedia.org/wiki/Atom_(standard)) feeds.  The library provides a universal `gofeed.Parser`  that will parse and convert all feed types into a hybrid `gofeed.Feed` model.  You also have the option of utilizing the feed specific `atom.Parser` or `rss.Parser` parsers which generate `atom.Feed` and `rss.Feed` respectively.
 
 ## Table of Contents
 - [Features](#features)
@@ -30,13 +30,13 @@ The `gofeed` library is a robust feed parser that supports parsing both [RSS](ht
 * Atom 0.3
 * Atom 1.0
 
-##### Extension Support
+#### Extension Support
 
 The `gofeed` library provides support for parsing several popular predefined extensions into ready-made structs, including [Dublin Core](http://dublincore.org/documents/dces/) and [Apple’s iTunes](https://help.apple.com/itc/podcasts_connect/#/itcb54353390).
 
 It parses all other feed extensions in a generic way (see the [Extensions](#extensions) section for more details).
 
-##### Invalid Feeds
+#### Invalid Feeds
 
 A best-effort attempt is made at parsing broken and invalid XML feeds.  Currently, `gofeed` can succesfully parse feeds with the following issues:
 - Unescaped/Naked Markup in feed elements
