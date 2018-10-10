@@ -4,7 +4,21 @@
 
 The `gofeed` library is a robust feed parser that supports parsing both [RSS](https://en.wikipedia.org/wiki/RSS) and [Atom](https://en.wikipedia.org/wiki/Atom_(standard)) feeds.  The universal `gofeed.Parser` will parse and convert all feed types into a hybrid `gofeed.Feed` model.  You also have the option of parsing them into their respective `atom.Feed` and `rss.Feed` models using the feed specific `atom.Parser` or `rss.Parser`.  
 
-##### Supported feed types:
+## Table of Contents
+- [Features](#features)
+- [Overview](#overview)
+- [Basic Usage](#basic-usage)
+- [Advanced Usage](#advanced-usage)
+- [Extensions](#extensions)
+- [Invalid Feeds](#invalid-feeds)
+- [Default Mappings](#default-mappings)
+- [Dependencies](#dependencies)
+- [License](#license)
+- [Credits](#credits)
+
+## Features
+
+#### Supported feed types:
 * RSS 0.90
 * Netscape RSS 0.91
 * Userland RSS 0.91
@@ -16,20 +30,25 @@ The `gofeed` library is a robust feed parser that supports parsing both [RSS](ht
 * Atom 0.3
 * Atom 1.0
 
-It also provides support for parsing several popular predefined extension modules, including [Dublin Core](http://dublincore.org/documents/dces/) and [Apple’s iTunes](https://help.apple.com/itc/podcasts_connect/#/itcb54353390), as well as arbitrary extensions.  See the [Extensions](#extensions) section for more details.
+##### Extension Support
 
-## Table of Contents
-- [Overview](#overview)
-- [Basic Usage](#basic-usage)
-- [Advanced Usage](#advanced-usage)
-- [Extensions](#extensions)
-- [Invalid Feeds](#invalid-feeds)
-- [Default Mappings](#default-mappings)
-- [Dependencies](#dependencies)
-- [License](#license)
-- [Credits](#credits)
+The `gofeed` library provides support for parsing several popular predefined extensions into ready-made structs, including [Dublin Core](http://dublincore.org/documents/dces/) and [Apple’s iTunes](https://help.apple.com/itc/podcasts_connect/#/itcb54353390).
+
+It parses all other feed extensions in a generic way (see the [Extensions](#extensions) section for more details).
+
+##### Invalid Feeds
+
+A best-effort attempt is made at parsing broken and invalid XML feeds.  Currently, `gofeed` can succesfully parse feeds with the following issues:
+- Unescaped/Naked Markup in feed elements
+- Undeclared namespace prefixes
+- Missing closing tags on certain elements
+- Illegal tags within feed elements without namespace prefixes
+- Missing "required" elements as specified by the respective feed specs.
+- Incorrect date formats 
 
 ## Overview
+
+The `gofeed` library is comprised of a universal feed parser and several feed specific parsers.   Which one you choose depends entirely on your usecase.  If you will be handling both rss and atom feeds then it makes sense to use the `gofeed.Parser`.  If you know ahead of time that you will only be parsing one feed type then it would make sense to use `rss.Parser` or `atom.Parser`.
 
 #### Universal Feed Parser
 
@@ -42,8 +61,6 @@ The translation step is done by anything which adheres to the `gofeed.Translator
 #### Feed Specific Parsers
 
 The `gofeed` library provides two feed specific parsers: `atom.Parser` and `rss.Parser`.  If the hybrid `gofeed.Feed` model that the universal `gofeed.Parser` produces does not contain a field from the `atom.Feed` or `rss.Feed` model that you require, it might be beneficial to use the feed specific parsers.  When using the `atom.Parser` or `rss.Parser` directly, you can access all of fields found in the `atom.Feed` and `rss.Feed` models.  It is also marginally faster because you are able to skip the translation step.
-
-However, for the *vast* majority of users, the universal `gofeed.Parser` is the best way to parse feeds.  This allows the user of `gofeed` library to not care about the differences between RSS or Atom feeds.
 
 ## Basic Usage
 
@@ -183,16 +200,6 @@ fmt.Println(feed.Author) // Valentine Wiggin
 Every element which does not belong to the feed's default namespace is considered an extension by `gofeed`.  These are parsed and stored in a tree-like structure located at `Feed.Extensions` and `Item.Extensions`.  These fields should allow you to access and read any custom extension elements.
 
 In addition to the generic handling of extensions, `gofeed` also has built in support for parsing certain popular extensions into their own structs for convenience.  It currently supports the [Dublin Core](http://dublincore.org/documents/dces/) and [Apple iTunes](https://help.apple.com/itc/podcasts_connect/#/itcb54353390) extensions which you can access at `Feed.ItunesExt`, `feed.DublinCoreExt` and `Item.ITunesExt` and `Item.DublinCoreExt`
-
-## Invalid Feeds
-
-A best-effort attempt is made at parsing broken and invalid XML feeds.  Currently, `gofeed` can succesfully parse feeds with the following issues:
-- Unescaped/Naked Markup in feed elements
-- Undeclared namespace prefixes
-- Missing closing tags on certain elements
-- Illegal tags within feed elements without namespace prefixes
-- Missing "required" elements as specified by the respective feed specs.
-- Incorrect date formats 
 
 ## Default Mappings
 
