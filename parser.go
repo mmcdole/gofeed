@@ -78,7 +78,10 @@ func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 	client := f.httpClient()
 
-	req, _ := http.NewRequest("GET", feedURL, nil)
+	req, err := http.NewRequest("GET", feedURL, nil)
+	if err != nil {
+		return nil, err
+	}
 	req.Header.Set("User-Agent", "Gofeed/1.0")
 	resp, err := client.Do(req)
 
