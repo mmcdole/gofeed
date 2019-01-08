@@ -346,12 +346,24 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 					return nil, err
 				}
 				item.Title = result
+			} else if name == "image" {
+				image, err := rp.parseImage(p)
+				if err != nil {
+					return nil, err
+				}
+				item.Image = image
 			} else if name == "description" {
 				result, err := shared.ParseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Description = result
+			} else if name == "content" {
+				result, err := shared.ParseText(p)
+				if err != nil {
+					return nil, err
+				}
+				item.Content = strings.TrimSpace(result)
 			} else if name == "encoded" {
 				space := strings.TrimSpace(p.Space)
 				if prefix, ok := p.Spaces[space]; ok && prefix == "content" {

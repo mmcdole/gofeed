@@ -357,6 +357,11 @@ func (t *DefaultRSSTranslator) translateItemImage(rssItem *rss.Item) (image *Ima
 	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Image != "" {
 		image = &Image{}
 		image.URL = rssItem.ITunesExt.Image
+		return
+	}
+	if rssItem.Image != nil && rssItem.Image.URL != "" {
+		image = &Image{}
+		image.URL = rssItem.Image.URL
 	}
 	return
 }
