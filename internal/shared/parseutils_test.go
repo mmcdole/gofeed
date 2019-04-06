@@ -53,3 +53,23 @@ func TestDecodeEntitiesInvalid(t *testing.T) {
 		assert.NotNil(t, err, "%q was decoded to %q", test, res)
 	}
 }
+
+func TestStripCDATA(t *testing.T) {
+	tests := []struct {
+		str string
+		res string
+	}{
+		{"<![CDATA[ test ]]>test", " test test"},
+		{"<![CDATA[test &]]> &lt;", "test & <"},
+		{"", ""},
+		{"test", "test"},
+		{"]]>", "]]>"},
+		{"<![CDATA[", "<![CDATA["},
+		{"<![CDATA[testtest", "<![CDATA[testtest"},
+	}
+
+	for _, test := range tests {
+		res := StripCDATA(test.str)
+		assert.Equal(t, test.res, res)
+	}
+}
