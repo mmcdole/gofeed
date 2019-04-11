@@ -112,6 +112,7 @@ brackets or the greater-than sign using concatenated CDATA sections.
 		// and I can't place two dashes next to each other.
 		// -->`,
 		// 		},
+		{`<![CDATA[ test ]]><!-- test -->`, ` test <!-- test -->`}, // TODO: probably wrong
 		{`An example of escaped CENDs`, `An example of escaped CENDs`},
 		{`<![CDATA[This text contains a CEND ]]]]><![CDATA[>]]>`, `This text contains a CEND ]]>`},
 		{`<![CDATA[This text contains a CEND ]]]><![CDATA[]>]]>`, `This text contains a CEND ]]>`},
