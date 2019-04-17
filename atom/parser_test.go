@@ -3,6 +3,7 @@ package atom_test
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -45,6 +46,23 @@ func TestParser_Parse(t *testing.T) {
 			fmt.Printf("Failed\n")
 		}
 	}
+}
+
+func TestFeed_ToXML(t *testing.T) {
+	f, _ := ioutil.ReadFile("../testdata/parser/atom/atom10_feed_with_entry.xml")
+	fp := atom.Parser{}
+	feed, err := fp.Parse(bytes.NewReader(f))
+	assert.NotNil(t, feed)
+	assert.Nil(t, err)
+
+	b, err := xml.MarshalIndent(feed, "", "    ")
+	assert.Nil(t, err)
+
+	// Verify that we can write out the same fields that we read in
+	// assuming that it was in the same order and formatting
+	gotXml := string(b)
+	wantXml := string(f)
+	assert.Equal(t, wantXml, gotXml, "Feed xml did not match expected output atom10_feed_with_entry.xml")
 }
 
 // TODO: Examples

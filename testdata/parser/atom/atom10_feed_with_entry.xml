@@ -1,0 +1,56 @@
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Example Feed</title>
+    <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <subtitle>my example feed of doom</subtitle>
+    <link href="http://example.org/" rel="self"></link>
+    <generator uri="https://github.com/mmcdole/gofeed">gofeed</generator>
+    <icon>http://example.org/favicon.ico</icon>
+    <logo>http://example.org/logo.png</logo>
+    <rights>copyright 2019</rights>
+    <contributor>
+        <name>Su Li</name>
+    </contributor>
+    <author>
+        <name>John Doe</name>
+    </author>
+    <category term="robots" scheme="http://example.org/robots" label="Robots"></category>
+    <category term="scifi" scheme="http://example.org/scifi" label="Science Fiction"></category>
+    <entry>
+        <title>Atom-Powered Robots Run Amok</title>
+        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+        <updated>2003-12-13T18:30:02Z</updated>
+        <summary>Some text.</summary>
+        <author>
+            <name>John Doe</name>
+        </author>
+        <contributor>
+            <name>Su Li</name>
+        </contributor>
+        <category term="robots" scheme="http://example.org/robots" label="Robots"></category>
+        <category term="scifi" scheme="http://example.org/scifi" label="Science Fiction"></category>
+        <link href="http://example.org/2003/12/13/atom03" rel="self"></link>
+        <rights>copyright 2019</rights>
+        <published>2003-12-13T18:30:02Z</published>
+        <source>
+            <title>Science Fiction NOW</title>
+            <id>urn:uuid:ed80826e-61ef-11e9-8647-d663bd873d93</id>
+            <updated>2000-01-01T12:12:00Z</updated>
+            <subtitle>living with science</subtitle>
+            <link href="http://example.org/" rel="self"></link>
+            <generator uri="https://github.com/mmcdole/gofeed">gofeed</generator>
+            <icon>http://example.org/favicon.ico</icon>
+            <logo>http://example.org/logo.png</logo>
+            <rights>copyright 2019</rights>
+            <contributor>
+                <name>Su Li</name>
+            </contributor>
+            <author>
+                <name>John Doe</name>
+            </author>
+            <category term="robots" scheme="http://example.org/robots" label="Robots"></category>
+            <category term="scifi" scheme="http://example.org/scifi" label="Science Fiction"></category>
+        </source>
+        <content type="text/html">&lt;p&gt;pew pew robots!&lt;/p&gt;</content>
+    </entry>
+</feed>
