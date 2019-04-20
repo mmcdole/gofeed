@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mmcdole/gofeed/extensions"
+	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
-	"github.com/mmcdole/goxpp"
+	xpp "github.com/mmcdole/goxpp"
 )
 
 var (
@@ -681,10 +681,8 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	lowerType := strings.ToLower(text.Type)
 	lowerMode := strings.ToLower(text.Mode)
 
-	if strings.HasPrefix(result, "<![CDATA[") &&
-		strings.HasSuffix(result, "]]>") {
-		result = strings.TrimPrefix(result, "<![CDATA[")
-		result = strings.TrimSuffix(result, "]]>")
+	if strings.Contains(result, "<![CDATA[") {
+		result = shared.StripCDATA(result)
 		if lowerType == "html" || strings.Contains(lowerType, "xhtml") {
 			result, _ = ap.base.ResolveHTML(result)
 		}
