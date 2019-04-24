@@ -22,6 +22,8 @@ type HTTPError struct {
 	Status     string
 }
 
+const DefaultUserAgent = "Gofeed/1.0"
+
 func (err HTTPError) Error() string {
 	return fmt.Sprintf("http error: %s", err.Status)
 }
@@ -33,6 +35,7 @@ type Parser struct {
 	AtomTranslator Translator
 	RSSTranslator  Translator
 	Client         *http.Client
+	UserAgent      string
 	rp             *rss.Parser
 	ap             *atom.Parser
 }
@@ -82,7 +85,7 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "Gofeed/1.0")
+	req.Header.Set("User-Agent", f.userAgent())
 	resp, err := client.Do(req)
 
 	if err != nil {
@@ -153,4 +156,11 @@ func (f *Parser) httpClient() *http.Client {
 	}
 	f.Client = &http.Client{}
 	return f.Client
+}
+
+func (f *Parser) userAgent() string {
+	if f.UserAgent != "" {
+		return  f.UserAgent
+	}
+	return DefaultUserAgent
 }
