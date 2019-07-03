@@ -2,6 +2,7 @@ package gofeed_test
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -10,6 +11,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
@@ -113,7 +115,7 @@ func TestParser_ParseURL_Success(t *testing.T) {
 		f, _ := ioutil.ReadFile(path)
 
 		// Get actual value
-		server, client := mockServerResponse(200, string(f))
+		server, client := mockServerResponse(200, string(f), 0)
 		fp := gofeed.NewParser()
 		fp.Client = client
 		feed, err := fp.ParseURL(server.URL)
@@ -130,8 +132,18 @@ func TestParser_ParseURL_Success(t *testing.T) {
 	}
 }
 
+func TestParser_ParseURLWithContext(t *testing.T) {
+	server, client := mockServerResponse(404, "", 1*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	fp := gofeed.NewParser()
+	fp.Client = client
+	_, err := fp.ParseURLWithContext(server.URL, ctx)
+	assert.True(t, strings.Contains(err.Error(), ctx.Err().Error()))
+}
+
 func TestParser_ParseURL_Failure(t *testing.T) {
-	server, client := mockServerResponse(404, "")
+	server, client := mockServerResponse(404, "", 0)
 	fp := gofeed.NewParser()
 	fp.Client = client
 	feed, err := fp.ParseURL(server.URL)
@@ -143,8 +155,9 @@ func TestParser_ParseURL_Failure(t *testing.T) {
 
 // Test Helpers
 
-func mockServerResponse(code int, body string) (*httptest.Server, *http.Client) {
+func mockServerResponse(code int, body string, delay time.Duration) (*httptest.Server, *http.Client) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(delay)
 		w.WriteHeader(code)
 		w.Header().Set("Content-Type", "application/xml")
 		io.WriteString(w, body)
