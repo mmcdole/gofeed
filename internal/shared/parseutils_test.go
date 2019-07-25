@@ -13,6 +13,8 @@ func TestDecodeEntities(t *testing.T) {
 	}{
 		{"", ""},
 		{"foo", "foo"},
+		{"skip & normal & amps", "skip & normal & amps"},
+		{"not & entity;hello &ne xt;one", "not & entity;hello &ne xt;one"},
 
 		{"&lt;foo&gt;", "<foo>"},
 		{"a &quot;b&quot; &apos;c&apos;", "a \"b\" 'c'"},
