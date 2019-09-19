@@ -1,6 +1,7 @@
 package gofeed
 
 import (
+	"bytes"
 	"encoding/json"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 // and rss.Feed gets translated to. It represents
 // a web feed.
 type Feed struct {
+	RawFeed         bytes.Buffer             `json:"-"`
 	Title           string                   `json:"title,omitempty"`
 	Description     string                   `json:"description,omitempty"`
 	Link            string                   `json:"link,omitempty"`
