@@ -29,7 +29,10 @@ type ITunesItemExtension struct {
 	Summary           string `json:"summary,omitempty"`
 	Image             string `json:"image,omitempty"`
 	IsClosedCaptioned string `json:"isClosedCaptioned,omitempty"`
+	Episode           string `json:"episode,omitempty"`
+	Season            string `json:"season,omitempty"`
 	Order             string `json:"order,omitempty"`
+	EpisodeType       string `json:"episodeType,omitempty"`
 }
 
 // ITunesCategory is a category element for itunes feeds.
@@ -76,7 +79,10 @@ func NewITunesItemExtension(extensions map[string][]Extension) *ITunesItemExtens
 	entry.Keywords = parseTextExtension("keywords", extensions)
 	entry.Image = parseImage(extensions)
 	entry.IsClosedCaptioned = parseTextExtension("isClosedCaptioned", extensions)
+	entry.Episode = parseTextExtension("episode", extensions)
+	entry.Season = parseTextExtension("season", extensions)
 	entry.Order = parseTextExtension("order", extensions)
+	entry.EpisodeType = parseTextExtension("episodeType", extensions)
 	return entry
 }
 
