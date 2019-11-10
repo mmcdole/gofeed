@@ -1,17 +1,20 @@
 language: go
+
+env:
+  global:
+    - GO111MODULE="on"
+
+go:
+  - 1.11.x
+  - 1.12.x
+  - 1.13.x
+  - tip
+
 matrix:
-  include:
-  - go: "tip"
-  - go: "1.11.x"
-  env:
-  - GO111MODULE=on
-  install:
-  - go get -t -v ./...
-  - go get github.com/go-playground/overalls
-  - go get github.com/mattn/goveralls
-  - go get golang.org/x/tools/cmd/cover
-  script:
+  allow_failures:
+    - go: tip
+  fast_finish: true
+
+script:
+  - go install ./...
   - go test -v ./...
-  - $GOPATH/bin/overalls -project=github.com/mmcdole/gofeed -covermode=count -ignore=.git,vendor -debug
-  after_success:
-  - $GOPATH/bin/goveralls -coverprofile=overalls.coverprofile -service=travis-ci
