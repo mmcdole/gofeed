@@ -15,6 +15,10 @@ matrix:
     - go: tip
   fast_finish: true
 
+before_install:
+  - go get github.com/mattn/goveralls
+
 script:
   - go install ./...
   - go test -v ./...
+  - $GOPATH/bin/goveralls -service=travis-ci
