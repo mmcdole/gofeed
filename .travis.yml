@@ -2,16 +2,9 @@ language: go
 matrix:
   include:
   - go: "tip"
-  - go: "1.11"
-    env: GO111MODULE=on
-  - go: "1.11"
-  - go: "1.10"
-  - go: "1.9"
-  - go: "1.8"
-  - go: "1.7"
-  - go: "1.6"
-  - go: "1.5"
-  - go: "1.4"
+  - go: "1.11.x"
+  env:
+  - GO111MODULE=on
   install:
   - go get -t -v ./...
   - go get github.com/go-playground/overalls
