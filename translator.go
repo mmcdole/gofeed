@@ -103,8 +103,8 @@ func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string
 	for _, ex := range atomExtensions {
 		if links, ok := ex["link"]; ok {
 			for _, l := range links {
-				if l.Attrs["Rel"] == "self" {
-					link = l.Value
+				if l.Attrs["rel"] == "self" {
+					link = l.Attrs["href"]
 				}
 			}
 		}

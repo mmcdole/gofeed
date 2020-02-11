@@ -1,0 +1,22 @@
+{  
+  "items": [],
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "feedLink": "http://example.org",
+  "extensions": {
+        "atom": {
+            "link": [
+                {
+                    "name": "link",
+                    "value": "",
+                    "attrs": {
+                        "href": "http://example.org",
+                        "rel": "self",
+                        "type": "application/rss+xml"
+                    },
+                    "children": {}
+                }
+            ]
+        }
+    }
+}
