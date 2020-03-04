@@ -40,6 +40,9 @@ func TestDecodeEntities(t *testing.T) {
 
 func TestDecodeEntitiesInvalid(t *testing.T) {
 	tests := []string{
+		// Predefined entities
+		"&foo;", // unknown
+
 		// Numerical character references
 		"&#;",     // missing number
 		"&#x;",    // missing hexadecimal number
