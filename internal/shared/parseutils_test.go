@@ -19,6 +19,11 @@ func TestDecodeEntities(t *testing.T) {
 		{"&lt;foo&gt;", "<foo>"},
 		{"a &quot;b&quot; &apos;c&apos;", "a \"b\" 'c'"},
 		{"foo &amp;&amp; bar", "foo && bar"},
+		{"&AMP;", "&"},
+		{"&LT;", "<"},
+		{"&GT;", ">"},
+		{"&APOS;", "'"},
+		{"&QUOT;", "\""},
 
 		{"&#34;foo&#34;", "\"foo\""},
 		{"&#x61;&#x062;&#x0063;", "abc"},
