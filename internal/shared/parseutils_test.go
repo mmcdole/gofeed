@@ -13,6 +13,8 @@ func TestDecodeEntities(t *testing.T) {
 	}{
 		{"", ""},
 		{"foo", "foo"},
+		{"skip & normal & amps", "skip & normal & amps"},
+		{"not & entity;hello &ne xt;one", "not & entity;hello &ne xt;one"},
 
 		{"&lt;foo&gt;", "<foo>"},
 		{"a &quot;b&quot; &apos;c&apos;", "a \"b\" 'c'"},
@@ -21,6 +23,10 @@ func TestDecodeEntities(t *testing.T) {
 		{"&#34;foo&#34;", "\"foo\""},
 		{"&#x61;&#x062;&#x0063;", "abc"},
 		{"r&#xe9;sum&#x00E9;", "résumé"},
+		{"&", "&"},
+		{"&foo", "&foo"},
+		{"&lt", "&lt"},
+		{"&#", "&#"},
 	}
 
 	for _, test := range tests {
@@ -35,13 +41,9 @@ func TestDecodeEntities(t *testing.T) {
 func TestDecodeEntitiesInvalid(t *testing.T) {
 	tests := []string{
 		// Predefined entities
-		"&",     // truncated
-		"&foo",  // truncated
 		"&foo;", // unknown
-		"&lt",   // known but truncated
 
 		// Numerical character references
-		"&#",      // truncated
 		"&#;",     // missing number
 		"&#x;",    // missing hexadecimal number
 		"&#12a;",  // invalid decimal number
