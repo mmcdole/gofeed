@@ -142,16 +142,16 @@ func DecodeEntities(str string) (string, error) {
 				name := string(data[1:end])
 
 				var c byte
-				switch name {
-				case "lt":
+				switch {
+				case strings.EqualFold("lt", name):
 					c = '<'
-				case "gt":
+				case strings.EqualFold("gt", name):
 					c = '>'
-				case "quot":
+				case strings.EqualFold("quot", name):
 					c = '"'
-				case "apos":
+				case strings.EqualFold("apos", name):
 					c = '\''
-				case "amp":
+				case strings.EqualFold("amp", name):
 					c = '&'
 				default:
 					return "", fmt.Errorf("unknown predefined "+
