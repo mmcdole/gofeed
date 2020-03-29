@@ -99,6 +99,16 @@ feed, _ := fp.Parse(file)
 fmt.Println(feed.Title)
 ```
 
+##### Parse a feed from an URL with a 60s timeout:
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+defer cancel()
+fp := gofeed.NewParser()
+feed, _ := fp.ParseURLWithContext("http://feeds.twit.tv/twit.xml", ctx)
+fmt.Println(feed.Title)
+```
+
 #### Feed Specific Parsers
 
 You can easily use the `rss.Parser` and `atom.Parser` directly if you have a usage scenario that requires it:
