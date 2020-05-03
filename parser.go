@@ -90,6 +90,11 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 	return f.ParseURLWithContextAndHeaders(feedURL, ctx, nil)
 }
 
+// ParseURLWithHeaders  use default context and add headers.
+func (f *Parser) ParseURLWithHeaders(feedURL string, headers HTTPHeaders) (feed *Feed, err error) {
+	return f.ParseURLWithContextAndHeaders(feedURL, context.Background(), headers)
+}
+
 // ParseURLWithContextAndHeaders include http headers in request
 func (f *Parser) ParseURLWithContextAndHeaders(feedURL string, ctx context.Context, headers HTTPHeaders) (feed *Feed, err error) {
 		client := f.httpClient()
