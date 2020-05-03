@@ -23,6 +23,9 @@ type HTTPError struct {
 	Status     string
 }
 
+// HTTPHeaders represents the Headers to add to http request.
+type HTTPHeaders map[string]string
+
 func (err HTTPError) Error() string {
 	return fmt.Sprintf("http error: %s", err.Status)
 }
@@ -84,14 +87,26 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 // attempts to parse the response into the universal feed type.
 // Request could be canceled or timeout via given context
 func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed *Feed, err error) {
-	client := f.httpClient()
+	return f.ParseURLWithContextAndHeaders(feedURL, ctx, nil)
+}
+
+// ParseURLWithContextAndHeaders include http headers in request
+func (f *Parser) ParseURLWithContextAndHeaders(feedURL string, ctx context.Context, headers HTTPHeaders) (feed *Feed, err error) {
+		client := f.httpClient()
 
 	req, err := http.NewRequest("GET", feedURL, nil)
 	if err != nil {
 		return nil, err
 	}
 	req = req.WithContext(ctx)
-	req.Header.Set("User-Agent", "Gofeed/1.0")
+
+	for _, k := range headers {
+		req.Header.Set(k, headers[k])
+	}
+    if req.Header.Get("User-Agent") == "" {
+		req.Header.Set("User-Agent", "Gofeed/1.0")
+	}
+	
 	resp, err := client.Do(req)
 
 	if err != nil {
