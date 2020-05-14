@@ -142,6 +142,7 @@ var dateFormatsWithNamedZone = []string{
 	"Mon, Jan 2 2006 15:04 MST",
 	"Mon, Jan 2, 2006 15:04:05 MST",
 	"Mon Jan 2 15:04:05 2006 MST",
+	"Mon Jan 02 2006 15:04:05 GMT-0700 (MST)",
 	"Mon, Jan 02,2006 15:04:05 MST",
 	"Monday, January 2, 2006 15:04:05 MST",
 	"Monday, 2 January 2006 15:04:05 MST",
