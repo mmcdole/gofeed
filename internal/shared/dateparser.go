@@ -15,7 +15,6 @@ var dateFormats = []string{
 	time.RubyDate,
 	time.RFC850,
 	time.RFC1123Z,
-	time.RFC1123,
 	time.ANSIC,
 	"Mon, January 2 2006 15:04:05 -0700",
 	"Mon, Jan 2 2006 15:04:05 -700",
@@ -136,6 +135,7 @@ var dateFormats = []string{
 
 // Named zone cannot be consistently loaded, so handle separately
 var dateFormatsWithNamedZone = []string{
+	time.RFC1123,
 	"Mon, January 02, 2006, 15:04:05 MST",
 	"Mon, January 02, 2006 15:04:05 MST",
 	"Mon, Jan 2, 2006 15:04 MST",
