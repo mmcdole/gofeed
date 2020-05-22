@@ -202,8 +202,17 @@ func ParseDate(ds string) (t time.Time, err error) {
 			continue
 		}
 
+		tz := t.Location().String()
+		var newTZ string
+		switch tz {
+		case "EDT":
+			newTZ = "EST5EDT"
+		default:
+			newTZ = tz
+		}
+
 		// This is a format match! Now try to load the timezone name
-		loc, err := time.LoadLocation(t.Location().String())
+		loc, err := time.LoadLocation(newTZ)
 		if err != nil {
 			// We couldn't load the TZ name. Just use UTC instead...
 			return t, nil
