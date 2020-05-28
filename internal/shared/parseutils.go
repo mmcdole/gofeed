@@ -3,7 +3,7 @@ package shared
 import (
 	"bytes"
 	"errors"
-	"fmt"
+	"html"
 	"regexp"
 	"strconv"
 	"strings"
@@ -141,24 +141,21 @@ func DecodeEntities(str string) (string, error) {
 				// Predefined entity
 				name := string(data[1:end])
 
-				var c byte
 				switch name {
 				case "lt":
-					c = '<'
+					buf.WriteByte('<')
 				case "gt":
-					c = '>'
+					buf.WriteByte('>')
 				case "quot":
-					c = '"'
+					buf.WriteByte('"')
 				case "apos":
-					c = '\''
+					buf.WriteByte('\'')
 				case "amp":
-					c = '&'
+					buf.WriteByte('&')
 				default:
-					return "", fmt.Errorf("unknown predefined "+
-						"entity &%s;", name)
+					buf.WriteString(html.UnescapeString(string(data[0 : end+1])))
 				}
 
-				buf.WriteByte(c)
 			}
 		}
 

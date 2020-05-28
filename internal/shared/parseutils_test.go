@@ -23,6 +23,7 @@ func TestDecodeEntities(t *testing.T) {
 		{"&#34;foo&#34;", "\"foo\""},
 		{"&#x61;&#x062;&#x0063;", "abc"},
 		{"r&#xe9;sum&#x00E9;", "résumé"},
+		{"r&eacute;sum&eacute;", "résumé"},
 		{"&", "&"},
 		{"&foo", "&foo"},
 		{"&lt", "&lt"},
@@ -40,9 +41,6 @@ func TestDecodeEntities(t *testing.T) {
 
 func TestDecodeEntitiesInvalid(t *testing.T) {
 	tests := []string{
-		// Predefined entities
-		"&foo;", // unknown
-
 		// Numerical character references
 		"&#;",     // missing number
 		"&#x;",    // missing hexadecimal number
