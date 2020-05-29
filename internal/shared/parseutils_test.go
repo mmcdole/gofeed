@@ -23,6 +23,7 @@ func TestDecodeEntities(t *testing.T) {
 		{"&#34;foo&#34;", "\"foo\""},
 		{"&#x61;&#x062;&#x0063;", "abc"},
 		{"r&#xe9;sum&#x00E9;", "résumé"},
+		{"r&eacute;sum&eacute;", "résumé"},
 		{"&", "&"},
 		{"&foo", "&foo"},
 		{"&lt", "&lt"},
@@ -35,24 +36,6 @@ func TestDecodeEntities(t *testing.T) {
 		assert.Equal(t, res, test.res,
 			"%q was decoded to %q instead of %q",
 			test.str, res, test.res)
-	}
-}
-
-func TestDecodeEntitiesInvalid(t *testing.T) {
-	tests := []string{
-		// Predefined entities
-		"&foo;", // unknown
-
-		// Numerical character references
-		"&#;",     // missing number
-		"&#x;",    // missing hexadecimal number
-		"&#12a;",  // invalid decimal number
-		"&#xfoo;", // invalid hexadecimal number
-	}
-
-	for _, test := range tests {
-		res, err := DecodeEntities(test)
-		assert.NotNil(t, err, "%q was decoded to %q", test, res)
 	}
 }
 
