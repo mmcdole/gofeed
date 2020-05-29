@@ -5,7 +5,6 @@ import (
 	"errors"
 	"html"
 	"regexp"
-	"strconv"
 	"strings"
 
 	xpp "github.com/mmcdole/goxpp"
@@ -119,44 +118,7 @@ func DecodeEntities(str string) (string, error) {
 			buf.Write(data)
 			return buf.String(), nil
 		} else {
-			if data[1] == '#' {
-				// Numerical character reference
-				var str string
-				base := 10
-
-				if len(data) > 2 && data[2] == 'x' {
-					str = string(data[3:end])
-					base = 16
-				} else {
-					str = string(data[2:end])
-				}
-
-				i, err := strconv.ParseUint(str, base, 32)
-				if err != nil {
-					return "", InvalidNumericReference
-				}
-
-				buf.WriteRune(rune(i))
-			} else {
-				// Predefined entity
-				name := string(data[1:end])
-
-				switch name {
-				case "lt":
-					buf.WriteByte('<')
-				case "gt":
-					buf.WriteByte('>')
-				case "quot":
-					buf.WriteByte('"')
-				case "apos":
-					buf.WriteByte('\'')
-				case "amp":
-					buf.WriteByte('&')
-				default:
-					buf.WriteString(html.UnescapeString(string(data[0 : end+1])))
-				}
-
-			}
+			buf.WriteString(html.UnescapeString(string(data[0 : end+1])))
 		}
 
 		// Skip the entity

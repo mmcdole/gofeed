@@ -39,21 +39,6 @@ func TestDecodeEntities(t *testing.T) {
 	}
 }
 
-func TestDecodeEntitiesInvalid(t *testing.T) {
-	tests := []string{
-		// Numerical character references
-		"&#;",     // missing number
-		"&#x;",    // missing hexadecimal number
-		"&#12a;",  // invalid decimal number
-		"&#xfoo;", // invalid hexadecimal number
-	}
-
-	for _, test := range tests {
-		res, err := DecodeEntities(test)
-		assert.NotNil(t, err, "%q was decoded to %q", test, res)
-	}
-}
-
 func TestStripCDATA(t *testing.T) {
 	tests := []struct {
 		str string
