@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/mmcdole/gofeed/extensions"
+	ext "github.com/mmcdole/gofeed/extensions"
 )
 
 // Feed is the universal Feed type that atom.Feed
@@ -13,27 +13,27 @@ import (
 // Sorting with sort.Sort will order the Items by
 // oldest to newest publish time.
 type Feed struct {
-	Title           string                   `json:"title,omitempty"`
-	Description     string                   `json:"description,omitempty"`
-	Link            string                   `json:"link,omitempty"`
-	FeedLink        string                   `json:"feedLink,omitempty"`
-	Updated         string                   `json:"updated,omitempty"`
-	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty"`
-	Published       string                   `json:"published,omitempty"`
-	PublishedParsed *time.Time               `json:"publishedParsed,omitempty"`
-	Author          *Person                  `json:"author,omitempty"`
-	Language        string                   `json:"language,omitempty"`
-	Image           *Image                   `json:"image,omitempty"`
-	Copyright       string                   `json:"copyright,omitempty"`
-	Generator       string                   `json:"generator,omitempty"`
-	Categories      []string                 `json:"categories,omitempty"`
-	DublinCoreExt   *ext.DublinCoreExtension `json:"dcExt,omitempty"`
-	ITunesExt       *ext.ITunesFeedExtension `json:"itunesExt,omitempty"`
-	Extensions      ext.Extensions           `json:"extensions,omitempty"`
-	Custom          map[string]string        `json:"custom,omitempty"`
-	Items           []*Item                  `json:"items"`
-	FeedType        string                   `json:"feedType"`
-	FeedVersion     string                   `json:"feedVersion"`
+	Title           string                   `json:"title,omitempty" bson:"title,omitempty"`
+	Description     string                   `json:"description,omitempty" bson:"description,omitempty"`
+	Link            string                   `json:"link,omitempty" bson:"link,omitempty"`
+	FeedLink        string                   `json:"feedLink,omitempty" bson:"feedLink,omitempty"`
+	Updated         string                   `json:"updated,omitempty" bson:"updated,omitempty"`
+	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty" bson:"updatedParsed,omitempty"`
+	Published       string                   `json:"published,omitempty" bson:"published,omitempty"`
+	PublishedParsed *time.Time               `json:"publishedParsed,omitempty" bson:"publishedParsed,omitempty"`
+	Author          *Person                  `json:"author,omitempty" bson:"author,omitempty"`
+	Language        string                   `json:"language,omitempty" bson:"language,omitempty"`
+	Image           *Image                   `json:"image,omitempty" bson:"image,omitempty"`
+	Copyright       string                   `json:"copyright,omitempty" bson:"copyright,omitempty"`
+	Generator       string                   `json:"generator,omitempty" bson:"generator,omitempty"`
+	Categories      []string                 `json:"categories,omitempty" bson:"categories,omitempty"`
+	DublinCoreExt   *ext.DublinCoreExtension `json:"dcExt,omitempty" bson:"dcExt,omitempty"`
+	ITunesExt       *ext.ITunesFeedExtension `json:"itunesExt,omitempty" bson:"itunesExt,omitempty"`
+	Extensions      ext.Extensions           `json:"extensions,omitempty" bson:"extensions,omitempty"`
+	Custom          map[string]string        `json:"custom,omitempty" bson:"custom,omitempty"`
+	Items           []*Item                  `json:"items" bson:"items"`
+	FeedType        string                   `json:"feedType" bson:"feedType"`
+	FeedVersion     string                   `json:"feedVersion" bson:"feedVersion"`
 }
 
 func (f Feed) String() string {
@@ -45,44 +45,44 @@ func (f Feed) String() string {
 // and rss.Item gets translated to.  It represents
 // a single entry in a given feed.
 type Item struct {
-	Title           string                   `json:"title,omitempty"`
-	Description     string                   `json:"description,omitempty"`
-	Content         string                   `json:"content,omitempty"`
-	Link            string                   `json:"link,omitempty"`
-	Updated         string                   `json:"updated,omitempty"`
-	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty"`
-	Published       string                   `json:"published,omitempty"`
-	PublishedParsed *time.Time               `json:"publishedParsed,omitempty"`
-	Author          *Person                  `json:"author,omitempty"`
-	GUID            string                   `json:"guid,omitempty"`
-	Image           *Image                   `json:"image,omitempty"`
-	Categories      []string                 `json:"categories,omitempty"`
-	Enclosures      []*Enclosure             `json:"enclosures,omitempty"`
-	DublinCoreExt   *ext.DublinCoreExtension `json:"dcExt,omitempty"`
-	ITunesExt       *ext.ITunesItemExtension `json:"itunesExt,omitempty"`
-	Extensions      ext.Extensions           `json:"extensions,omitempty"`
-	Custom          map[string]string        `json:"custom,omitempty"`
+	Title           string                   `json:"title,omitempty" bson:"title,omitempty"`
+	Description     string                   `json:"description,omitempty" bson:"description,omitempty"`
+	Content         string                   `json:"content,omitempty" bson:"content,omitempty"`
+	Link            string                   `json:"link,omitempty" bson:"link,omitempty"`
+	Updated         string                   `json:"updated,omitempty" bson:"updated,omitempty"`
+	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty" bson:"updatedParsed,omitempty"`
+	Published       string                   `json:"published,omitempty" bson:"published,omitempty"`
+	PublishedParsed *time.Time               `json:"publishedParsed,omitempty" bson:"publishedParsed,omitempty"`
+	Author          *Person                  `json:"author,omitempty" bson:"author,omitempty"`
+	GUID            string                   `json:"guid,omitempty" bson:"guid,omitempty"`
+	Image           *Image                   `json:"image,omitempty" bson:"image,omitempty"`
+	Categories      []string                 `json:"categories,omitempty" bson:"categories,omitempty"`
+	Enclosures      []*Enclosure             `json:"enclosures,omitempty" bson:"enclosures,omitempty"`
+	DublinCoreExt   *ext.DublinCoreExtension `json:"dcExt,omitempty" bson:"dcExt,omitempty"`
+	ITunesExt       *ext.ITunesItemExtension `json:"itunesExt,omitempty" bson:"itunesExt,omitempty"`
+	Extensions      ext.Extensions           `json:"extensions,omitempty" bson:"extensions,omitempty"`
+	Custom          map[string]string        `json:"custom,omitempty" bson:"custom,omitempty"`
 }
 
 // Person is an individual specified in a feed
 // (e.g. an author)
 type Person struct {
-	Name  string `json:"name,omitempty"`
-	Email string `json:"email,omitempty"`
+	Name  string `json:"name,omitempty" bson:"name,omitempty"`
+	Email string `json:"email,omitempty" bson:"email,omitempty"`
 }
 
 // Image is an image that is the artwork for a given
 // feed or item.
 type Image struct {
-	URL   string `json:"url,omitempty"`
-	Title string `json:"title,omitempty"`
+	URL   string `json:"url,omitempty" bson:"url,omitempty"`
+	Title string `json:"title,omitempty" bson:"title,omitempty"`
 }
 
 // Enclosure is a file associated with a given Item.
 type Enclosure struct {
-	URL    string `json:"url,omitempty"`
-	Length string `json:"length,omitempty"`
-	Type   string `json:"type,omitempty"`
+	URL    string `json:"url,omitempty" bson:"url,omitempty"`
+	Length string `json:"length,omitempty" bson:"length,omitempty"`
+	Type   string `json:"type,omitempty" bson:"type,omitempty"`
 }
 
 // Len returns the length of Items.
