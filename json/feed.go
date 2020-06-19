@@ -1,4 +1,4 @@
-package jsonfeed
+package json
 
 import "encoding/json"
 
