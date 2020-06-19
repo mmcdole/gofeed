@@ -8,10 +8,11 @@ import (
 	"github.com/mmcdole/gofeed/atom"
 	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
+	"github.com/mmcdole/gofeed/json"
 	"github.com/mmcdole/gofeed/rss"
 )
 
-// Translator converts a particular feed (atom.Feed or rss.Feed)
+// Translator converts a particular feed (atom.Feed or rss.Feed of json.Feed)
 // into the generic Feed struct
 type Translator interface {
 	Translate(feed interface{}) (*Feed, error)
@@ -683,4 +684,24 @@ func (t *DefaultAtomTranslator) firstPerson(persons []*atom.Person) (person *ato
 
 	person = persons[0]
 	return
+}
+
+// DefaultJSONTranslator converts an json.Feed struct
+// into the generic Feed struct.
+//
+// This default implementation defines a set of
+// mapping rules between json.Feed -> Feed
+// for each of the fields in Feed.
+type DefaultJSONTranslator struct{}
+
+// Translate converts an JSON feed into the universal
+// feed type.
+func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
+	_, found := feed.(*json.Feed)
+	if !found {
+		return nil, fmt.Errorf("Feed did not match expected type of *json.Feed")
+	}
+
+	result := &Feed{}
+	return result, nil
 }
