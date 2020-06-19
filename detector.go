@@ -1,9 +1,11 @@
 package gofeed
 
 import (
+	"bytes"
 	"io"
 	"strings"
 
+	jsoniter "github.com/json-iterator/go"
 	"github.com/mmcdole/gofeed/internal/shared"
 	xpp "github.com/mmcdole/goxpp"
 )
@@ -20,13 +22,25 @@ const (
 	FeedTypeAtom
 	// FeedTypeRSS represents an RSS feed
 	FeedTypeRSS
+	// FeedTypeJSON represents a JSON feed
+	FeedTypeJSON
 )
 
 // DetectFeedType attempts to determine the type of feed
 // by looking for specific xml elements unique to the
 // various feed types.
 func DetectFeedType(feed io.Reader) FeedType {
-	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
+
+	// Check if document is valid JSON
+	buffer := new(bytes.Buffer)
+	buffer.ReadFrom(feed)
+
+	if jsoniter.Valid(buffer.Bytes()) {
+		return FeedTypeJSON
+	}
+
+	// If not, check if it's an XML based feed
+	p := xpp.NewXMLPullParser(bytes.NewReader(buffer.Bytes()), false, shared.NewReaderLabel)
 
 	xmlBase := shared.XMLBase{}
 	_, err := xmlBase.FindRoot(p)
