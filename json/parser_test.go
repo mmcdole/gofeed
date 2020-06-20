@@ -13,7 +13,7 @@ import (
 // Tests
 
 func TestParser_Parse(t *testing.T) {
-	name := "sample"
+	name := "invalid"
 	fmt.Printf("Testing %s... ", name)
 
 	// Get actual source feed
@@ -23,6 +23,18 @@ func TestParser_Parse(t *testing.T) {
 
 	// Parse actual feed
 	fp := &json.Parser{}
+	_, err := fp.Parse(bytes.NewReader(f))
+	assert.Contains(t, err.Error(), "expect }")
+
+	name = "sample"
+	fmt.Printf("Testing %s... ", name)
+
+	// Get actual source feed
+	ff = fmt.Sprintf("../testdata/parser/json/%s.json", name)
+	fmt.Println(ff)
+	f, _ = ioutil.ReadFile(ff)
+
+	// Parse actual feed
 	actual, _ := fp.Parse(bytes.NewReader(f))
 
 	assert.Equal(t, "1.0", actual.Version)
@@ -59,6 +71,8 @@ func TestParser_Parse(t *testing.T) {
 	assert.Equal(t, "title", (*actual.Items[0].Attachments)[0].Title)
 	assert.Equal(t, int64(100), (*actual.Items[0].Attachments)[0].SizeInBytes)
 	assert.Equal(t, int64(100), (*actual.Items[0].Attachments)[0].DurationInSeconds)
+
+	assert.Contains(t, actual.String(), "https://sample-json-feed.com/attachment")
 }
 
 // TODO: Examples
