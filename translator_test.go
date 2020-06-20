@@ -162,6 +162,22 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 	assert.Equal(t, (*ext.ITunesItemExtension)(nil), actual.Items[0].ITunesExt)
 	assert.Equal(t, ext.Extensions(nil), actual.Items[0].Extensions)
 	assert.Equal(t, map[string]string(nil), actual.Items[0].Custom)
+
+	name = "sample2"
+	fmt.Printf("Testing %s... ", name)
+
+	// Get actual source feed
+	ff = fmt.Sprintf("testdata/translator/json/%s.json", name)
+	fmt.Println(ff)
+	f, _ = ioutil.ReadFile(ff)
+
+	// Parse actual feed
+	feed, _ = fp.Parse(bytes.NewReader(f))
+	actual, _ = translator.Translate(feed)
+
+	assert.Equal(t, "content_text", actual.Items[0].Content)
+	assert.Equal(t, "https://sample-json-feed.com/banner_image.png", actual.Items[0].Image.URL)
+
 }
 
 func TestDefaultJSONTranslator_Translate_WrongType(t *testing.T) {

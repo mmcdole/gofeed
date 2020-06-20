@@ -920,7 +920,7 @@ func (t *DefaultJSONTranslator) translateItemImage(jsonItem *json.Item) (image *
 		image.URL = jsonItem.Image
 	} else if jsonItem.BannerImage != "" {
 		image = &Image{}
-		image.URL = jsonItem.Image
+		image.URL = jsonItem.BannerImage
 	}
 	return
 }
