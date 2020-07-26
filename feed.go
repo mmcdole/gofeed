@@ -1,6 +1,7 @@
 package gofeed
 
 import (
+	"bytes"
 	"encoding/json"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 // Sorting with sort.Sort will order the Items by
 // oldest to newest publish time.
 type Feed struct {
+	RawFeed         bytes.Buffer             `json:"-"`
 	Title           string                   `json:"title,omitempty"`
 	Description     string                   `json:"description,omitempty"`
 	Link            string                   `json:"link,omitempty"`

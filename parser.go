@@ -56,19 +56,27 @@ func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 	// DetectFeedType function and construct a new
 	// reader with those bytes intact for when we
 	// attempt to parse the feeds.
-	var buf bytes.Buffer
+	var buf, copyBuffer bytes.Buffer
 	tee := io.TeeReader(feed, &buf)
 	feedType := DetectFeedType(tee)
 
 	// Glue the read bytes from the detect function
 	// back into a new reader
-	r := io.MultiReader(&buf, feed)
 
+	r := io.TeeReader(io.MultiReader(&buf, feed), &copyBuffer)
 	switch feedType {
 	case FeedTypeAtom:
-		return f.parseAtomFeed(r)
+		atomFeed, err := f.parseAtomFeed(r)
+		if atomFeed != nil {
+			atomFeed.RawFeed = copyBuffer
+		}
+		return atomFeed, err
 	case FeedTypeRSS:
-		return f.parseRSSFeed(r)
+		rssFeed, err := f.parseRSSFeed(r)
+		if rssFeed != nil {
+			rssFeed.RawFeed = copyBuffer
+		}
+		return rssFeed, err
 	}
 
 	return nil, ErrFeedTypeNotDetected
