@@ -105,16 +105,13 @@ func (t *DefaultRSSTranslator) translateFeedLink(rss *rss.Feed) (link string) {
 }
 
 func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string) {
-	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
-	for _, ex := range atomExtensions {
-		if links, ok := ex["link"]; ok {
-			for _, l := range links {
-				if l.Attrs["rel"] == "self" {
-					link = l.Attrs["href"]
-				}
-			}
+	t.atomExtensionsWithKey(rss, "link", func(l ext.Extension) bool {
+		if l.Attrs["rel"] == "self" {
+			link = l.Attrs["href"]
+			return true
 		}
-	}
+		return false
+	})
 	return
 }
 
@@ -465,6 +462,19 @@ func (t *DefaultRSSTranslator) extensionsForKeys(keys []string, extensions ext.E
 		}
 	}
 	return
+}
+
+func (t *DefaultRSSTranslator) atomExtensionsWithKey(rss *rss.Feed, tag string, f func(ext.Extension) bool) {
+	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
+	for _, ex := range atomExtensions {
+		if exts, ok := ex[tag]; ok {
+			for _, e := range exts {
+				if f(e) {
+					return
+				}
+			}
+		}
+	}
 }
 
 func (t *DefaultRSSTranslator) firstEntry(entries []string) (value string) {
