@@ -121,6 +121,8 @@ func prefixForNamespace(space string, p *xpp.XMLPullParser) string {
 // These canonical prefixes override any prefixes used in the feed itself.
 var canonicalNamespaces = map[string]string{
 	"http://webns.net/mvcb/":                                         "admin",
+	"http://www.w3.org/2005/Atom":                                    "atom",
+	"http://purl.org/atom/ns#":                                       "atom03",
 	"http://purl.org/rss/1.0/modules/aggregation/":                   "ag",
 	"http://purl.org/rss/1.0/modules/annotate/":                      "annotate",
 	"http://media.tangent.org/rss/1.0/":                              "audio",
