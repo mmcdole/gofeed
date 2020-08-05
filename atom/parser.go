@@ -202,10 +202,6 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 	}
 	entry := &Entry{}
 
-	contributors := []*Person{}
-	authors := []*Person{}
-	categories := []*Category{}
-	links := []*Link{}
 	extensions := ext.Extensions{}
 
 	for {
@@ -276,25 +272,25 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 				if err != nil {
 					return nil, err
 				}
-				contributors = append(contributors, result)
+				entry.Contributors = append(entry.Contributors, result)
 			} else if name == "author" {
 				result, err := ap.parsePerson("author", p)
 				if err != nil {
 					return nil, err
 				}
-				authors = append(authors, result)
+				entry.Authors = append(entry.Authors, result)
 			} else if name == "category" {
 				result, err := ap.parseCategory(p)
 				if err != nil {
 					return nil, err
 				}
-				categories = append(categories, result)
+				entry.Categories = append(entry.Categories, result)
 			} else if name == "link" {
 				result, err := ap.parseLink(p)
 				if err != nil {
 					return nil, err
 				}
-				links = append(links, result)
+				entry.Links = append(entry.Links, result)
 			} else if name == "published" ||
 				name == "issued" {
 				result, err := ap.parseAtomText(p)
@@ -320,22 +316,6 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 				}
 			}
 		}
-	}
-
-	if len(categories) > 0 {
-		entry.Categories = categories
-	}
-
-	if len(authors) > 0 {
-		entry.Authors = authors
-	}
-
-	if len(links) > 0 {
-		entry.Links = links
-	}
-
-	if len(contributors) > 0 {
-		entry.Contributors = contributors
 	}
 
 	if len(extensions) > 0 {
