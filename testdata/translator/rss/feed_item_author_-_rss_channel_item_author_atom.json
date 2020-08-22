@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "author": {
+        "name": "Item Author"
+      },
+      "authors": [
+          {
+              "name": "Item Author"
+          }
+      ],
+      "extensions": {
+        "atom": {
+          "author": [
+            {
+              "name": "author",
+              "value": "",
+              "parsed": {
+                "authors": [
+                  {
+                    "name": "Item Author"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "feedType": "rss",
+  "feedVersion": "2.0"
+}
