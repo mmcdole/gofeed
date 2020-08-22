@@ -71,6 +71,8 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.Links = t.translateItemLinks(rssItem)
 	item.Published = t.translateItemPublished(rssItem)
 	item.PublishedParsed = t.translateItemPublishedParsed(rssItem)
+	item.Updated = t.translateItemUpdated(rssItem)
+	item.UpdatedParsed = t.translateItemUpdatedParsed(rssItem)
 	item.Author = t.translateItemAuthor(rssItem)
 	item.Authors = t.translateItemAuthors(rssItem)
 	item.GUID = t.translateItemGUID(rssItem)
@@ -316,18 +318,20 @@ func (t *DefaultRSSTranslator) translateItemLinks(rssItem *rss.Item) (links []st
 }
 
 func (t *DefaultRSSTranslator) translateItemUpdated(rssItem *rss.Item) (updated string) {
-	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
+	if updatedVal, ok := t.hasAtomExtensionsForKey(rssItem, "updated"); ok {
+		updated = t.atomTranslator.translateItemUpdated(updatedVal)
+	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
 		updated = t.firstEntry(rssItem.DublinCoreExt.Date)
 	}
 	return updated
 }
 
 func (t *DefaultRSSTranslator) translateItemUpdatedParsed(rssItem *rss.Item) (updated *time.Time) {
-	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
-		updatedText := t.firstEntry(rssItem.DublinCoreExt.Date)
+	if updatedText := t.translateItemUpdated(rssItem); updatedText != "" {
 		updatedDate, err := shared.ParseDate(updatedText)
 		if err == nil {
-			updated = &updatedDate
+			utcDate := updatedDate.UTC()
+			updated = &utcDate
 		}
 	}
 	return
