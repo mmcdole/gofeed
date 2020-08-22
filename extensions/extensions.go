@@ -15,6 +15,10 @@ type Extension struct {
 	Parsed   interface{}            `json:"parsed,omitempty"`
 }
 
+type Extendable interface {
+	GetExtensions() Extensions
+}
+
 func parseTextExtension(name string, extensions map[string][]Extension) (value string) {
 	if extensions == nil {
 		return
