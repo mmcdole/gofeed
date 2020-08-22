@@ -144,8 +144,8 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 			name := strings.ToLower(p.Name)
 
 			if shared.IsExtension(p) {
-
-				ext, err := shared.ParseExtension(extensions, p, rp.extParsers)
+				// TODO: Currently no extParser support for channels
+				ext, err := shared.ParseExtension(extensions, p, make(shared.ExtParsers))
 				if err != nil {
 					return nil, err
 				}
