@@ -13,12 +13,14 @@ import (
 // Parser is a RSS Parser
 type Parser struct {
 	base *shared.XMLBase
+	extParsers shared.ExtParsers
 }
 
 // Parse parses an xml feed into an rss.Feed
-func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
+func (rp *Parser) Parse(feed io.Reader, extParsers shared.ExtParsers) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
 	rp.base = &shared.XMLBase{}
+	rp.extParsers = extParsers
 
 	_, err := rp.base.FindRoot(p)
 	if err != nil {
@@ -144,7 +146,8 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 			name := strings.ToLower(p.Name)
 
 			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
+
+				ext, err := shared.ParseExtension(extensions, p, rp.extParsers)
 				if err != nil {
 					return nil, err
 				}
@@ -335,7 +338,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 			name := strings.ToLower(p.Name)
 
 			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
+				ext, err := shared.ParseExtension(extensions, p, rp.extParsers)
 				if err != nil {
 					return nil, err
 				}
