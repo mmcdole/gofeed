@@ -24,7 +24,9 @@ type Translator interface {
 // This default implementation defines a set of
 // mapping rules between rss.Feed -> Feed
 // for each of the fields in Feed.
-type DefaultRSSTranslator struct{}
+type DefaultRSSTranslator struct{
+	atomTranslator DefaultAtomTranslator
+}
 
 // Translate converts an RSS feed into the universal
 // feed type.
@@ -359,6 +361,8 @@ func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *P
 		author = &Person{}
 		author.Name = name
 		author.Email = address
+	} else if authorVal, ok := t.hasAtomExtensionsForKey(rssItem, "author"); ok {
+		author = t.atomTranslator.translateItemAuthor(authorVal)
 	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Author != nil {
 		dcAuthor := t.firstEntry(rssItem.DublinCoreExt.Author)
 		name, address := shared.ParseNameAddress(dcAuthor)
@@ -464,8 +468,8 @@ func (t *DefaultRSSTranslator) extensionsForKeys(keys []string, extensions ext.E
 	return
 }
 
-func (t *DefaultRSSTranslator) atomExtensionsWithKey(rss *rss.Feed, tag string, f func(ext.Extension) bool) {
-	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
+func (t *DefaultRSSTranslator) atomExtensionsWithKey(rss ext.Extendable, tag string, f func(ext.Extension) bool) {
+	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.GetExtensions())
 	for _, ex := range atomExtensions {
 		if exts, ok := ex[tag]; ok {
 			for _, e := range exts {
@@ -475,6 +479,16 @@ func (t *DefaultRSSTranslator) atomExtensionsWithKey(rss *rss.Feed, tag string, 
 			}
 		}
 	}
+}
+
+func (t *DefaultRSSTranslator) hasAtomExtensionsForKey(rss ext.Extendable, tag string) (entry *atom.Entry, ok bool) {
+	t.atomExtensionsWithKey(rss, tag, func(extension ext.Extension) bool {
+		if extension.Parsed != nil {
+			entry, ok = extension.Parsed.(*atom.Entry)
+		}
+		return ok
+	})
+	return
 }
 
 func (t *DefaultRSSTranslator) firstEntry(entries []string) (value string) {
