@@ -607,18 +607,18 @@ func (t *DefaultAtomTranslator) translateItemUpdatedParsed(entry *atom.Entry) (u
 	return entry.UpdatedParsed
 }
 
-func (t *DefaultAtomTranslator) translateItemPublished(entry *atom.Entry) (updated string) {
-	updated = entry.Published
-	if updated == "" {
-		updated = entry.Updated
+func (t *DefaultAtomTranslator) translateItemPublished(entry *atom.Entry) (published string) {
+	published = entry.Published
+	if published == "" {
+		published = entry.Updated
 	}
 	return
 }
 
-func (t *DefaultAtomTranslator) translateItemPublishedParsed(entry *atom.Entry) (updated *time.Time) {
-	updated = entry.PublishedParsed
-	if updated == nil {
-		updated = entry.UpdatedParsed
+func (t *DefaultAtomTranslator) translateItemPublishedParsed(entry *atom.Entry) (published *time.Time) {
+	published = entry.PublishedParsed
+	if published == nil {
+		published = entry.UpdatedParsed
 	}
 	return
 }
