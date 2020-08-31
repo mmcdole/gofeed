@@ -30,33 +30,49 @@ const (
 // by looking for specific xml elements unique to the
 // various feed types.
 func DetectFeedType(feed io.Reader) FeedType {
-
-	// Check if document is valid JSON
 	buffer := new(bytes.Buffer)
 	buffer.ReadFrom(feed)
 
-	if jsoniter.Valid(buffer.Bytes()) {
-		return FeedTypeJSON
+	// remove leading whitespace (if exists)
+	var firstChar byte
+	for {
+		ch, err := buffer.ReadByte()
+		if err != nil {
+			return FeedTypeUnknown
+		}
+		if ch != ' ' && ch != '\t' {
+			firstChar = ch
+			buffer.UnreadByte()
+			break
+		}
 	}
 
-	// If not, check if it's an XML based feed
-	p := xpp.NewXMLPullParser(bytes.NewReader(buffer.Bytes()), false, shared.NewReaderLabel)
+	if firstChar == '<' {
+		// Check if it's an XML based feed
+		p := xpp.NewXMLPullParser(bytes.NewReader(buffer.Bytes()), false, shared.NewReaderLabel)
 
-	xmlBase := shared.XMLBase{}
-	_, err := xmlBase.FindRoot(p)
-	if err != nil {
-		return FeedTypeUnknown
-	}
+		xmlBase := shared.XMLBase{}
+		_, err := xmlBase.FindRoot(p)
+		if err != nil {
+			return FeedTypeUnknown
+		}
 
-	name := strings.ToLower(p.Name)
-	switch name {
-	case "rdf":
-		return FeedTypeRSS
-	case "rss":
-		return FeedTypeRSS
-	case "feed":
-		return FeedTypeAtom
-	default:
-		return FeedTypeUnknown
+		name := strings.ToLower(p.Name)
+		switch name {
+		case "rdf":
+			return FeedTypeRSS
+		case "rss":
+			return FeedTypeRSS
+		case "feed":
+			return FeedTypeAtom
+		default:
+			return FeedTypeUnknown
+		}
+	} else if firstChar == '{' {
+		// Check if document is valid JSON
+		if jsoniter.Valid(buffer.Bytes()) {
+			return FeedTypeJSON
+		}
 	}
+	return FeedTypeUnknown
 }
