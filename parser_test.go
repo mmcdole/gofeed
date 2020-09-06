@@ -28,8 +28,10 @@ func TestParser_Parse(t *testing.T) {
 		{"atom10_feed.xml", "atom", "Feed Title", false},
 		{"rss_feed.xml", "rss", "Feed Title", false},
 		{"rdf_feed.xml", "rss", "Feed Title", false},
+		{"sample.json", "json", "title", false},
 		{"unknown_feed.xml", "", "", true},
 		{"empty_feed.xml", "", "", true},
+		{"invalid.json", "", "", true},
 	}
 
 	for _, test := range feedTests {
@@ -66,8 +68,10 @@ func TestParser_ParseString(t *testing.T) {
 		{"atom10_feed.xml", "atom", "Feed Title", false},
 		{"rss_feed.xml", "rss", "Feed Title", false},
 		{"rdf_feed.xml", "rss", "Feed Title", false},
+		{"sample.json", "json", "title", false},
 		{"unknown_feed.xml", "", "", true},
 		{"empty_feed.xml", "", "", true},
+		{"invalid.json", "", "", true},
 	}
 
 	for _, test := range feedTests {
@@ -104,7 +108,9 @@ func TestParser_ParseURL_Success(t *testing.T) {
 		{"atom10_feed.xml", "atom", "Feed Title", false},
 		{"rss_feed.xml", "rss", "Feed Title", false},
 		{"rdf_feed.xml", "rss", "Feed Title", false},
+		{"sample.json", "json", "title", false},
 		{"unknown_feed.xml", "", "", true},
+		{"invalid.json", "", "", true},
 	}
 
 	for _, test := range feedTests {

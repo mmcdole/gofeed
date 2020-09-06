@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "items": [
+    {
+      "content_text": "content_text",
+      "banner_image": "https://sample-json-feed.com/banner_image.png"
+    }
+  ]
+}
