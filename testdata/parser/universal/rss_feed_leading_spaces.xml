@@ -2,7 +2,8 @@
    
 		
 <!--
-Description: rss feed with leading spaces.
+Description: rss feed with leading space chars: ` `, `\n`, `\t`, '\n'.
+Careful with editing the file.
 -->
 <rss version="2.0">
   <channel>
