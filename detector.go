@@ -35,15 +35,17 @@ func DetectFeedType(feed io.Reader) FeedType {
 
 	// remove leading whitespace (if exists)
 	var firstChar byte
-	for {
+	loop: for {
 		ch, err := buffer.ReadByte()
 		if err != nil {
 			return FeedTypeUnknown
 		}
-		if ch != ' ' && ch != '\t' {
+		switch ch {
+		case ' ', '\r', '\n', '\t':
+		default:
 			firstChar = ch
 			buffer.UnreadByte()
-			break
+			break loop
 		}
 	}
 
