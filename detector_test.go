@@ -19,6 +19,7 @@ func TestDetectFeedType(t *testing.T) {
 		{"atom03_feed.xml", gofeed.FeedTypeAtom},
 		{"atom10_feed.xml", gofeed.FeedTypeAtom},
 		{"rss_feed.xml", gofeed.FeedTypeRSS},
+		{"rss_feed_bom.xml", gofeed.FeedTypeRSS},
 		{"rss_feed_leading_spaces.xml", gofeed.FeedTypeRSS},
 		{"rdf_feed.xml", gofeed.FeedTypeRSS},
 		{"unknown_feed.xml", gofeed.FeedTypeUnknown},
