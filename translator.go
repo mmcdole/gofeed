@@ -126,7 +126,9 @@ func (t *DefaultRSSTranslator) translateFeedLinks(rss *rss.Feed) (links []string
 	for _, ex := range atomExtensions {
 		if lks, ok := ex["link"]; ok {
 			for _, l := range lks {
-				links = append(links, l.Attrs["href"])
+				if l.Attrs["rel"] == "" || l.Attrs["rel"] == "alternate" || l.Attrs["rel"] == "self" {
+					links = append(links, l.Attrs["href"])
+				}
 			}
 		}
 	}
