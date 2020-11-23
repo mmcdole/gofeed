@@ -755,6 +755,7 @@ func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Title = t.translateFeedTitle(json)
 	result.Link = t.translateFeedLink(json)
 	result.FeedLink = t.translateFeedFeedLink(json)
+	result.Links = t.translateFeedLinks(json)
 	result.Description = t.translateFeedDescription(json)
 	result.Image = t.translateFeedImage(json)
 	result.Author = t.translateFeedAuthor(json)
@@ -815,6 +816,16 @@ func (t *DefaultJSONTranslator) translateFeedLink(json *json.Feed) (link string)
 func (t *DefaultJSONTranslator) translateFeedFeedLink(json *json.Feed) (link string) {
 	if json.FeedURL != "" {
 		link = json.FeedURL
+	}
+	return
+}
+
+func (t *DefaultJSONTranslator) translateFeedLinks(json *json.Feed) (links []string) {
+	if json.HomePageURL != "" {
+		links = append(links, json.HomePageURL)
+	}
+	if json.FeedURL != "" {
+		links = append(links, json.FeedURL)
 	}
 	return
 }
@@ -911,7 +922,7 @@ func (t *DefaultJSONTranslator) translateItemLink(jsonItem *json.Item) (link str
 }
 
 func (t *DefaultJSONTranslator) translateItemLinks(jsonItem *json.Item) (links []string) {
-	return []string{jsonItem.URL}
+	return []string{jsonItem.URL, jsonItem.ExternalURL}
 }
 
 func (t *DefaultJSONTranslator) translateItemUpdated(jsonItem *json.Item) (updated string) {
