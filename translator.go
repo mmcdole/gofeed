@@ -300,6 +300,9 @@ func (t *DefaultRSSTranslator) translateItemLink(rssItem *rss.Item) (link string
 	return rssItem.Link
 }
 func (t *DefaultRSSTranslator) translateItemLinks(rssItem *rss.Item) (links []string) {
+	if rssItem.Link == "" {
+		return nil
+	}
 	return []string{rssItem.Link}
 }
 

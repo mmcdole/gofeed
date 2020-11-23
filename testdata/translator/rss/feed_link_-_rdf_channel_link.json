@@ -1,5 +1,8 @@
 {
     "link": "http://example.org",
+    "links": [
+        "http://example.org"
+    ],
     "items": [],
     "feedType": "rss",
     "feedVersion": "1.0"

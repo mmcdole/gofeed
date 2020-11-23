@@ -1,9 +1,12 @@
-{  
-  "items": [],
-  "feedType": "rss",
-  "feedVersion": "2.0",
-  "feedLink": "http://example.org",
-  "extensions": {
+{
+    "items": [],
+    "feedType": "rss",
+    "feedVersion": "2.0",
+    "feedLink": "http://example.org",
+    "links": [
+        "http://example.org"
+    ],
+    "extensions": {
         "atom": {
             "link": [
                 {
