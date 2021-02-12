@@ -44,6 +44,7 @@ func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Published = t.translateFeedPublished(rss)
 	result.PublishedParsed = t.translateFeedPublishedParsed(rss)
 	result.Author = t.translateFeedAuthor(rss)
+	result.Authors = t.translateFeedAuthors(rss)
 	result.Language = t.translateFeedLanguage(rss)
 	result.Image = t.translateFeedImage(rss)
 	result.Copyright = t.translateFeedCopyright(rss)
@@ -67,6 +68,7 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.Published = t.translateItemPublished(rssItem)
 	item.PublishedParsed = t.translateItemPublishedParsed(rssItem)
 	item.Author = t.translateItemAuthor(rssItem)
+	item.Authors = t.translateItemAuthors(rssItem)
 	item.GUID = t.translateItemGUID(rssItem)
 	item.Image = t.translateItemImage(rssItem)
 	item.Categories = t.translateItemCategories(rssItem)
@@ -171,6 +173,13 @@ func (t *DefaultRSSTranslator) translateFeedAuthor(rss *rss.Feed) (author *Perso
 		author = &Person{}
 		author.Name = name
 		author.Email = address
+	}
+	return
+}
+
+func (t *DefaultRSSTranslator) translateFeedAuthors(rss *rss.Feed) (authors []*Person) {
+	if author := t.translateFeedAuthor(rss); author != nil {
+		authors = []*Person{author}
 	}
 	return
 }
@@ -347,6 +356,14 @@ func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *P
 	return
 }
 
+func (t *DefaultRSSTranslator) translateItemAuthors(rssItem *rss.Item) (authors []*Person) {
+
+	if author := t.translateItemAuthor(rssItem); author != nil {
+		authors = []*Person{author}
+	}
+	return
+}
+
 func (t *DefaultRSSTranslator) translateItemGUID(rssItem *rss.Item) (guid string) {
 	if rssItem.GUID != nil {
 		guid = rssItem.GUID.Value
@@ -452,6 +469,7 @@ func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Updated = t.translateFeedUpdated(atom)
 	result.UpdatedParsed = t.translateFeedUpdatedParsed(atom)
 	result.Author = t.translateFeedAuthor(atom)
+	result.Authors = t.translateFeedAuthors(atom)
 	result.Language = t.translateFeedLanguage(atom)
 	result.Image = t.translateFeedImage(atom)
 	result.Copyright = t.translateFeedCopyright(atom)
@@ -475,6 +493,7 @@ func (t *DefaultAtomTranslator) translateFeedItem(entry *atom.Entry) (item *Item
 	item.Published = t.translateItemPublished(entry)
 	item.PublishedParsed = t.translateItemPublishedParsed(entry)
 	item.Author = t.translateItemAuthor(entry)
+	item.Authors = t.translateItemAuthors(entry)
 	item.GUID = t.translateItemGUID(entry)
 	item.Image = t.translateItemImage(entry)
 	item.Categories = t.translateItemCategories(entry)
@@ -523,6 +542,22 @@ func (t *DefaultAtomTranslator) translateFeedAuthor(atom *atom.Feed) (author *Pe
 		feedAuthor.Email = a.Email
 		author = &feedAuthor
 	}
+	return
+}
+
+func (t *DefaultAtomTranslator) translateFeedAuthors(atom *atom.Feed) (authors []*Person) {
+
+	if atom.Authors != nil {
+		authors = []*Person{}
+
+		for _, a := range atom.Authors {
+			authors = append(authors, &Person{
+				Name:  a.Name,
+				Email: a.Email,
+			})
+		}
+	}
+
 	return
 }
 
@@ -626,6 +661,19 @@ func (t *DefaultAtomTranslator) translateItemAuthor(entry *atom.Entry) (author *
 	return
 }
 
+func (t *DefaultAtomTranslator) translateItemAuthors(entry *atom.Entry) (authors []*Person) {
+	if entry.Authors != nil {
+		authors = []*Person{}
+		for _, a := range entry.Authors {
+			authors = append(authors, &Person{
+				Name:  a.Name,
+				Email: a.Email,
+			})
+		}
+	}
+	return
+}
+
 func (t *DefaultAtomTranslator) translateItemGUID(entry *atom.Entry) (guid string) {
 	return entry.ID
 }
@@ -710,6 +758,8 @@ func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Description = t.translateFeedDescription(json)
 	result.Image = t.translateFeedImage(json)
 	result.Author = t.translateFeedAuthor(json)
+	result.Authors = t.translateFeedAuthors(json)
+	result.Language = t.translateFeedLanguage(json)
 	result.Items = t.translateFeedItems(json)
 	result.Updated = t.translateFeedUpdated(json)
 	result.UpdatedParsed = t.translateFeedUpdatedParsed(json)
@@ -738,6 +788,7 @@ func (t *DefaultJSONTranslator) translateFeedItem(jsonItem *json.Item) (item *It
 	item.Updated = t.translateItemUpdated(jsonItem)
 	item.UpdatedParsed = t.translateItemUpdatedParsed(jsonItem)
 	item.Author = t.translateItemAuthor(jsonItem)
+	item.Authors = t.translateItemAuthors(jsonItem)
 	item.Categories = t.translateItemCategories(jsonItem)
 	item.Enclosures = t.translateItemEnclosures(jsonItem)
 	// TODO ExternalURL is missing in global Feed
@@ -813,6 +864,31 @@ func (t *DefaultJSONTranslator) translateFeedAuthor(json *json.Feed) (author *Pe
 	}
 	// Author.URL is missing in global feed
 	// Author.Avatar is missing in global feed
+	return
+}
+
+func (t *DefaultJSONTranslator) translateFeedAuthors(json *json.Feed) (authors []*Person) {
+
+	if json.Authors != nil {
+		authors = []*Person{}
+		for _, a := range json.Authors {
+			name, address := shared.ParseNameAddress(a.Name)
+			author := &Person{}
+			author.Name = name
+			author.Email = address
+
+			authors = append(authors, author)
+		}
+	} else if author := t.translateFeedAuthor(json); author != nil {
+		authors = []*Person{author}
+	}
+	// Author.URL is missing in global feed
+	// Author.Avatar is missing in global feed
+	return
+}
+
+func (t *DefaultJSONTranslator) translateFeedLanguage(json *json.Feed) (language string) {
+	language = json.Language
 	return
 }
 
@@ -901,6 +977,26 @@ func (t *DefaultJSONTranslator) translateItemAuthor(jsonItem *json.Item) (author
 		author = &Person{}
 		author.Name = name
 		author.Email = address
+	}
+	// Author.URL is missing in global feed
+	// Author.Avatar is missing in global feed
+	return
+}
+
+func (t *DefaultJSONTranslator) translateItemAuthors(jsonItem *json.Item) (authors []*Person) {
+
+	if jsonItem.Authors != nil {
+		authors = []*Person{}
+		for _, a := range jsonItem.Authors {
+			name, address := shared.ParseNameAddress(a.Name)
+			author := &Person{}
+			author.Name = name
+			author.Email = address
+
+			authors = append(authors, author)
+		}
+	} else if author := t.translateItemAuthor(jsonItem); author != nil {
+		authors = []*Person{author}
 	}
 	// Author.URL is missing in global feed
 	// Author.Avatar is missing in global feed

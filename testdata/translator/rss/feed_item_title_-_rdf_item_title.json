@@ -1,9 +1,9 @@
 {
-    "items": [
-        {
-            "title": "Item Title"
-        }
-    ],
-    "feedType": "rss",
-    "feedVersion": "1.0"
+  "feedType": "rss",
+  "feedVersion": "1.0",
+  "items": [
+    {
+      "title": "Item Title"
+    }
+  ]
 }

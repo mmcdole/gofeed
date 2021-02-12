@@ -1,0 +1,12 @@
+{
+	"feedVersion": "1.0",
+	"feedType": "json",
+	"items": [
+		{
+			"content": "content_text",
+			"image": {
+				"url": "https://sample-json-feed.com/banner_image.png"
+			}
+		}
+	]
+}

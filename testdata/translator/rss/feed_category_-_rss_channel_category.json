@@ -1,9 +1,9 @@
 {
-    "categories": [
-        "Feed Category 1",
-        "Feed Category 2"
-    ],
-    "items": [],
-    "feedType": "rss",
-    "feedVersion": "2.0"
+  "categories": [
+    "Feed Category 1",
+    "Feed Category 2"
+  ],
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": []
 }

@@ -1,11 +1,16 @@
 {
-    "items": [
+  "feedType": "atom",
+  "feedVersion": "1.0",
+  "items": [
+    {
+      "author": {
+        "name": "Author Name"
+      },
+      "authors": [
         {
-            "author": {
-                "name": "Author Name"
-            }
+          "name": "Author Name"
         }
-    ],
-    "feedType": "atom",
-    "feedVersion": "1.0"
+      ]
+    }
+  ]
 }
