@@ -1,7 +1,6 @@
 package gofeed_test
 
 import (
-	"bytes"
 	jsonEncoding "encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,11 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/mmcdole/gofeed/atom"
-	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/json"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
@@ -46,7 +43,7 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 		expected := &gofeed.Feed{}
 		jsonEncoding.Unmarshal(e, &expected)
 
-		if assert.Equal(t, actual, expected, "Feed file %s.xml did not match expected output %s.json", name, name) {
+		if assert.Equal(t, expected, actual, "Feed file %s.xml did not match expected output %s.json", name, name) {
 			fmt.Printf("OK\n")
 		} else {
 			fmt.Printf("Failed\n")
@@ -88,7 +85,7 @@ func TestDefaultAtomTranslator_Translate(t *testing.T) {
 		expected := &gofeed.Feed{}
 		jsonEncoding.Unmarshal(e, &expected)
 
-		if assert.Equal(t, actual, expected, "Feed file %s.xml did not match expected output %s.json", name, name) {
+		if assert.Equal(t, expected, actual, "Feed file %s.xml did not match expected output %s.json", name, name) {
 			fmt.Printf("OK\n")
 		} else {
 			fmt.Printf("Failed\n")
@@ -102,6 +99,47 @@ func TestDefaultAtomTranslator_Translate_WrongType(t *testing.T) {
 	assert.Nil(t, af)
 	assert.NotNil(t, err)
 }
+
+func TestDefaultJSONTranslator_Translate(t *testing.T) {
+	files, _ := filepath.Glob("testdata/translator/json/*.json")
+	for _, f := range files {
+		base := filepath.Base(f)
+		name := strings.TrimSuffix(base, filepath.Ext(base))
+
+		if strings.HasSuffix(name, "expected") {
+			continue
+		}
+
+		fmt.Printf("Testing %s... ", name)
+
+		// Get actual source feed
+		ff := fmt.Sprintf("testdata/translator/json/%s.json", name)
+		f, _ := os.Open(ff)
+		defer f.Close()
+
+		// Parse actual feed
+		translator := &gofeed.DefaultJSONTranslator{}
+		fp := json.Parser{}
+		jsonFeed, _ := fp.Parse(f)
+		actual, _ := translator.Translate(jsonFeed)
+
+		// Get json encoded expected feed result
+		ef := fmt.Sprintf("testdata/translator/json/%s_expected.json", name)
+		e, _ := ioutil.ReadFile(ef)
+
+		// Unmarshal expected feed
+		expected := &gofeed.Feed{}
+		jsonEncoding.Unmarshal(e, &expected)
+
+		if assert.Equal(t, expected, actual, "Feed file %s.json did not match expected output %s_expected.json", name, name) {
+			fmt.Printf("OK\n")
+		} else {
+			fmt.Printf("Failed\n")
+		}
+	}
+}
+
+/*
 
 func TestDefaultJSONTranslator_Translate(t *testing.T) {
 	name := "sample"
@@ -179,6 +217,7 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 	assert.Equal(t, "https://sample-json-feed.com/banner_image.png", actual.Items[0].Image.URL)
 
 }
+*/
 
 func TestDefaultJSONTranslator_Translate_WrongType(t *testing.T) {
 	translator := &gofeed.DefaultJSONTranslator{}

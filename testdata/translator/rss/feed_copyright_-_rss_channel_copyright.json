@@ -1,6 +1,6 @@
 {
-    "copyright": "Feed Copyright",
-    "items": [],
-    "feedType": "rss",
-    "feedVersion": "2.0"
+  "copyright": "Feed Copyright",
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": []
 }

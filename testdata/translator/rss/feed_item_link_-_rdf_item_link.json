@@ -1,9 +1,9 @@
 {
-    "items": [
-        {
-            "link": "http://example.org"
-        }
-    ],
-    "feedType": "rss",
-    "feedVersion": "1.0"
+  "feedType": "rss",
+  "feedVersion": "1.0",
+  "items": [
+    {
+      "link": "http://example.org"
+    }
+  ]
 }

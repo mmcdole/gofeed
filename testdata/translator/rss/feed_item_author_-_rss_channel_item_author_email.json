@@ -1,11 +1,16 @@
 {
-    "items": [
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": [
+    {
+      "author": {
+        "email": "email@example.org"
+      },
+      "authors": [
         {
-            "author": {
-                "email": "email@example.org"
-            }
+          "email": "email@example.org"
         }
-    ],
-    "feedType": "rss",
-    "feedVersion": "2.0"
+      ]
+    }
+  ]
 }

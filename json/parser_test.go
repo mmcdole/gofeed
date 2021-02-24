@@ -2,31 +2,73 @@ package json_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
+	"strings"
 	"testing"
 
-	"github.com/mmcdole/gofeed/json"
+	jsonParser "github.com/mmcdole/gofeed/json"
 	"github.com/stretchr/testify/assert"
 )
 
 // Tests
 
+// TODO: add tests for invalid
+
 func TestParser_Parse(t *testing.T) {
+	files, _ := filepath.Glob("../testdata/parser/json/*.json")
+	for _, f := range files {
+		base := filepath.Base(f)
+		name := strings.TrimSuffix(base, filepath.Ext(base))
+
+		if strings.HasSuffix(name, "expected") {
+			continue
+		}
+
+		fmt.Printf("Testing %s... ", name)
+
+		// Get actual source feed
+		ff := fmt.Sprintf("../testdata/parser/json/%s.json", name)
+		f, _ := ioutil.ReadFile(ff)
+
+		// Parse actual feed
+		fp := &jsonParser.Parser{}
+		actual, _ := fp.Parse(bytes.NewReader(f))
+
+		// Get json encoded expected feed result
+		ef := fmt.Sprintf("../testdata/parser/json/%s_expected.json", name)
+		e, _ := ioutil.ReadFile(ef)
+
+		// Unmarshal expected feed
+		expected := &jsonParser.Feed{}
+		json.Unmarshal(e, &expected)
+
+		if assert.Equal(t, expected, actual, "Feed file %s.json did not match expected output %s.json", name, name) {
+			fmt.Printf("OK\n")
+		} else {
+			fmt.Printf("Failed\n")
+		}
+	}
+}
+
+// TODO: Remove redundant tests
+func TestParser_ParseInvalidAndStruct(t *testing.T) {
 	name := "invalid"
 	fmt.Printf("Testing %s... ", name)
 
 	// Get actual source feed
-	ff := fmt.Sprintf("../testdata/parser/json/%s.json", name)
+	ff := fmt.Sprintf("../testdata/parser/json/invalid/%s.json", name)
 	fmt.Println(ff)
 	f, _ := ioutil.ReadFile(ff)
 
 	// Parse actual feed
-	fp := &json.Parser{}
+	fp := &jsonParser.Parser{}
 	_, err := fp.Parse(bytes.NewReader(f))
 	assert.Contains(t, err.Error(), "expect }")
 
-	name = "sample"
+	name = "version_json_10"
 	fmt.Printf("Testing %s... ", name)
 
 	// Get actual source feed

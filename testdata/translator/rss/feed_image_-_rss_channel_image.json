@@ -1,9 +1,9 @@
 {
-    "image": {
-        "url": "http://example.org/url",
-        "title": "Sample image"
-    },
-    "items": [],
-    "feedType": "rss",
-    "feedVersion": "0.91"
+  "feedType": "rss",
+  "feedVersion": "0.91",
+  "image": {
+    "title": "Sample image",
+    "url": "http://example.org/url"
+  },
+  "items": []
 }

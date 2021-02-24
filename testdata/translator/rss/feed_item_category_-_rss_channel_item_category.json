@@ -1,12 +1,12 @@
 {
-    "items": [
-        {
-            "categories": [
-                "Item Category 1",
-                "Item Category 2"
-            ]
-        }
-    ],
-    "feedType": "rss",
-    "feedVersion": "2.0"
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": [
+    {
+      "categories": [
+        "Item Category 1",
+        "Item Category 2"
+      ]
+    }
+  ]
 }
