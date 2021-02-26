@@ -3,11 +3,13 @@ package shared
 import (
 	"bytes"
 	"fmt"
-	"golang.org/x/net/html"
 	"net/url"
 	"strings"
+	"sync"
 
-	"github.com/mmcdole/goxpp"
+	"golang.org/x/net/html"
+
+	xpp "github.com/mmcdole/goxpp"
 )
 
 var (
@@ -31,26 +33,36 @@ var (
 	}
 )
 
-type urlStack []*url.URL
+type urlStack struct {
+	u []*url.URL
+	m sync.RWMutex
+}
 
 func (s *urlStack) push(u *url.URL) {
-	*s = append([]*url.URL{u}, *s...)
+	s.m.Lock()
+	s.u = append(s.u, u)
+	s.m.Unlock()
 }
 
 func (s *urlStack) pop() *url.URL {
-	if s == nil || len(*s) == 0 {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	l := len(s.u)
+	if l == 0 {
 		return nil
 	}
-	var top *url.URL
-	top, *s = (*s)[0], (*s)[1:]
-	return top
+
+	u := s.u[0]
+	s.u = s.u[1:]
+	return u
 }
 
 func (s *urlStack) top() *url.URL {
-	if s == nil || len(*s) == 0 {
+	if len(s.u) == 0 {
 		return nil
 	}
-	return (*s)[0]
+	return s.u[0]
 }
 
 type XMLBase struct {
