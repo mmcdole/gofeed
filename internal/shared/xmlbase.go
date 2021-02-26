@@ -48,8 +48,7 @@ func (s *urlStack) pop() *url.URL {
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	l := len(s.u)
-	if l == 0 {
+	if len(s.u) == 0 {
 		return nil
 	}
 
