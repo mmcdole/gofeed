@@ -114,6 +114,15 @@ feed, _ := fp.ParseURLWithContext("http://feeds.twit.tv/twit.xml", ctx)
 fmt.Println(feed.Title)
 ```
 
+##### Parse a feed from an URL with a custom User-Agent:
+
+```go
+fp := gofeed.NewParser()
+fp.UserAgent = "MyCustomAgent 1.0"
+feed, _ := fp.ParseURL("http://feeds.twit.tv/twit.xml")
+fmt.Println(feed.Title)
+```
+
 #### Feed Specific Parsers
 
 You can easily use the `rss.Parser`, `atom.Parser` or `json.Parser` directly if you have a usage scenario that requires it:
