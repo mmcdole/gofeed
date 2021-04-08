@@ -643,12 +643,20 @@ func (t *DefaultAtomTranslator) translateItemUpdatedParsed(entry *atom.Entry) (u
 	return entry.UpdatedParsed
 }
 
-func (t *DefaultAtomTranslator) translateItemPublished(entry *atom.Entry) (updated string) {
-	return entry.Published
+func (t *DefaultAtomTranslator) translateItemPublished(entry *atom.Entry) (published string) {
+	published = entry.Published
+	if published == "" {
+		published = entry.Updated
+	}
+	return
 }
 
-func (t *DefaultAtomTranslator) translateItemPublishedParsed(entry *atom.Entry) (updated *time.Time) {
-	return entry.PublishedParsed
+func (t *DefaultAtomTranslator) translateItemPublishedParsed(entry *atom.Entry) (published *time.Time) {
+	published = entry.PublishedParsed
+	if published == nil {
+		published = entry.UpdatedParsed
+	}
+	return
 }
 
 func (t *DefaultAtomTranslator) translateItemAuthor(entry *atom.Entry) (author *Person) {
