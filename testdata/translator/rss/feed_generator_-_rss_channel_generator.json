@@ -1,6 +1,6 @@
 {
-    "generator": "Feed Generator",
-    "items": [],
-    "feedType": "rss",
-    "feedVersion": "2.0"
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "generator": "Feed Generator",
+  "items": []
 }

@@ -1,8 +1,13 @@
 {
-    "author": {
-        "email": "email@example.org"
-    },
-    "items": [],
-    "feedType": "atom",
-    "feedVersion": "1.0"
+  "author": {
+    "email": "email@example.org"
+  },
+  "authors": [
+    {
+      "email": "email@example.org"
+    }
+  ],
+  "feedType": "atom",
+  "feedVersion": "1.0",
+  "items": []
 }

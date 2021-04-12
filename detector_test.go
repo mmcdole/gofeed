@@ -24,7 +24,7 @@ func TestDetectFeedType(t *testing.T) {
 		{"rdf_feed.xml", gofeed.FeedTypeRSS},
 		{"unknown_feed.xml", gofeed.FeedTypeUnknown},
 		{"empty_feed.xml", gofeed.FeedTypeUnknown},
-		{"json_feed.json", gofeed.FeedTypeJSON},
+		{"json10_feed.json", gofeed.FeedTypeJSON},
 	}
 
 	for _, test := range feedTypeTests {

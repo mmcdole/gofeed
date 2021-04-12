@@ -1,0 +1,52 @@
+{
+	"version": "1.1",
+	"title": "title",
+	"user_comment": "user_comment",
+	"authors": [
+		{
+			"avatar": "https://sample-feed-author.com/me.png",
+			"name": "author_name",
+			"url": "https://sample-feed-author.com"
+		}
+	],
+	"next_url": "https://sample-json-feed.com/feed.json?next=500",
+	"description": "description",
+	"expired": false,
+	"favicon": "https://sample-json-feed.com/favicon.png",
+	"feed_url": "https://sample-json-feed.com/feed.json",
+	"home_page_url": "https://sample-json-feed.com",
+	"icon": "https://sample-json-feed.com/icon.png",
+	"language": "en",
+	"items": [
+		{
+			"attachments": [
+				{
+					"duration_in_seconds": 100,
+					"mime_type": "audio/mpeg",
+					"size_in_bytes": 100,
+					"title": "title",
+					"url": "https://sample-json-feed.com/attachment"
+				}
+			],
+			"authors": [
+				{
+					"avatar": "https://sample-feed-author.com/me.png",
+					"name": "author_name",
+					"url": "https://sample-feed-author.com"
+				}
+			],
+			"banner_image": "https://sample-json-feed.com/banner_image.png",
+			"content_html": "<p>content_html</p>",
+			"content_text": "content_text",
+			"date_modified": "2019-10-12T07:20:50.52Z",
+			"date_published": "2019-10-12T07:20:50.52Z",
+			"external_url": "https://sample-json-feed.com/external",
+			"id": "id",
+			"image": "https://sample-json-feed.com/image.png",
+			"summary": "summary",
+			"tags": ["tag1", "tag2"],
+			"title": "title",
+			"url": "https://sample-json-feed.com/id"
+		}
+	]
+}

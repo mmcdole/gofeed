@@ -1,25 +1,25 @@
 {
-    "items": [],
-    "feedType": "rss",
-    "feedVersion": "2.0",
-    "feedLink": "http://example.org",
-    "links": [
-        "http://example.org"
-    ],
-    "extensions": {
-        "atom": {
-            "link": [
-                {
-                    "name": "link",
-                    "value": "",
-                    "attrs": {
-                        "href": "http://example.org",
-                        "rel": "self",
-                        "type": "application/rss+xml"
-                    },
-                    "children": {}
-                }
-            ]
+  "extensions": {
+    "atom": {
+      "link": [
+        {
+          "attrs": {
+            "href": "http://example.org",
+            "rel": "self",
+            "type": "application/rss+xml"
+          },
+          "children": {},
+          "name": "link",
+          "value": ""
         }
+      ]
     }
+  },
+  "feedLink": "http://example.org",
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": []
+  "links": [
+    "http://example.org"
+  ]
 }
