@@ -162,6 +162,16 @@ fmt.Println(jsonFeed.HomePageURL)
 
 ## Advanced Usage
 
+#### Instanciate Parser with BasicAuthentication:
+
+``` go
+fp := gofeed.NewParser()
+fp.AuthConfig = &gofeed.Auth{
+  Username: "foo",
+  Password: "bar",
+}
+```
+
 ##### Parse a feed while using a custom translator
 
 The mappings and precedence order that are outlined in the [Default Mappings](#default-mappings) section are provided by the following two structs: `DefaultRSSTranslator`, `DefaultAtomTranslator` and `DefaultJSONTranslator`. If you have fields that you think should have a different precedence, or if you want to make a translator that is aware of an unsupported extension you can do this by specifying your own RSS or Atom or JSON translator when using the `gofeed.Parser`.
