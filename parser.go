@@ -36,19 +36,26 @@ type Parser struct {
 	RSSTranslator  Translator
 	JSONTranslator Translator
 	UserAgent      string
+	AuthConfig     *Auth
 	Client         *http.Client
 	rp             *rss.Parser
 	ap             *atom.Parser
 	jp             *json.Parser
 }
 
+type Auth struct {
+	Username string
+	Password string
+}
+
 // NewParser creates a universal feed parser.
 func NewParser() *Parser {
 	fp := Parser{
-		rp:        &rss.Parser{},
-		ap:        &atom.Parser{},
-		jp:        &json.Parser{},
-		UserAgent: "Gofeed/1.0",
+		rp:         &rss.Parser{},
+		ap:         &atom.Parser{},
+		jp:         &json.Parser{},
+		UserAgent:  "Gofeed/1.0",
+		AuthConfig: &Auth{},
 	}
 	return &fp
 }
@@ -100,6 +107,11 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 	}
 	req = req.WithContext(ctx)
 	req.Header.Set("User-Agent", f.UserAgent)
+
+	if f.AuthConfig != nil {
+		req.SetBasicAuth(f.AuthConfig.Username, f.AuthConfig.Password)
+	}
+
 	resp, err := client.Do(req)
 
 	if err != nil {
