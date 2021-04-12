@@ -43,6 +43,9 @@ type Parser struct {
 	jp             *json.Parser
 }
 
+// Auth is a structure allowing to
+// use the BasicAuth during the HTTP request
+// It must be instantiated with your new Parser
 type Auth struct {
 	Username string
 	Password string
@@ -51,11 +54,10 @@ type Auth struct {
 // NewParser creates a universal feed parser.
 func NewParser() *Parser {
 	fp := Parser{
-		rp:         &rss.Parser{},
-		ap:         &atom.Parser{},
-		jp:         &json.Parser{},
-		UserAgent:  "Gofeed/1.0",
-		AuthConfig: &Auth{},
+		rp:        &rss.Parser{},
+		ap:        &atom.Parser{},
+		jp:        &json.Parser{},
+		UserAgent: "Gofeed/1.0",
 	}
 	return &fp
 }
@@ -97,6 +99,9 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 
 // ParseURLWithContext fetches contents of a given url and
 // attempts to parse the response into the universal feed type.
+// You can instantiate the Auth structure with your Username and Password
+// to use the BasicAuth during the HTTP call.
+// It will be automatically added to the header of the request
 // Request could be canceled or timeout via given context
 func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed *Feed, err error) {
 	client := f.httpClient()
@@ -108,7 +113,7 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 	req = req.WithContext(ctx)
 	req.Header.Set("User-Agent", f.UserAgent)
 
-	if f.AuthConfig != nil {
+	if f.AuthConfig != nil && f.AuthConfig.Username != "" && f.AuthConfig.Password != "" {
 		req.SetBasicAuth(f.AuthConfig.Username, f.AuthConfig.Password)
 	}
 
