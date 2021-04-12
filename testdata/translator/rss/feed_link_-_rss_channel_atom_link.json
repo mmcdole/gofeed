@@ -18,7 +18,7 @@
   "feedLink": "http://example.org",
   "feedType": "rss",
   "feedVersion": "2.0",
-  "items": []
+  "items": [],
   "links": [
     "http://example.org"
   ]
