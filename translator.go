@@ -1006,7 +1006,13 @@ func (t *DefaultJSONTranslator) translateItemLink(jsonItem *json.Item) (link str
 }
 
 func (t *DefaultJSONTranslator) translateItemLinks(jsonItem *json.Item) (links []string) {
-	return []string{jsonItem.URL, jsonItem.ExternalURL}
+	if jsonItem.URL != "" {
+		links = append(links, jsonItem.URL)
+	}
+	if jsonItem.ExternalURL != "" {
+		links = append(links, jsonItem.ExternalURL)
+	}
+	return
 }
 
 func (t *DefaultJSONTranslator) translateItemUpdated(jsonItem *json.Item) (updated string) {
