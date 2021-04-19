@@ -39,6 +39,7 @@ func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Description = t.translateFeedDescription(rss)
 	result.Link = t.translateFeedLink(rss)
 	result.FeedLink = t.translateFeedFeedLink(rss)
+	result.Links = t.translateFeedLinks(rss)
 	result.Updated = t.translateFeedUpdated(rss)
 	result.UpdatedParsed = t.translateFeedUpdatedParsed(rss)
 	result.Published = t.translateFeedPublished(rss)
@@ -65,6 +66,7 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.Description = t.translateItemDescription(rssItem)
 	item.Content = t.translateItemContent(rssItem)
 	item.Link = t.translateItemLink(rssItem)
+	item.Links = t.translateItemLinks(rssItem)
 	item.Published = t.translateItemPublished(rssItem)
 	item.PublishedParsed = t.translateItemPublishedParsed(rssItem)
 	item.Author = t.translateItemAuthor(rssItem)
@@ -108,6 +110,26 @@ func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string
 			for _, l := range links {
 				if l.Attrs["rel"] == "self" {
 					link = l.Attrs["href"]
+				}
+			}
+		}
+	}
+	return
+}
+
+func (t *DefaultRSSTranslator) translateFeedLinks(rss *rss.Feed) (links []string) {
+	if rss.Link != "" {
+		links = append(links, rss.Link)
+	}
+	if rss.ITunesExt != nil && rss.ITunesExt.Subtitle != "" {
+		links = append(links, rss.ITunesExt.Subtitle)
+	}
+	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
+	for _, ex := range atomExtensions {
+		if lks, ok := ex["link"]; ok {
+			for _, l := range lks {
+				if l.Attrs["rel"] == "" || l.Attrs["rel"] == "alternate" || l.Attrs["rel"] == "self" {
+					links = append(links, l.Attrs["href"])
 				}
 			}
 		}
@@ -288,6 +310,12 @@ func (t *DefaultRSSTranslator) translateItemContent(rssItem *rss.Item) (content 
 func (t *DefaultRSSTranslator) translateItemLink(rssItem *rss.Item) (link string) {
 	return rssItem.Link
 }
+func (t *DefaultRSSTranslator) translateItemLinks(rssItem *rss.Item) (links []string) {
+	if rssItem.Link == "" {
+		return nil
+	}
+	return []string{rssItem.Link}
+}
 
 func (t *DefaultRSSTranslator) translateItemUpdated(rssItem *rss.Item) (updated string) {
 	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
@@ -466,6 +494,7 @@ func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Description = t.translateFeedDescription(atom)
 	result.Link = t.translateFeedLink(atom)
 	result.FeedLink = t.translateFeedFeedLink(atom)
+	result.Links = t.translateFeedLinks(atom)
 	result.Updated = t.translateFeedUpdated(atom)
 	result.UpdatedParsed = t.translateFeedUpdatedParsed(atom)
 	result.Author = t.translateFeedAuthor(atom)
@@ -488,6 +517,7 @@ func (t *DefaultAtomTranslator) translateFeedItem(entry *atom.Entry) (item *Item
 	item.Description = t.translateItemDescription(entry)
 	item.Content = t.translateItemContent(entry)
 	item.Link = t.translateItemLink(entry)
+	item.Links = t.translateItemLinks(entry)
 	item.Updated = t.translateItemUpdated(entry)
 	item.UpdatedParsed = t.translateItemUpdatedParsed(entry)
 	item.Published = t.translateItemPublished(entry)
@@ -522,6 +552,15 @@ func (t *DefaultAtomTranslator) translateFeedFeedLink(atom *atom.Feed) (link str
 	feedLink := t.firstLinkWithType("self", atom.Links)
 	if feedLink != nil {
 		link = feedLink.Href
+	}
+	return
+}
+
+func (t *DefaultAtomTranslator) translateFeedLinks(atom *atom.Feed) (links []string) {
+	for _, l := range atom.Links {
+		if l.Rel == "" || l.Rel == "alternate" || l.Rel == "self" {
+			links = append(links, l.Href)
+		}
 	}
 	return
 }
@@ -631,6 +670,15 @@ func (t *DefaultAtomTranslator) translateItemLink(entry *atom.Entry) (link strin
 	l := t.firstLinkWithType("alternate", entry.Links)
 	if l != nil {
 		link = l.Href
+	}
+	return
+}
+
+func (t *DefaultAtomTranslator) translateItemLinks(entry *atom.Entry) (links []string) {
+	for _, l := range entry.Links {
+		if l.Rel == "" || l.Rel == "alternate" || l.Rel == "self" {
+			links = append(links, l.Href)
+		}
 	}
 	return
 }
@@ -763,6 +811,7 @@ func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Title = t.translateFeedTitle(json)
 	result.Link = t.translateFeedLink(json)
 	result.FeedLink = t.translateFeedFeedLink(json)
+	result.Links = t.translateFeedLinks(json)
 	result.Description = t.translateFeedDescription(json)
 	result.Image = t.translateFeedImage(json)
 	result.Author = t.translateFeedAuthor(json)
@@ -787,6 +836,7 @@ func (t *DefaultJSONTranslator) translateFeedItem(jsonItem *json.Item) (item *It
 	item = &Item{}
 	item.GUID = t.translateItemGUID(jsonItem)
 	item.Link = t.translateItemLink(jsonItem)
+	item.Links = t.translateItemLinks(jsonItem)
 	item.Title = t.translateItemTitle(jsonItem)
 	item.Content = t.translateItemContent(jsonItem)
 	item.Description = t.translateItemDescription(jsonItem)
@@ -825,6 +875,16 @@ func (t *DefaultJSONTranslator) translateFeedLink(json *json.Feed) (link string)
 func (t *DefaultJSONTranslator) translateFeedFeedLink(json *json.Feed) (link string) {
 	if json.FeedURL != "" {
 		link = json.FeedURL
+	}
+	return
+}
+
+func (t *DefaultJSONTranslator) translateFeedLinks(json *json.Feed) (links []string) {
+	if json.HomePageURL != "" {
+		links = append(links, json.HomePageURL)
+	}
+	if json.FeedURL != "" {
+		links = append(links, json.FeedURL)
 	}
 	return
 }
@@ -943,6 +1003,16 @@ func (t *DefaultJSONTranslator) translateItemContent(jsonItem *json.Item) (conte
 
 func (t *DefaultJSONTranslator) translateItemLink(jsonItem *json.Item) (link string) {
 	return jsonItem.URL
+}
+
+func (t *DefaultJSONTranslator) translateItemLinks(jsonItem *json.Item) (links []string) {
+	if jsonItem.URL != "" {
+		links = append(links, jsonItem.URL)
+	}
+	if jsonItem.ExternalURL != "" {
+		links = append(links, jsonItem.ExternalURL)
+	}
+	return
 }
 
 func (t *DefaultJSONTranslator) translateItemUpdated(jsonItem *json.Item) (updated string) {

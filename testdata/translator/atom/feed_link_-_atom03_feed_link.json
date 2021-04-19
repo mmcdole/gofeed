@@ -1,5 +1,8 @@
 {
     "link": "http://www.example.org",
+    "links": [
+        "http://www.example.org"
+    ],
     "items": [],
     "feedType": "atom",
     "feedVersion": "0.3"
