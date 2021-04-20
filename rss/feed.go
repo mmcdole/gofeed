@@ -59,6 +59,7 @@ type Item struct {
 	DublinCoreExt *ext.DublinCoreExtension `json:"dcExt,omitempty"`
 	ITunesExt     *ext.ITunesItemExtension `json:"itunesExt,omitempty"`
 	Extensions    ext.Extensions           `json:"extensions,omitempty"`
+	Custom        map[string]string        `json:"custom,omitempty"`
 }
 
 // Image is an image that represents the feed
