@@ -15,7 +15,6 @@ var dateFormats = []string{
 	time.RubyDate,
 	time.RFC850,
 	time.RFC1123Z,
-	time.RFC1123,
 	time.ANSIC,
 	"Mon, January 2 2006 15:04:05 -0700",
 	"Mon, Jan 2 2006 15:04:05 -700",
@@ -138,12 +137,14 @@ var dateFormats = []string{
 
 // Named zone cannot be consistently loaded, so handle separately
 var dateFormatsWithNamedZone = []string{
+	time.RFC1123,
 	"Mon, January 02, 2006, 15:04:05 MST",
 	"Mon, January 02, 2006 15:04:05 MST",
 	"Mon, Jan 2, 2006 15:04 MST",
 	"Mon, Jan 2 2006 15:04 MST",
 	"Mon, Jan 2, 2006 15:04:05 MST",
 	"Mon Jan 2 15:04:05 2006 MST",
+	"Mon Jan 02 2006 15:04:05 GMT-0700 (MST)",
 	"Mon, Jan 02,2006 15:04:05 MST",
 	"Monday, January 2, 2006 15:04:05 MST",
 	"Monday, 2 January 2006 15:04:05 MST",
@@ -203,8 +204,17 @@ func ParseDate(ds string) (t time.Time, err error) {
 			continue
 		}
 
+		tz := t.Location().String()
+		var newTZ string
+		switch tz {
+		case "EDT":
+			newTZ = "EST5EDT"
+		default:
+			newTZ = tz
+		}
+
 		// This is a format match! Now try to load the timezone name
-		loc, err := time.LoadLocation(t.Location().String())
+		loc, err := time.LoadLocation(newTZ)
 		if err != nil {
 			// We couldn't load the TZ name. Just use UTC instead...
 			return t, nil
