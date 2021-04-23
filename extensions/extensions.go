@@ -12,6 +12,11 @@ type Extension struct {
 	Value    string                 `json:"value"`
 	Attrs    map[string]string      `json:"attrs"`
 	Children map[string][]Extension `json:"children"`
+	Parsed   interface{}            `json:"parsed,omitempty"`
+}
+
+type Extendable interface {
+	GetExtensions() Extensions
 }
 
 func parseTextExtension(name string, extensions map[string][]Extension) (value string) {

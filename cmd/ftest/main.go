@@ -44,7 +44,7 @@ func main() {
 		if strings.EqualFold(feedType, "rss") ||
 			strings.EqualFold(feedType, "r") {
 			p := rss.Parser{}
-			feed, err = p.Parse(strings.NewReader(fc))
+			feed, err = p.Parse(strings.NewReader(fc), gofeed.NewParser().BuildRSSExtParsers())
 		} else if strings.EqualFold(feedType, "atom") ||
 			strings.EqualFold(feedType, "a") {
 			p := atom.Parser{}

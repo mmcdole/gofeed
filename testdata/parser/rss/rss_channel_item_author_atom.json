@@ -1,0 +1,26 @@
+{
+    "items": [
+        {
+            "extensions": {
+                "atom": {
+                    "author": [
+                        {
+                            "name": "author",
+                            "value": "",
+                            "attrs": null,
+                            "children": null,
+                            "parsed": {
+                                "authors": [
+                                    {
+                                        "name": "Item Author"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "version": "2.0"
+}
