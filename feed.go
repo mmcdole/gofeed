@@ -17,6 +17,7 @@ type Feed struct {
 	Description     string                   `json:"description,omitempty"`
 	Link            string                   `json:"link,omitempty"`
 	FeedLink        string                   `json:"feedLink,omitempty"`
+	Links           []string                 `json:"links,omitempty"`
 	Updated         string                   `json:"updated,omitempty"`
 	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty"`
 	Published       string                   `json:"published,omitempty"`
@@ -50,6 +51,7 @@ type Item struct {
 	Description     string                   `json:"description,omitempty"`
 	Content         string                   `json:"content,omitempty"`
 	Link            string                   `json:"link,omitempty"`
+	Links           []string                 `json:"links,omitempty"`
 	Updated         string                   `json:"updated,omitempty"`
 	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty"`
 	Published       string                   `json:"published,omitempty"`

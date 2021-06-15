@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "custom": {
+        "apcategory": "s",
+        "test": "test"
+      }
+    }
+  ],
+  "feedType": "rss",
+  "feedVersion": "2.0"
+}

@@ -4,7 +4,6 @@ go 1.14
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.1
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/json-iterator/go v1.1.10
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf
 	github.com/stretchr/testify v1.3.0
