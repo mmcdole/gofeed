@@ -106,11 +106,10 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed *Feed, err error) {
 	client := f.httpClient()
 
-	req, err := http.NewRequest("GET", feedURL, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", feedURL, nil)
 	if err != nil {
 		return nil, err
 	}
-	req = req.WithContext(ctx)
 	req.Header.Set("User-Agent", f.UserAgent)
 
 	if f.AuthConfig != nil && f.AuthConfig.Username != "" && f.AuthConfig.Password != "" {
