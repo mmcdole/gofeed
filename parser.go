@@ -32,15 +32,16 @@ func (err HTTPError) Error() string {
 // a given feed type, parsers it, and translates it
 // to the universal feed type.
 type Parser struct {
-	AtomTranslator Translator
-	RSSTranslator  Translator
-	JSONTranslator Translator
-	UserAgent      string
-	AuthConfig     *Auth
-	Client         *http.Client
-	rp             *rss.Parser
-	ap             *atom.Parser
-	jp             *json.Parser
+	AtomTranslator    Translator
+	RSSTranslator     Translator
+	JSONTranslator    Translator
+	UserAgent         string
+	AuthConfig        *Auth
+	AdditionalHeaders map[string]string
+	Client            *http.Client
+	rp                *rss.Parser
+	ap                *atom.Parser
+	jp                *json.Parser
 }
 
 // Auth is a structure allowing to
@@ -54,10 +55,11 @@ type Auth struct {
 // NewParser creates a universal feed parser.
 func NewParser() *Parser {
 	fp := Parser{
-		rp:        &rss.Parser{},
-		ap:        &atom.Parser{},
-		jp:        &json.Parser{},
-		UserAgent: "Gofeed/1.0",
+		rp:                &rss.Parser{},
+		ap:                &atom.Parser{},
+		jp:                &json.Parser{},
+		UserAgent:         "Gofeed/1.0",
+		AdditionalHeaders: map[string]string{},
 	}
 	return &fp
 }
@@ -111,7 +113,12 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 		return nil, err
 	}
 	req = req.WithContext(ctx)
+
 	req.Header.Set("User-Agent", f.UserAgent)
+
+	for header, value := range f.AdditionalHeaders {
+		req.Header.Set(header, value)
+	}
 
 	if f.AuthConfig != nil && f.AuthConfig.Username != "" && f.AuthConfig.Password != "" {
 		req.SetBasicAuth(f.AuthConfig.Username, f.AuthConfig.Password)
@@ -132,11 +139,13 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 		}()
 	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode < 200 || resp.StatusCode >= 400 {
 		return nil, HTTPError{
 			StatusCode: resp.StatusCode,
 			Status:     resp.Status,
 		}
+	} else if resp.StatusCode == 304 {
+		return &Feed{}, nil
 	}
 
 	return f.Parse(resp.Body)

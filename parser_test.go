@@ -168,6 +168,15 @@ func TestParser_ParseURL_Failure(t *testing.T) {
 	assert.Nil(t, feed)
 }
 
+func TestParser_ParseURL_WithAdditionalHeaders(t *testing.T) {
+	server, _ := mockServerResponse(304, "", 0)
+	fp := gofeed.NewParser()
+	fp.AdditionalHeaders["etag"] = "1234"
+	feed, err := fp.ParseURL(server.URL)
+	assert.Nil(t, err)
+	assert.Equal(t, feed, &gofeed.Feed{})
+}
+
 func TestParser_ParseURLWithContextAndBasicAuth(t *testing.T) {
 	server, client := mockServerResponse(404, "", 1*time.Minute)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
