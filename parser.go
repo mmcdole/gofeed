@@ -104,6 +104,9 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 // You can instantiate the Auth structure with your Username and Password
 // to use the BasicAuth during the HTTP call.
 // It will be automatically added to the header of the request
+// AdditionalHeaders map contains key/value pairs, representing the
+// additional headers to be added to the request. Useful for requesting
+// full content only when it's changed using ETag or If-Modified-Since.
 // Request could be canceled or timeout via given context
 func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed *Feed, err error) {
 	client := f.httpClient()
