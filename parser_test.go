@@ -171,7 +171,7 @@ func TestParser_ParseURL_Failure(t *testing.T) {
 func TestParser_ParseURL_WithAdditionalHeaders(t *testing.T) {
 	server, _ := mockServerResponse(304, "", 0)
 	fp := gofeed.NewParser()
-	fp.AdditionalHeaders["etag"] = "1234"
+	fp.AdditionalHeaders["If-None-Match"] = "1234"
 	feed, err := fp.ParseURL(server.URL)
 	assert.Nil(t, err)
 	assert.Equal(t, feed, &gofeed.Feed{})
