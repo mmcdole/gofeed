@@ -5,11 +5,6 @@
     {
       "enclosures": [
         {
-          "length": "78910",
-          "type": "image/jpeg",
-          "url": "http://example.org/podcast.jpg"
-        },
-        {
           "length": "123456",
           "type": "audio/mpeg",
           "url": "http://example.org/podcast.mp3"
