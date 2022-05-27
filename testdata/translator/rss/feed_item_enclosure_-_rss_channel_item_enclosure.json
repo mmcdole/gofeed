@@ -3,16 +3,21 @@
   "feedVersion": "2.0",
   "items": [
     {
-      "enclosures": [
-        {
+      "enclosure": {
           "length": "78910",
-          "type": "image/jpeg",
+          "type": "audio/jpeg",
           "url": "http://example.org/podcast.jpg"
-        },
+      },
+      "enclosures": [
         {
           "length": "123456",
           "type": "audio/mpeg",
           "url": "http://example.org/podcast.mp3"
+        },
+        {
+          "length": "78910",
+          "type": "image/jpeg",
+          "url": "http://example.org/podcast.jpg"
         }
       ]
     }

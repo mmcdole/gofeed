@@ -402,6 +402,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				if err != nil {
 					return nil, err
 				}
+				item.Enclosure = result
 				enclosures = append(enclosures, result)
 			} else if name == "guid" {
 				result, err := rp.parseGUID(p)

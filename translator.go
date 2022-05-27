@@ -448,18 +448,6 @@ func (t *DefaultRSSTranslator) translateItemEnclosures(rssItem *rss.Item) (enclo
 			e.Length = enc.Length
 			enclosures = append(enclosures, e)
 		}
-
-		// Reverse the enclosures array - This looks funky...
-		// There is method to the madness - the parser seems to accumulate the
-		// last enclosure seen - code change accumulates them all.
-		// However for backward comatibility - we'll reverse this slice so the
-		// first one in the slice is the last one seen - so it shouldn't break
-		// anyone - backward compatibility for those depending on it.
-		// And frankly, I could care less, as long as I get them all.
-		for i, j := 0, len(enclosures)-1; i < j; i, j = i+1, j-1 {
-			enclosures[i], enclosures[j] = enclosures[j], enclosures[i]
-		}
-
 	}
 
 	if len(enclosures) == 0 {
