@@ -5,7 +5,15 @@
                 "url": "http://example.org/podcast.mp3",
                 "length": "123456",
                 "type": "audio/mpeg"
-            }
+            },
+            "enclosures": [
+                {
+                    "url": "http://example.org/podcast.mp3",
+                    "length": "123456",
+                    "type": "audio/mpeg"
+                }
+            ]
+
         }
     ],
     "version": "2.0"

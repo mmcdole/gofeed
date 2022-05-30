@@ -437,13 +437,23 @@ func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categ
 }
 
 func (t *DefaultRSSTranslator) translateItemEnclosures(rssItem *rss.Item) (enclosures []*Enclosure) {
-	if rssItem.Enclosure != nil {
-		e := &Enclosure{}
-		e.URL = rssItem.Enclosure.URL
-		e.Type = rssItem.Enclosure.Type
-		e.Length = rssItem.Enclosure.Length
-		enclosures = []*Enclosure{e}
+
+	if rssItem.Enclosures != nil && len(rssItem.Enclosures) > 0 {
+
+		// Accumulate the enclosures
+		for _, enc := range rssItem.Enclosures {
+			e := &Enclosure{}
+			e.URL = enc.URL
+			e.Type = enc.Type
+			e.Length = enc.Length
+			enclosures = append(enclosures, e)
+		}
 	}
+
+	if len(enclosures) == 0 {
+		enclosures = nil
+	}
+
 	return
 }
 
