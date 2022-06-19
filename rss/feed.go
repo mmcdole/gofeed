@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/mmcdole/gofeed/extensions"
+	ext "github.com/mmcdole/gofeed/extensions"
 )
 
 // Feed is an RSS Feed
@@ -52,6 +52,7 @@ type Item struct {
 	Categories    []*Category              `json:"categories,omitempty"`
 	Comments      string                   `json:"comments,omitempty"`
 	Enclosure     *Enclosure               `json:"enclosure,omitempty"`
+	Enclosures    []*Enclosure             `json:"enclosures,omitempty"`
 	GUID          *GUID                    `json:"guid,omitempty"`
 	PubDate       string                   `json:"pubDate,omitempty"`
 	PubDateParsed *time.Time               `json:"pubDateParsed,omitempty"`
@@ -59,6 +60,7 @@ type Item struct {
 	DublinCoreExt *ext.DublinCoreExtension `json:"dcExt,omitempty"`
 	ITunesExt     *ext.ITunesItemExtension `json:"itunesExt,omitempty"`
 	Extensions    ext.Extensions           `json:"extensions,omitempty"`
+	Custom        map[string]string        `json:"custom,omitempty"`
 }
 
 // Image is an image that represents the feed

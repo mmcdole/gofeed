@@ -1,6 +1,9 @@
 {
-    "link": "http://example.org",
-    "items": [],
-    "feedType": "rss",
-    "feedVersion": "1.0"
+  "feedType": "rss",
+  "feedVersion": "1.0",
+  "items": [],
+  "link": "http://example.org",
+  "links": [
+    "http://example.org"
+  ]
 }

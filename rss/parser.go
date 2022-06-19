@@ -319,6 +319,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 	item = &Item{}
 	extensions := ext.Extensions{}
 	categories := []*Category{}
+	enclosures := []*Enclosure{}
 
 	for {
 		tok, err := rp.base.NextTag(p)
@@ -402,6 +403,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 					return nil, err
 				}
 				item.Enclosure = result
+				enclosures = append(enclosures, result)
 			} else if name == "guid" {
 				result, err := rp.parseGUID(p)
 				if err != nil {
@@ -415,10 +417,20 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				}
 				categories = append(categories, result)
 			} else {
-				// Skip any elements not part of the item spec
-				p.Skip()
+				result, err := shared.ParseText(p)
+				if err != nil {
+					continue
+				}
+				if item.Custom == nil {
+					item.Custom = make(map[string]string, 0)
+				}
+				item.Custom[name] = result
 			}
 		}
+	}
+
+	if len(enclosures) > 0 {
+		item.Enclosures = enclosures
 	}
 
 	if len(categories) > 0 {

@@ -1,0 +1,15 @@
+{
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": [
+    {
+      "enclosures": [
+        {
+          "length": "123456",
+          "type": "audio/mpeg",
+          "url": "http://example.org/podcast.mp3"
+        }
+      ]
+    }
+  ]
+}

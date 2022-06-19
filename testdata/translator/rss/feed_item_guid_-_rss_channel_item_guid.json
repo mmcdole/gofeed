@@ -1,9 +1,9 @@
 {
-    "items": [
-        {
-            "guid": "abc123"
-        }
-    ],
-    "feedType": "rss",
-    "feedVersion": "2.0"
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": [
+    {
+      "guid": "abc123"
+    }
+  ]
 }

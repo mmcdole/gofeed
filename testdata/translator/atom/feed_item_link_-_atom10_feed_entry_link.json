@@ -1,7 +1,10 @@
 {
     "items": [
         {
-            "link": "http://www.example.org"
+            "link": "http://www.example.org",
+            "links": [
+                "http://www.example.org"
+            ]
         }
     ],
     "feedType": "atom",

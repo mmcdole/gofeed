@@ -1,0 +1,74 @@
+{
+  "feedVersion": "1.0",
+  "feedType": "json",
+  "feedLink": "https://sample-json-feed.com/feed.json",
+  "title": "title",
+  "author": {
+    "avatar": "https://sample-feed-author.com/me.png",
+    "name": "author_name",
+    "url": "https://sample-feed-author.com"
+  },
+  "authors": [
+    {
+      "avatar": "https://sample-feed-author.com/me.png",
+      "name": "author_name",
+      "url": "https://sample-feed-author.com"
+    }
+  ],
+  "description": "description",
+  "link": "https://sample-json-feed.com",
+  "image": {
+    "url": "https://sample-json-feed.com/icon.png"
+  },
+  "updated": "2019-10-12T07:20:50.52Z",
+  "updatedParsed": "2019-10-12T07:20:50.52Z",
+  "published": "2019-10-12T07:20:50.52Z",
+  "publishedParsed": "2019-10-12T07:20:50.52Z",
+  "links": [
+    "https://sample-json-feed.com",
+    "https://sample-json-feed.com/feed.json"
+  ],
+  "items": [
+    {
+      "guid": "id",
+      "title": "title",
+      "link": "https://sample-json-feed.com/id",
+      "links": [
+        "https://sample-json-feed.com/id",
+        "https://sample-json-feed.com/external"
+      ],
+      "content": "<p>content_html</p>",
+      "updated": "2019-10-12T07:20:50.52Z",
+      "updatedParsed": "2019-10-12T07:20:50.52Z",
+      "published": "2019-10-12T07:20:50.52Z",
+      "publishedParsed": "2019-10-12T07:20:50.52Z",
+      "description": "summary",
+      "categories": [
+        "tag1",
+        "tag2"
+      ],
+      "enclosures": [
+        {
+          "length": "100",
+          "type": "audio/mpeg",
+          "url": "https://sample-json-feed.com/attachment"
+        }
+      ],
+      "author": {
+        "avatar": "https://sample-feed-author.com/me.png",
+        "name": "author_name",
+        "url": "https://sample-feed-author.com"
+      },
+      "authors": [
+        {
+          "avatar": "https://sample-feed-author.com/me.png",
+          "name": "author_name",
+          "url": "https://sample-feed-author.com"
+        }
+      ],
+      "image": {
+        "url": "https://sample-json-feed.com/image.png"
+      }
+    }
+  ]
+}

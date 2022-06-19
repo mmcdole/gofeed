@@ -5,6 +5,7 @@ Description: item enclosure
   <channel>
     <item>
       <enclosure url="http://example.org/podcast.mp3" length="123456" type="audio/mpeg" />
+      <enclosure url="http://example.org/podcast.jpg" length="78910" type="image/jpeg" />
     </item>
   </channel>
 </rss>

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/mmcdole/gofeed/extensions"
+	ext "github.com/mmcdole/gofeed/extensions"
 )
 
 // Feed is the universal Feed type that atom.Feed
@@ -17,11 +17,13 @@ type Feed struct {
 	Description     string                   `json:"description,omitempty"`
 	Link            string                   `json:"link,omitempty"`
 	FeedLink        string                   `json:"feedLink,omitempty"`
+	Links           []string                 `json:"links,omitempty"`
 	Updated         string                   `json:"updated,omitempty"`
 	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty"`
 	Published       string                   `json:"published,omitempty"`
 	PublishedParsed *time.Time               `json:"publishedParsed,omitempty"`
-	Author          *Person                  `json:"author,omitempty"`
+	Author          *Person                  `json:"author,omitempty"` // Deprecated: Use feed.Authors instead
+	Authors         []*Person                `json:"authors,omitempty"`
 	Language        string                   `json:"language,omitempty"`
 	Image           *Image                   `json:"image,omitempty"`
 	Copyright       string                   `json:"copyright,omitempty"`
@@ -49,11 +51,13 @@ type Item struct {
 	Description     string                   `json:"description,omitempty"`
 	Content         string                   `json:"content,omitempty"`
 	Link            string                   `json:"link,omitempty"`
+	Links           []string                 `json:"links,omitempty"`
 	Updated         string                   `json:"updated,omitempty"`
 	UpdatedParsed   *time.Time               `json:"updatedParsed,omitempty"`
 	Published       string                   `json:"published,omitempty"`
 	PublishedParsed *time.Time               `json:"publishedParsed,omitempty"`
-	Author          *Person                  `json:"author,omitempty"`
+	Author          *Person                  `json:"author,omitempty"` // Deprecated: Use item.Authors instead
+	Authors         []*Person                `json:"authors,omitempty"`
 	GUID            string                   `json:"guid,omitempty"`
 	Image           *Image                   `json:"image,omitempty"`
 	Categories      []string                 `json:"categories,omitempty"`

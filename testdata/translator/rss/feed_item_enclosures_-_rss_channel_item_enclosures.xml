@@ -1,0 +1,10 @@
+<!--
+Description: item enclosure
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <enclosure url="http://example.org/podcast.mp3" length="123456" type="audio/mpeg" />
+    </item>
+  </channel>
+</rss>

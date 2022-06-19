@@ -27,9 +27,15 @@ func TestParser_Parse(t *testing.T) {
 		{"atom03_feed.xml", "atom", "Feed Title", false},
 		{"atom10_feed.xml", "atom", "Feed Title", false},
 		{"rss_feed.xml", "rss", "Feed Title", false},
+		{"rss_feed_bom.xml", "rss", "Feed Title", false},
+		{"rss_feed_leading_spaces.xml", "rss", "Feed Title", false},
 		{"rdf_feed.xml", "rss", "Feed Title", false},
+		{"sample.json", "json", "title", false},
+		{"json10_feed.json", "json", "title", false},
+		{"json11_feed.json", "json", "title", false},
 		{"unknown_feed.xml", "", "", true},
 		{"empty_feed.xml", "", "", true},
+		{"invalid.json", "", "", true},
 	}
 
 	for _, test := range feedTests {
@@ -65,9 +71,13 @@ func TestParser_ParseString(t *testing.T) {
 		{"atom03_feed.xml", "atom", "Feed Title", false},
 		{"atom10_feed.xml", "atom", "Feed Title", false},
 		{"rss_feed.xml", "rss", "Feed Title", false},
+		{"rss_feed_bom.xml", "rss", "Feed Title", false},
+		{"rss_feed_leading_spaces.xml", "rss", "Feed Title", false},
 		{"rdf_feed.xml", "rss", "Feed Title", false},
+		{"sample.json", "json", "title", false},
 		{"unknown_feed.xml", "", "", true},
 		{"empty_feed.xml", "", "", true},
+		{"invalid.json", "", "", true},
 	}
 
 	for _, test := range feedTests {
@@ -103,8 +113,13 @@ func TestParser_ParseURL_Success(t *testing.T) {
 		{"atom03_feed.xml", "atom", "Feed Title", false},
 		{"atom10_feed.xml", "atom", "Feed Title", false},
 		{"rss_feed.xml", "rss", "Feed Title", false},
+		{"rss_feed_bom.xml", "rss", "Feed Title", false},
+		{"rss_feed_leading_spaces.xml", "rss", "Feed Title", false},
 		{"rdf_feed.xml", "rss", "Feed Title", false},
+		{"json10_feed.json", "json", "title", false},
+		{"json11_feed.json", "json", "title", false},
 		{"unknown_feed.xml", "", "", true},
+		{"invalid.json", "", "", true},
 	}
 
 	for _, test := range feedTests {
@@ -151,6 +166,20 @@ func TestParser_ParseURL_Failure(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.IsType(t, gofeed.HTTPError{}, err)
 	assert.Nil(t, feed)
+}
+
+func TestParser_ParseURLWithContextAndBasicAuth(t *testing.T) {
+	server, client := mockServerResponse(404, "", 1*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	fp := gofeed.NewParser()
+	fp.AuthConfig = &gofeed.Auth{
+		Username: "foo",
+		Password: "bar",
+	}
+	fp.Client = client
+	_, err := fp.ParseURLWithContext(server.URL, ctx)
+	assert.True(t, strings.Contains(err.Error(), ctx.Err().Error()))
 }
 
 // Test Helpers
@@ -206,6 +235,19 @@ func ExampleParser_ParseString() {
 </rss>`
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseString(feedData)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(feed.Title)
+}
+
+func ExampleParserWithBasicAuth_ParseURL() {
+	fp := gofeed.NewParser()
+	fp.AuthConfig = &gofeed.Auth{
+		Username: "foo",
+		Password: "bar",
+	}
+	feed, err := fp.ParseURL("http://feeds.twit.tv/twit.xml")
 	if err != nil {
 		panic(err)
 	}
