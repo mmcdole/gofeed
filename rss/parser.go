@@ -424,7 +424,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				if item.Custom == nil {
 					item.Custom = make(map[string]string, 0)
 				}
-				item.Custom[name] = result
+				item.Custom[p.Name] = result
 			}
 		}
 	}
