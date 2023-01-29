@@ -1,0 +1,10 @@
+<!--
+Description: normal link(s)
+-->
+<rss version="2.0">
+  <channel>
+    <link>http://example.org</link>
+    <link>http://example2.org</link>
+    <link href="http://example3.org" />
+  </channel>
+</rss>

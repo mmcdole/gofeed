@@ -11,6 +11,7 @@ import (
 type Feed struct {
 	Title               string                   `json:"title,omitempty"`
 	Link                string                   `json:"link,omitempty"`
+	Links               []string                 `json:"links,omitempty"`
 	Description         string                   `json:"description,omitempty"`
 	Language            string                   `json:"language,omitempty"`
 	Copyright           string                   `json:"copyright,omitempty"`
@@ -46,6 +47,7 @@ func (f Feed) String() string {
 type Item struct {
 	Title         string                   `json:"title,omitempty"`
 	Link          string                   `json:"link,omitempty"`
+	Links         []string                 `json:"links,omitempty"`
 	Description   string                   `json:"description,omitempty"`
 	Content       string                   `json:"content,omitempty"`
 	Author        string                   `json:"author,omitempty"`

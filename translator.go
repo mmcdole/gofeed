@@ -38,8 +38,8 @@ func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Title = t.translateFeedTitle(rss)
 	result.Description = t.translateFeedDescription(rss)
 	result.Link = t.translateFeedLink(rss)
-	result.FeedLink = t.translateFeedFeedLink(rss)
 	result.Links = t.translateFeedLinks(rss)
+	result.FeedLink = t.translateFeedFeedLink(rss)
 	result.Updated = t.translateFeedUpdated(rss)
 	result.UpdatedParsed = t.translateFeedUpdatedParsed(rss)
 	result.Published = t.translateFeedPublished(rss)
@@ -119,11 +119,8 @@ func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string
 }
 
 func (t *DefaultRSSTranslator) translateFeedLinks(rss *rss.Feed) (links []string) {
-	if rss.Link != "" {
-		links = append(links, rss.Link)
-	}
-	if rss.ITunesExt != nil && rss.ITunesExt.Subtitle != "" {
-		links = append(links, rss.ITunesExt.Subtitle)
+	if len(rss.Links) > 0 {
+		links = append(links, rss.Links...)
 	}
 	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
 	for _, ex := range atomExtensions {
@@ -311,11 +308,12 @@ func (t *DefaultRSSTranslator) translateItemContent(rssItem *rss.Item) (content 
 func (t *DefaultRSSTranslator) translateItemLink(rssItem *rss.Item) (link string) {
 	return rssItem.Link
 }
+
 func (t *DefaultRSSTranslator) translateItemLinks(rssItem *rss.Item) (links []string) {
-	if rssItem.Link == "" {
-		return nil
+	if len(rssItem.Links) > 0 {
+		links = append(links, rssItem.Links...)
 	}
-	return []string{rssItem.Link}
+	return links
 }
 
 func (t *DefaultRSSTranslator) translateItemUpdated(rssItem *rss.Item) (updated string) {
@@ -386,7 +384,6 @@ func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *P
 }
 
 func (t *DefaultRSSTranslator) translateItemAuthors(rssItem *rss.Item) (authors []*Person) {
-
 	if author := t.translateItemAuthor(rssItem); author != nil {
 		authors = []*Person{author}
 	}
@@ -437,9 +434,7 @@ func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categ
 }
 
 func (t *DefaultRSSTranslator) translateItemEnclosures(rssItem *rss.Item) (enclosures []*Enclosure) {
-
 	if rssItem.Enclosures != nil && len(rssItem.Enclosures) > 0 {
-
 		// Accumulate the enclosures
 		for _, enc := range rssItem.Enclosures {
 			e := &Enclosure{}
@@ -596,7 +591,6 @@ func (t *DefaultAtomTranslator) translateFeedAuthor(atom *atom.Feed) (author *Pe
 }
 
 func (t *DefaultAtomTranslator) translateFeedAuthors(atom *atom.Feed) (authors []*Person) {
-
 	if atom.Authors != nil {
 		authors = []*Person{}
 
@@ -947,7 +941,6 @@ func (t *DefaultJSONTranslator) translateFeedAuthor(json *json.Feed) (author *Pe
 }
 
 func (t *DefaultJSONTranslator) translateFeedAuthors(json *json.Feed) (authors []*Person) {
-
 	if json.Authors != nil {
 		authors = []*Person{}
 		for _, a := range json.Authors {
@@ -1073,7 +1066,6 @@ func (t *DefaultJSONTranslator) translateItemAuthor(jsonItem *json.Item) (author
 }
 
 func (t *DefaultJSONTranslator) translateItemAuthors(jsonItem *json.Item) (authors []*Person) {
-
 	if jsonItem.Authors != nil {
 		authors = []*Person{}
 		for _, a := range jsonItem.Authors {

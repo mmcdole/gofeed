@@ -1,5 +1,6 @@
 {
     "link": "http://example.org",
+    "links": [ "http://example.org" ],
     "items": [],
     "version": "2.0"
 }
