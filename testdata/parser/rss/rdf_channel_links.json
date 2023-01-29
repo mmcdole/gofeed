@@ -1,0 +1,6 @@
+{
+  "link": "http://example3.org",
+  "links": ["http://example.org", "http://example2.org", "http://example3.org"],
+  "items": [],
+  "version": "1.0"
+}

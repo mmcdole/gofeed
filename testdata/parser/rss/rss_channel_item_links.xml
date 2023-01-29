@@ -1,0 +1,12 @@
+<!--
+Description: rss item link 
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <link>http://example.org</link>
+      <link>http://example2.org</link>
+      <link href="http://example3.org" />
+    </item>
+  </channel>
+</rss>
