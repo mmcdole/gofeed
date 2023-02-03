@@ -42,7 +42,7 @@ It parses all other feed extensions in a generic way (see the [Extensions](#exte
 
 #### Invalid Feeds
 
-A best-effort attempt is made at parsing broken and invalid XML feeds. Currently, `gofeed` can succesfully parse feeds with the following issues:
+A best-effort attempt is made at parsing broken and invalid XML feeds. Currently, `gofeed` can successfully parse feeds with the following issues:
 
 * Unescaped/Naked Markup in feed elements
 * Undeclared namespace prefixes
