@@ -5,6 +5,7 @@ import (
 	"time"
 
 	ext "github.com/mmcdole/gofeed/extensions"
+	"github.com/mmcdole/gofeed/internal/shared"
 )
 
 // Feed is an RSS Feed
@@ -36,6 +37,8 @@ type Feed struct {
 	Extensions          ext.Extensions           `json:"extensions,omitempty"`
 	Items               []*Item                  `json:"items"`
 	Version             string                   `json:"version"`
+
+	xmlBase shared.XMLBase
 }
 
 func (f Feed) String() string {

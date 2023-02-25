@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed/extensions"
+	"github.com/mmcdole/gofeed/internal/shared"
 )
 
 // Feed is an Atom Feed
@@ -26,6 +27,8 @@ type Feed struct {
 	Entries       []*Entry       `json:"entries"`
 	Extensions    ext.Extensions `json:"extensions,omitempty"`
 	Version       string         `json:"version"`
+
+	xmlBase shared.XMLBase
 }
 
 func (f Feed) String() string {

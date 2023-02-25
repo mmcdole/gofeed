@@ -12,23 +12,22 @@ import (
 
 // Parser is a RSS Parser
 type Parser struct {
-	base *shared.XMLBase
 }
 
 // Parse parses an xml feed into an rss.Feed
 func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
-	rp.base = &shared.XMLBase{}
+	base := shared.XMLBase{}
 
-	_, err := rp.base.FindRoot(p)
+	_, err := base.FindRoot(p)
 	if err != nil {
 		return nil, err
 	}
 
-	return rp.parseRoot(p)
+	return rp.parseRoot(p, base)
 }
 
-func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
+func (rp *Parser) parseRoot(p *xpp.XMLPullParser, base shared.XMLBase) (*Feed, error) {
 	rssErr := p.Expect(xpp.StartTag, "rss")
 	rdfErr := p.Expect(xpp.StartTag, "rdf")
 	if rssErr != nil && rdfErr != nil {
@@ -44,7 +43,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	ver := rp.parseVersion(p)
 
 	for {
-		tok, err := rp.base.NextTag(p)
+		tok, err := base.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -64,23 +63,23 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 			name := strings.ToLower(p.Name)
 
 			if name == "channel" {
-				channel, err = rp.parseChannel(p)
+				channel, err = rp.parseChannel(p, base)
 				if err != nil {
 					return nil, err
 				}
 			} else if name == "item" {
-				item, err := rp.parseItem(p)
+				item, err := rp.parseItem(p, base)
 				if err != nil {
 					return nil, err
 				}
 				items = append(items, item)
 			} else if name == "textinput" {
-				textinput, err = rp.parseTextInput(p)
+				textinput, err = rp.parseTextInput(p, base)
 				if err != nil {
 					return nil, err
 				}
 			} else if name == "image" {
-				image, err = rp.parseImage(p)
+				image, err = rp.parseImage(p, base)
 				if err != nil {
 					return nil, err
 				}
@@ -117,7 +116,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	return channel, nil
 }
 
-func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
+func (rp *Parser) parseChannel(p *xpp.XMLPullParser, base shared.XMLBase) (rss *Feed, err error) {
 	if err = p.Expect(xpp.StartTag, "channel"); err != nil {
 		return nil, err
 	}
@@ -130,7 +129,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 	links := []string{}
 
 	for {
-		tok, err := rp.base.NextTag(p)
+		tok, err := base.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -239,25 +238,25 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				}
 				rss.Rating = result
 			} else if name == "skiphours" {
-				result, err := rp.parseSkipHours(p)
+				result, err := rp.parseSkipHours(p, base)
 				if err != nil {
 					return nil, err
 				}
 				rss.SkipHours = result
 			} else if name == "skipdays" {
-				result, err := rp.parseSkipDays(p)
+				result, err := rp.parseSkipDays(p, base)
 				if err != nil {
 					return nil, err
 				}
 				rss.SkipDays = result
 			} else if name == "item" {
-				result, err := rp.parseItem(p)
+				result, err := rp.parseItem(p, base)
 				if err != nil {
 					return nil, err
 				}
 				rss.Items = append(rss.Items, result)
 			} else if name == "cloud" {
-				result, err := rp.parseCloud(p)
+				result, err := rp.parseCloud(p, base)
 				if err != nil {
 					return nil, err
 				}
@@ -269,13 +268,13 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				}
 				categories = append(categories, result)
 			} else if name == "image" {
-				result, err := rp.parseImage(p)
+				result, err := rp.parseImage(p, base)
 				if err != nil {
 					return nil, err
 				}
 				rss.Image = result
 			} else if name == "textinput" {
-				result, err := rp.parseTextInput(p)
+				result, err := rp.parseTextInput(p, base)
 				if err != nil {
 					return nil, err
 				}
@@ -315,7 +314,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 	return rss, nil
 }
 
-func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
+func (rp *Parser) parseItem(p *xpp.XMLPullParser, base shared.XMLBase) (item *Item, err error) {
 	if err = p.Expect(xpp.StartTag, "item"); err != nil {
 		return nil, err
 	}
@@ -327,7 +326,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 	links := []string{}
 
 	for {
-		tok, err := rp.base.NextTag(p)
+		tok, err := base.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -521,7 +520,7 @@ func (rp *Parser) parseEnclosure(p *xpp.XMLPullParser) (enclosure *Enclosure, er
 	return enclosure, nil
 }
 
-func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
+func (rp *Parser) parseImage(p *xpp.XMLPullParser, base shared.XMLBase) (image *Image, err error) {
 	if err = p.Expect(xpp.StartTag, "image"); err != nil {
 		return nil, err
 	}
@@ -529,7 +528,7 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 	image = &Image{}
 
 	for {
-		tok, err := rp.base.NextTag(p)
+		tok, err := base.NextTag(p)
 		if err != nil {
 			return image, err
 		}
@@ -632,7 +631,7 @@ func (rp *Parser) parseCategory(p *xpp.XMLPullParser) (cat *Category, err error)
 	return cat, nil
 }
 
-func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
+func (rp *Parser) parseTextInput(p *xpp.XMLPullParser, base shared.XMLBase) (*TextInput, error) {
 	if err := p.Expect(xpp.StartTag, "textinput"); err != nil {
 		return nil, err
 	}
@@ -640,7 +639,7 @@ func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
 	ti := &TextInput{}
 
 	for {
-		tok, err := rp.base.NextTag(p)
+		tok, err := base.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -689,7 +688,7 @@ func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
 	return ti, nil
 }
 
-func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
+func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser, base shared.XMLBase) ([]string, error) {
 	if err := p.Expect(xpp.StartTag, "skiphours"); err != nil {
 		return nil, err
 	}
@@ -697,7 +696,7 @@ func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
 	hours := []string{}
 
 	for {
-		tok, err := rp.base.NextTag(p)
+		tok, err := base.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -727,7 +726,7 @@ func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
 	return hours, nil
 }
 
-func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
+func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser, base shared.XMLBase) ([]string, error) {
 	if err := p.Expect(xpp.StartTag, "skipdays"); err != nil {
 		return nil, err
 	}
@@ -735,7 +734,7 @@ func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 	days := []string{}
 
 	for {
-		tok, err := rp.base.NextTag(p)
+		tok, err := base.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -765,7 +764,7 @@ func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 	return days, nil
 }
 
-func (rp *Parser) parseCloud(p *xpp.XMLPullParser) (*Cloud, error) {
+func (rp *Parser) parseCloud(p *xpp.XMLPullParser, base shared.XMLBase) (*Cloud, error) {
 	if err := p.Expect(xpp.StartTag, "cloud"); err != nil {
 		return nil, err
 	}
@@ -777,7 +776,7 @@ func (rp *Parser) parseCloud(p *xpp.XMLPullParser) (*Cloud, error) {
 	cloud.RegisterProcedure = p.Attribute("registerProcedure")
 	cloud.Protocol = p.Attribute("protocol")
 
-	rp.base.NextTag(p)
+	base.NextTag(p)
 
 	if err := p.Expect(xpp.EndTag, "cloud"); err != nil {
 		return nil, err
