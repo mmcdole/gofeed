@@ -3,6 +3,7 @@ package shared
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"html"
 	"regexp"
 	"strings"
@@ -22,6 +23,26 @@ var (
 
 const CDATA_START = "<![CDATA["
 const CDATA_END = "]]>"
+
+// FindRoot iterates through the tokens of an xml document until
+// it encounters its first StartTag event.  It returns an error
+// if it reaches EndDocument before finding a tag.
+func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
+	for {
+		event, err = p.Next()
+		if err != nil {
+			return event, err
+		}
+		if event == xpp.StartTag {
+			break
+		}
+
+		if event == xpp.EndDocument {
+			return event, fmt.Errorf("Failed to find root node before document end.")
+		}
+	}
+	return
+}
 
 // ParseText is a helper function for parsing the text
 // from the current element of the XMLPullParser.

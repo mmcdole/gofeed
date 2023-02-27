@@ -14,35 +14,23 @@ import (
 var (
 	// Atom elements which contain URIs
 	// https://tools.ietf.org/html/rfc4287
-	uriElements = map[string]bool{
+	atomUriElements = map[string]bool{
 		"icon": true,
 		"id":   true,
 		"logo": true,
 		"uri":  true,
 		"url":  true, // atom 0.3
 	}
-
-	// Atom attributes which contain URIs
-	// https://tools.ietf.org/html/rfc4287
-	atomURIAttrs = map[string]bool{
-		"href":   true,
-		"scheme": true,
-		"src":    true,
-		"uri":    true,
-	}
 )
 
 // Parser is an Atom Parser
-type Parser struct {
-	base *shared.XMLBase
-}
+type Parser struct{}
 
 // Parse parses an xml feed into an atom.Feed
 func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
-	ap.base = &shared.XMLBase{URIAttrs: atomURIAttrs}
 
-	_, err := ap.base.FindRoot(p)
+	_, err := shared.FindRoot(p)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +55,7 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	extensions := ext.Extensions{}
 
 	for {
-		tok, err := ap.base.NextTag(p)
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -221,7 +209,7 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 	extensions := ext.Extensions{}
 
 	for {
-		tok, err := ap.base.NextTag(p)
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -376,7 +364,7 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 	extensions := ext.Extensions{}
 
 	for {
-		tok, err := ap.base.NextTag(p)
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -534,7 +522,7 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 	person := &Person{}
 
 	for {
-		tok, err := ap.base.NextTag(p)
+		tok, err := shared.NextTag(p)
 		if err != nil {
 			return nil, err
 		}
@@ -684,7 +672,7 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	if strings.Contains(result, "<![CDATA[") {
 		result = shared.StripCDATA(result)
 		if lowerType == "html" || strings.Contains(lowerType, "xhtml") {
-			result, _ = ap.base.ResolveHTML(result)
+			result, _ = shared.ResolveHTML(p, result)
 		}
 	} else {
 		// decode non-CDATA contents depending on type
@@ -695,12 +683,12 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 			result, err = shared.DecodeEntities(result)
 		} else if strings.Contains(lowerType, "xhtml") {
 			result = ap.stripWrappingDiv(result)
-			result, _ = ap.base.ResolveHTML(result)
+			result, _ = shared.ResolveHTML(p, result)
 		} else if lowerType == "html" {
 			result = ap.stripWrappingDiv(result)
 			result, err = shared.DecodeEntities(result)
 			if err == nil {
-				result, _ = ap.base.ResolveHTML(result)
+				result, _ = shared.ResolveHTML(p, result)
 			}
 		} else {
 			decodedStr, err := base64.StdEncoding.DecodeString(result)
@@ -712,10 +700,10 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 
 	// resolve relative URIs in URI-containing elements according to xml:base
 	name := strings.ToLower(p.Name)
-	if uriElements[name] {
-		resolved, err := ap.base.ResolveURL(result)
-		if err == nil {
-			result = resolved
+	if atomUriElements[name] {
+		resolved, err := p.XmlBaseResolveUrl(result)
+		if resolved != nil && err == nil {
+			result = resolved.String()
 		}
 	}
 
