@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -180,6 +181,34 @@ func TestParser_ParseURLWithContextAndBasicAuth(t *testing.T) {
 	fp.Client = client
 	_, err := fp.ParseURLWithContext(server.URL, ctx)
 	assert.True(t, strings.Contains(err.Error(), ctx.Err().Error()))
+}
+
+// to detect race conditions, run with go test -race
+func TestParser_Concurrent(t *testing.T) {
+
+	var feedTests = []string{"atom03_feed.xml", "atom10_feed.xml", "rss_feed.xml", "rss_feed_bom.xml",
+		"rss_feed_leading_spaces.xml", "rdf_feed.xml", "json10_feed.json",
+		"json11_feed.json"}
+
+	fp := gofeed.NewParser()
+	fp.AtomTranslator = &gofeed.DefaultAtomTranslator{}
+	fp.RSSTranslator = &gofeed.DefaultRSSTranslator{}
+	fp.JSONTranslator = &gofeed.DefaultJSONTranslator{}
+	wg := sync.WaitGroup{}
+	for _, test := range feedTests {
+		fmt.Printf("\nTesting concurrently %s... ", test)
+
+		// Get feed content
+		path := fmt.Sprintf("testdata/parser/universal/%s", test)
+		f, _ := ioutil.ReadFile(path)
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			fp.ParseString(string(f))
+		}()
+	}
+	wg.Wait()
 }
 
 // Test Helpers

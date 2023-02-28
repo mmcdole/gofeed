@@ -5,8 +5,8 @@ go 1.19
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/json-iterator/go v1.1.12
-	github.com/mmcdole/goxpp v0.0.0-20200921145534-2f3784f67354
-	github.com/stretchr/testify v1.3.0
+	github.com/mmcdole/goxpp v1.1.0
+	github.com/stretchr/testify v1.8.1
 	github.com/urfave/cli v1.22.3
 	golang.org/x/net v0.4.0
 	golang.org/x/text v0.5.0
@@ -21,4 +21,5 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
