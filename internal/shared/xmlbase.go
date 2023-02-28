@@ -99,7 +99,7 @@ func resolveAttrs(p *xpp.XMLPullParser) error {
 // if an error occurs during parsing or serialization, then the original string
 // is returned along with the error.
 func ResolveHTML(p *xpp.XMLPullParser, relHTML string) (string, error) {
-	if p.UrlStack.Top() == nil {
+	if p.BaseStack.Top() == nil {
 		return relHTML, nil
 	}
 
