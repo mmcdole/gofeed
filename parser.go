@@ -11,6 +11,7 @@ import (
 
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/json"
+	"github.com/mmcdole/gofeed/internal/shared"
 	"github.com/mmcdole/gofeed/rss"
 )
 
@@ -155,8 +156,19 @@ func (f *Parser) parseAtomFeed(feed io.Reader) (*Feed, error) {
 	return f.atomTrans().Translate(af)
 }
 
+func (f *Parser) BuildRSSExtParsers() shared.ExtParsers {
+	extParsers := make(shared.ExtParsers, 3)
+
+	// all possible atom variants
+	extParsers["atom"] = f.ap
+	extParsers["atom10"] = f.ap
+	extParsers["atom03"] = f.ap
+
+	return extParsers
+}
+
 func (f *Parser) parseRSSFeed(feed io.Reader) (*Feed, error) {
-	rf, err := f.rp.Parse(feed)
+	rf, err := f.rp.Parse(feed, f.BuildRSSExtParsers())
 	if err != nil {
 		return nil, err
 	}

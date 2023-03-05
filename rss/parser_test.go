@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mmcdole/gofeed"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,7 +28,7 @@ func TestParser_Parse(t *testing.T) {
 
 		// Parse actual feed
 		fp := &rss.Parser{}
-		actual, _ := fp.Parse(bytes.NewReader(f))
+		actual, _ := fp.Parse(bytes.NewReader(f), gofeed.NewParser().BuildRSSExtParsers())
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/rss/%s.json", name)
