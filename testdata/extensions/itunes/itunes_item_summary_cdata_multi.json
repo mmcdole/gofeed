@@ -1,6 +1,7 @@
 {
     "items": [
         {
+            "description": "Line 1\n            Line 2\n            Line 3",
             "itunesExt": {
                 "summary": "Line 1\n            Line 2\n            Line 3"
             },
