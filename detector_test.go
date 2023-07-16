@@ -3,7 +3,7 @@ package gofeed_test
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
@@ -32,7 +32,7 @@ func TestDetectFeedType(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := ioutil.ReadFile(path)
+		f, _ := os.ReadFile(path)
 
 		// Get actual value
 		actual := gofeed.DetectFeedType(bytes.NewReader(f))

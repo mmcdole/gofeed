@@ -3,7 +3,6 @@ package gofeed_test
 import (
 	jsonEncoding "encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -37,7 +36,7 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/rss/%s.json", name)
-		e, _ := ioutil.ReadFile(ef)
+		e, _ := os.ReadFile(ef)
 
 		// Unmarshal expected feed
 		expected := &gofeed.Feed{}
@@ -79,7 +78,7 @@ func TestDefaultAtomTranslator_Translate(t *testing.T) {
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/atom/%s.json", name)
-		e, _ := ioutil.ReadFile(ef)
+		e, _ := os.ReadFile(ef)
 
 		// Unmarshal expected feed
 		expected := &gofeed.Feed{}
@@ -125,7 +124,7 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/json/%s_expected.json", name)
-		e, _ := ioutil.ReadFile(ef)
+		e, _ := os.ReadFile(ef)
 
 		// Unmarshal expected feed
 		expected := &gofeed.Feed{}
