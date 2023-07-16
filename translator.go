@@ -248,9 +248,7 @@ func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categorie
 
 	if rss.ITunesExt != nil && rss.ITunesExt.Keywords != "" {
 		keywords := strings.Split(rss.ITunesExt.Keywords, ",")
-		for _, k := range keywords {
-			cats = append(cats, k)
-		}
+		cats = append(cats, keywords...)
 	}
 
 	if rss.ITunesExt != nil && rss.ITunesExt.Categories != nil {
@@ -263,9 +261,7 @@ func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categorie
 	}
 
 	if rss.DublinCoreExt != nil && rss.DublinCoreExt.Subject != nil {
-		for _, c := range rss.DublinCoreExt.Subject {
-			cats = append(cats, c)
-		}
+		cats = append(cats, rss.DublinCoreExt.Subject...)
 	}
 
 	if len(cats) > 0 {
@@ -415,15 +411,11 @@ func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categ
 
 	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Keywords != "" {
 		keywords := strings.Split(rssItem.ITunesExt.Keywords, ",")
-		for _, k := range keywords {
-			cats = append(cats, k)
-		}
+		cats = append(cats, keywords...)
 	}
 
 	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Subject != nil {
-		for _, c := range rssItem.DublinCoreExt.Subject {
-			cats = append(cats, c)
-		}
+		cats = append(cats, rssItem.DublinCoreExt.Subject...)
 	}
 
 	if len(cats) > 0 {
