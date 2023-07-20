@@ -92,7 +92,12 @@ func (t *DefaultRSSTranslator) translateFeedTitle(rss *rss.Feed) (title string) 
 }
 
 func (t *DefaultRSSTranslator) translateFeedDescription(rss *rss.Feed) (desc string) {
-	return rss.Description
+	if rss.Description != "" {
+		desc = rss.Description
+	} else if rss.ITunesExt != nil && rss.ITunesExt.Summary != "" {
+		desc = rss.ITunesExt.Summary
+	}
+	return
 }
 
 func (t *DefaultRSSTranslator) translateFeedLink(rss *rss.Feed) (link string) {
@@ -293,6 +298,8 @@ func (t *DefaultRSSTranslator) translateItemDescription(rssItem *rss.Item) (desc
 		desc = rssItem.Description
 	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Description != nil {
 		desc = t.firstEntry(rssItem.DublinCoreExt.Description)
+	} else if rssItem.ITunesExt != nil && rssItem.ITunesExt.Summary != "" {
+		desc = rssItem.ITunesExt.Summary
 	}
 	return
 }
