@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -44,7 +44,7 @@ func TestParser_Parse(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := ioutil.ReadFile(path)
+		f, _ := os.ReadFile(path)
 
 		// Get actual value
 		fp := gofeed.NewParser()
@@ -86,7 +86,7 @@ func TestParser_ParseString(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := ioutil.ReadFile(path)
+		f, _ := os.ReadFile(path)
 
 		// Get actual value
 		fp := gofeed.NewParser()
@@ -128,7 +128,7 @@ func TestParser_ParseURL_Success(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := ioutil.ReadFile(path)
+		f, _ := os.ReadFile(path)
 
 		// Get actual value
 		server, client := mockServerResponse(200, string(f), 0)
@@ -200,7 +200,7 @@ func TestParser_Concurrent(t *testing.T) {
 
 		// Get feed content
 		path := fmt.Sprintf("testdata/parser/universal/%s", test)
-		f, _ := ioutil.ReadFile(path)
+		f, _ := os.ReadFile(path)
 
 		wg.Add(1)
 		go func() {

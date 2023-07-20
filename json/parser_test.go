@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -31,7 +31,7 @@ func TestParser_Parse(t *testing.T) {
 
 		// Get actual source feed
 		ff := fmt.Sprintf("../testdata/parser/json/%s.json", name)
-		f, _ := ioutil.ReadFile(ff)
+		f, _ := os.ReadFile(ff)
 
 		// Parse actual feed
 		fp := &jsonParser.Parser{}
@@ -39,7 +39,7 @@ func TestParser_Parse(t *testing.T) {
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/json/%s_expected.json", name)
-		e, _ := ioutil.ReadFile(ef)
+		e, _ := os.ReadFile(ef)
 
 		// Unmarshal expected feed
 		expected := &jsonParser.Feed{}
@@ -61,7 +61,7 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 	// Get actual source feed
 	ff := fmt.Sprintf("../testdata/parser/json/invalid/%s.json", name)
 	fmt.Println(ff)
-	f, _ := ioutil.ReadFile(ff)
+	f, _ := os.ReadFile(ff)
 
 	// Parse actual feed
 	fp := &jsonParser.Parser{}
@@ -74,7 +74,7 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 	// Get actual source feed
 	ff = fmt.Sprintf("../testdata/parser/json/%s.json", name)
 	fmt.Println(ff)
-	f, _ = ioutil.ReadFile(ff)
+	f, _ = os.ReadFile(ff)
 
 	// Parse actual feed
 	actual, _ := fp.Parse(bytes.NewReader(f))

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -76,7 +76,7 @@ func fetchFeed(feedLoc string) (string, error) {
 }
 
 func fetchFile(path string) (string, error) {
-	f, err := ioutil.ReadFile(path)
+	f, err := os.ReadFile(path)
 	return string(f), err
 }
 
@@ -86,7 +86,7 @@ func fetchURL(url string) (string, error) {
 		return "", err
 	}
 	defer response.Body.Close()
-	contents, err := ioutil.ReadAll(response.Body)
+	contents, err := io.ReadAll(response.Body)
 	if err != nil {
 		return "", err
 	}
