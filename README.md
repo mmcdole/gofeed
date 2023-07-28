@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mmcdole/gofeed.svg?branch=master)](https://travis-ci.org/mmcdole/gofeed) [![Coverage Status](https://coveralls.io/repos/github/mmcdole/gofeed/badge.svg?branch=master)](https://coveralls.io/github/mmcdole/gofeed?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/mmcdole/gofeed)](https://goreportcard.com/report/github.com/mmcdole/gofeed) [![](https://godoc.org/github.com/mmcdole/gofeed?status.svg)](http://godoc.org/github.com/mmcdole/gofeed) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
-The `gofeed` library is a robust feed parser that supports parsing both [RSS](https://en.wikipedia.org/wiki/RSS), [Atom](<https://en.wikipedia.org/wiki/Atom_(standard)>) and [JSON](https://jsonfeed.org/version/1) feeds. The library provides a universal `gofeed.Parser` that will parse and convert all feed types into a hybrid `gofeed.Feed` model. You also have the option of utilizing the feed specific `atom.Parser` or `rss.Parser` or `json.Parser` parsers which generate `atom. Feed` , `rss.Feed` and `json.Feed` respectively.
+The `gofeed` library is a robust feed parser that supports parsing both [RSS](https://en.wikipedia.org/wiki/RSS), [Atom](<https://en.wikipedia.org/wiki/Atom_(standard)>) and [JSON](https://jsonfeed.org/version/1) feeds. The library provides a universal `gofeed.Parser` that will parse and convert all feed types into a hybrid `gofeed.Feed` model. You also have the option of utilizing the feed specific `atom.Parser` or `rss.Parser` or `json.Parser` parsers which generate `atom.Feed`, `rss.Feed` and `json.Feed` respectively.
 
 ## Table of Contents
 
@@ -53,19 +53,19 @@ A best-effort attempt is made at parsing broken and invalid XML feeds. Currently
 
 ## Overview
 
-The `gofeed` library is comprised of a universal feed parser and several feed specific parsers. Which one you choose depends entirely on your usecase. If you will be handling rss, atom and json feeds then it makes sense to use the `gofeed. Parser` . If you know ahead of time that you will only be parsing one feed type then it would make sense to use `rss.Parser` or `atom.Parser` or `json. Parser` .
+The `gofeed` library is comprised of a universal feed parser and several feed specific parsers. Which one you choose depends entirely on your usecase. If you will be handling rss, atom and json feeds then it makes sense to use the `gofeed.Parser`. If you know ahead of time that you will only be parsing one feed type then it would make sense to use `rss.Parser` or `atom.Parser` or `json.Parser` .
 
 #### Universal Feed Parser
 
-The universal `gofeed.Parser` works in 3 stages: detection, parsing and translation. It first detects the feed type that it is currently parsing. Then it uses a feed specific parser to parse the feed into its true representation which will be either a `rss.Feed` or `atom.Feed` or `json. Feed` . These models cover every field possible for their respective feed types. Finally, they are _translated_ into a `gofeed.Feed` model that is a hybrid of all feed types. Performing the universal feed parsing in these 3 stages allows for more flexibility and keeps the code base more maintainable by separating RSS, Atom and Json parsing into seperate packages.
+The universal `gofeed.Parser` works in 3 stages: detection, parsing and translation. It first detects the feed type that it is currently parsing. Then it uses a feed specific parser to parse the feed into its true representation which will be either a `rss.Feed` or `atom.Feed` or `json.Feed`. These models cover every field possible for their respective feed types. Finally, they are _translated_ into a `gofeed.Feed` model that is a hybrid of all feed types. Performing the universal feed parsing in these 3 stages allows for more flexibility and keeps the code base more maintainable by separating RSS, Atom and Json parsing into seperate packages.
 
 ![Diagram](docs/sequence.png)
 
-The translation step is done by anything which adheres to the `gofeed.Translator` interface. The `DefaultRSSTranslator` , `DefaultAtomTranslator` , `DefaultJSONTranslator` are used behind the scenes when you use the `gofeed.Parser` with its default settings. You can see how they translate fields from `atom.Feed` or `rss.Feed`  `json. Feed` to the universal `gofeed.Feed` struct in the [Default Mappings](#default-mappings) section. However, should you disagree with the way certain fields are translated you can easily supply your own `gofeed.Translator` and override this behavior. See the [Advanced Usage](#advanced-usage) section for an example how to do this.
+The translation step is done by anything which adheres to the `gofeed.Translator` interface. The `DefaultRSSTranslator`, `DefaultAtomTranslator`, `DefaultJSONTranslator` are used behind the scenes when you use the `gofeed.Parser` with its default settings. You can see how they translate fields from `atom.Feed` or `rss.Feed`  `json.Feed` to the universal `gofeed.Feed` struct in the [Default Mappings](#default-mappings) section. However, should you disagree with the way certain fields are translated you can easily supply your own `gofeed.Translator` and override this behavior. See the [Advanced Usage](#advanced-usage) section for an example how to do this.
 
 #### Feed Specific Parsers
 
-The `gofeed` library provides two feed specific parsers: `atom. Parser` , `rss.Parser` and `json. Parser` . If the hybrid `gofeed.Feed` model that the universal `gofeed.Parser` produces does not contain a field from the `atom.Feed` or `rss.Feed` or `json.Feed` model that you require, it might be beneficial to use the feed specific parsers. When using the `atom.Parser` or `rss.Parser` or `json.Parser` directly, you can access all of fields found in the `atom. Feed` , `rss.Feed` and `json.Feed` models. It is also marginally faster because you are able to skip the translation step.
+The `gofeed` library provides two feed specific parsers: `atom.Parser` , `rss.Parser` and `json.Parser` . If the hybrid `gofeed.Feed` model that the universal `gofeed.Parser` produces does not contain a field from the `atom.Feed` or `rss.Feed` or `json.Feed` model that you require, it might be beneficial to use the feed specific parsers. When using the `atom.Parser` or `rss.Parser` or `json.Parser` directly, you can access all of fields found in the `atom.Feed` , `rss.Feed` and `json.Feed` models. It is also marginally faster because you are able to skip the translation step.
 
 ## Basic Usage
 
@@ -94,7 +94,7 @@ feed, _ := fp.ParseString(feedData)
 fmt.Println(feed.Title)
 ```
 
-##### Parse a feed from an io. Reader:
+##### Parse a feed from an `io.Reader`:
 
 ```go
 file, _ := os.Open("/path/to/a/file.xml")
@@ -125,9 +125,9 @@ fmt.Println(feed.Title)
 
 #### Feed Specific Parsers
 
-You can easily use the `rss. Parser` , `atom.Parser` or `json.Parser` directly if you have a usage scenario that requires it:
+You can easily use the `rss.Parser` , `atom.Parser` or `json.Parser` directly if you have a usage scenario that requires it:
 
-##### Parse a RSS feed into a `rss. Feed`
+##### Parse a RSS feed into a `rss.Feed`
 
 ```go
 feedData := `<rss version="2.0">
@@ -140,7 +140,7 @@ rssFeed, _ := fp.Parse(strings.NewReader(feedData))
 fmt.Println(rssFeed.WebMaster)
 ```
 
-##### Parse an Atom feed into a `atom. Feed`
+##### Parse an Atom feed into a `atom.Feed`
 
 ```go
 feedData := `<feed xmlns="http://www.w3.org/2005/Atom">
@@ -151,7 +151,7 @@ atomFeed, _ := fp.Parse(strings.NewReader(feedData))
 fmt.Println(atomFeed.Subtitle)
 ```
 
-##### Parse a JSON feed into a `json. Feed`
+##### Parse a JSON feed into a `json.Feed`
 
 ```go
 feedData := `{"version":"1.0", "home_page_url": "https://daringfireball.net"}`
@@ -174,7 +174,7 @@ fp.AuthConfig = &gofeed.Auth{
 
 ##### Parse a feed while using a custom translator
 
-The mappings and precedence order that are outlined in the [Default Mappings](#default-mappings) section are provided by the following two structs: `DefaultRSSTranslator` , `DefaultAtomTranslator` and `DefaultJSONTranslator` . If you have fields that you think should have a different precedence, or if you want to make a translator that is aware of an unsupported extension you can do this by specifying your own RSS or Atom or JSON translator when using the `gofeed. Parser` .
+The mappings and precedence order that are outlined in the [Default Mappings](#default-mappings) section are provided by the following two structs: `DefaultRSSTranslator` , `DefaultAtomTranslator` and `DefaultJSONTranslator` . If you have fields that you think should have a different precedence, or if you want to make a translator that is aware of an unsupported extension you can do this by specifying your own RSS or Atom or JSON translator when using the `gofeed.Parser` .
 
 Here is a simple example of creating a custom `Translator` that makes the `/rss/channel/itunes:author` field have a higher precedence than the `/rss/channel/managingEditor` field in RSS feeds. We will wrap the existing `DefaultRSSTranslator` since we only want to change the behavior for a single field.
 
@@ -222,7 +222,7 @@ func (ct* MyCustomTranslator) Translate(feed interface{}) (*gofeed.Feed, error) 
 }
 ```
 
-Next you must configure your `gofeed.Parser` to utilize the new `gofeed. Translator` :
+Next you must configure your `gofeed.Parser` to utilize the new `gofeed.Translator` :
 
 ```go
 feedData := `<rss version="2.0">
@@ -240,13 +240,13 @@ fmt.Println(feed.Author) // Valentine Wiggin
 
 ## Extensions
 
-Every element which does not belong to the feed's default namespace is considered an extension by `gofeed` . These are parsed and stored in a tree-like structure located at `Feed.Extensions` and `Item. Extensions` . These fields should allow you to access and read any custom extension elements.
+Every element which does not belong to the feed's default namespace is considered an extension by `gofeed` . These are parsed and stored in a tree-like structure located at `Feed.Extensions` and `Item.Extensions` . These fields should allow you to access and read any custom extension elements.
 
-In addition to the generic handling of extensions, `gofeed` also has built in support for parsing certain popular extensions into their own structs for convenience. It currently supports the [Dublin Core](http://dublincore.org/documents/dces/) and [Apple iTunes](https://help.apple.com/itc/podcasts_connect/#/itcb54353390) extensions which you can access at `Feed. ItunesExt` , `feed.DublinCoreExt` and `Item.ITunesExt` and `Item. DublinCoreExt`
+In addition to the generic handling of extensions, `gofeed` also has built in support for parsing certain popular extensions into their own structs for convenience. It currently supports the [Dublin Core](http://dublincore.org/documents/dces/) and [Apple iTunes](https://help.apple.com/itc/podcasts_connect/#/itcb54353390) extensions which you can access at `Feed.ItunesExt` , `feed.DublinCoreExt` and `Item.ITunesExt` and `Item.DublinCoreExt`
 
 ## Default Mappings
 
-The `DefaultRSSTranslator` , the `DefaultAtomTranslator` and the `DefaultJSONTranslator` map the following `rss. Feed` , `atom.Feed` and `json.Feed` fields to their respective `gofeed.Feed` fields. They are listed in order of precedence (highest to lowest):
+The `DefaultRSSTranslator` , the `DefaultAtomTranslator` and the `DefaultJSONTranslator` map the following `rss.Feed` , `atom.Feed` and `json.Feed` fields to their respective `gofeed.Feed` fields. They are listed in order of precedence (highest to lowest):
 
 | `gofeed.Feed` | RSS                                                                                                                                                                                                   | Atom                                                              | JSON                     |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------ |
