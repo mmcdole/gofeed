@@ -14,7 +14,6 @@ Parse RSS, Atom, and JSON feeds effortlessly with `gofeed`. The library features
 - [Overview](#overview)
 - [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
-- [Extensions](#extensions)
 - [Dependencies](#dependencies)
 - [License](#license)
 - [Credits](#credits)
@@ -36,8 +35,14 @@ Parse RSS, Atom, and JSON feeds effortlessly with `gofeed`. The library features
 
 ### Extension Support
 
-`gofeed` offers strongly-typed support for key extensions like Dublin Core and Apple's iTunes. For custom or lesser-known extensions, a generic parser is available.
+`gofeed` treats elements outside the feed's default namespace as extensions, storing them in tree-like structures under Feed.Extensions and Item.Extensions. This feature allows you to access custom extension elements easily.
 
+Built-In Support for Popular Extensions
+For added convenience, gofeed includes native support for parsing certain well-known extensions into dedicated structs. Currently, it supports:
+
+- Dublin Core: Accessible via `Feed.DublinCoreExt` and `Item.DublinCoreExt`
+- Apple iTunes: Accessible via `Feed.ITunesExt` and `Item.ITunesExt`
+  
 ## Overview
 
 In `gofeed`, you have two primary choices for feed parsing: a universal parser for handling multiple feed types seamlessly, and specialized parsers for more granular control over individual feed types.
@@ -215,18 +220,6 @@ fp.RSSTranslator = NewMyCustomTranslator()
 feed, _ := fp.ParseString(feedData)
 fmt.Println(feed.Author) // Valentine Wiggin
 ```
-
-## Extensions
-
-`gofeed` treats elements outside the feed's default namespace as extensions, storing them in tree-like structures under Feed.Extensions and Item.Extensions. This feature allows you to access custom extension elements easily.
-
-Built-In Support for Popular Extensions
-For added convenience, gofeed includes native support for parsing certain well-known extensions into dedicated structs. Currently, it supports:
-
-- Dublin Core: Accessible via `Feed.DublinCoreExt` and `Item.DublinCoreExt`
-- Apple iTunes: Accessible via `Feed.ITunesExt` and `Item.ITunesExt`
-
-This built-in functionality simplifies working with these popular feed extensions.
 
 ## Dependencies
 
