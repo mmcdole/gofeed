@@ -223,8 +223,8 @@ fmt.Println(feed.Author) // Valentine Wiggin
 Built-In Support for Popular Extensions
 For added convenience, gofeed includes native support for parsing certain well-known extensions into dedicated structs. Currently, it supports:
 
-Dublin Core: Accessible via `Feed.DublinCoreExt` and `Item.DublinCoreExt`
-Apple iTunes: Accessible via `Feed.ITunesExt` and `Item.ITunesExt`
+- Dublin Core: Accessible via `Feed.DublinCoreExt` and `Item.DublinCoreExt`
+- Apple iTunes: Accessible via `Feed.ITunesExt` and `Item.ITunesExt`
 
 This built-in functionality simplifies working with these popular feed extensions.
 
