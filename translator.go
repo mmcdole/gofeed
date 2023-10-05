@@ -641,7 +641,11 @@ func (t *DefaultAtomTranslator) translateFeedCategories(atom *atom.Feed) (catego
 	if atom.Categories != nil {
 		categories = []string{}
 		for _, c := range atom.Categories {
-			categories = append(categories, c.Term)
+			if c.Label != "" {
+				categories = append(categories, c.Label)
+			} else {
+				categories = append(categories, c.Term)
+			}
 		}
 	}
 	return
@@ -746,7 +750,11 @@ func (t *DefaultAtomTranslator) translateItemCategories(entry *atom.Entry) (cate
 	if entry.Categories != nil {
 		categories = []string{}
 		for _, c := range entry.Categories {
-			categories = append(categories, c.Term)
+			if c.Label != "" {
+				categories = append(categories, c.Label)
+			} else {
+				categories = append(categories, c.Term)
+			}
 		}
 	}
 	return
