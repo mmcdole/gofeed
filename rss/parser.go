@@ -505,14 +505,16 @@ func (rp *Parser) parseEnclosure(p *xpp.XMLPullParser) (enclosure *Enclosure, er
 	enclosure.Length = p.Attribute("length")
 	enclosure.Type = p.Attribute("type")
 
-	// Ignore any enclosure text
-	_, err = p.NextText()
-	if err != nil {
-		return enclosure, err
-	}
+	// Ignore any enclosure tag
+	for {
+		_, err := p.Next()
+		if err != nil {
+			return enclosure, err
+		}
 
-	if err = p.Expect(xpp.EndTag, "enclosure"); err != nil {
-		return nil, err
+		if p.Event == xpp.EndTag && p.Name == "enclosure" {
+			break
+		}
 	}
 
 	return enclosure, nil
