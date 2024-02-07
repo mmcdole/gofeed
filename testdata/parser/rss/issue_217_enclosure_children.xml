@@ -1,0 +1,23 @@
+
+<!--
+Description: issue #217 
+-->
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <item>
+      
+      <enclosure url="http://example.org/enclosure.jpg" type="image/jpeg">
+        <media:title>
+        <![CDATA[ <p>Enclosure test title</p> ]]>
+        </media:title>
+        <media:copyright>
+        <![CDATA[ Enclosure copyright ]]>
+        </media:copyright>
+        <media:credits>
+        <![CDATA[ Enclosure credits ]]>
+        </media:credits>
+      </enclosure>
+      
+    </item>
+  </channel>
+</rss>
