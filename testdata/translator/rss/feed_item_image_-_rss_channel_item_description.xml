@@ -1,0 +1,10 @@
+<!--
+Description: item image from description
+-->
+<rss version="0.91">
+  <channel>
+    <item>
+      <description><![CDATA[<img src="http://example.com/description.png">]]></description>
+    </item>
+  </channel>
+</rss>

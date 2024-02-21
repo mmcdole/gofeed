@@ -1,0 +1,12 @@
+{
+  "feedType": "rss",
+  "feedVersion": "0.91",
+  "items": [
+    {
+      "image": {
+        "url": "http://example.com/description.png"
+      },
+      "description": "<img src=\"http://example.com/description.png\">"
+    }
+  ]
+}

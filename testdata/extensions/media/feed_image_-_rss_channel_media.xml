@@ -1,0 +1,8 @@
+<!--
+Description: channel image
+-->
+<rss version="0.91">
+  <channel>
+    <media:content url="http://example.com/channel.png" medium="image"></media:content>
+  </channel>
+</rss>

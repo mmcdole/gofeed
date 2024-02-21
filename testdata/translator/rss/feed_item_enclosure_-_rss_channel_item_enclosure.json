@@ -8,6 +8,10 @@
           "type": "audio/jpeg",
           "url": "http://example.org/podcast.jpg"
       },
+      "image": {
+        "url": "http://example.org/podcast.jpg",
+        "title": ""
+      },
       "enclosures": [
         {
           "length": "123456",
