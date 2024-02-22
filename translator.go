@@ -613,6 +613,10 @@ func (t *DefaultAtomTranslator) translateFeedImage(atom *atom.Feed) (image *Imag
 		feedImage := Image{}
 		feedImage.URL = atom.Logo
 		image = &feedImage
+	} else if atom.Icon != "" {
+		feedImage := Image{}
+		feedImage.URL = atom.Icon
+		image = &feedImage
 	}
 	return
 }
