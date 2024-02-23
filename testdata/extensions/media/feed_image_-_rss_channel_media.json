@@ -1,0 +1,22 @@
+{
+  "feedType": "rss",
+  "feedVersion": "0.91",
+  "image": {
+    "url": "http://example.com/channel.png"
+  },
+  "extensions": {
+    "media": {
+      "content": [
+        {
+          "name": "content",
+          "attrs": {
+            "url": "http://example.com/channel.png",
+            "medium": "image"
+          },
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": []
+}

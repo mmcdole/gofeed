@@ -1,0 +1,39 @@
+{
+    "items": [
+        {
+            "title": "rss item image from media content",
+            "image": {
+                "url": "https://example.com/blog-open.png",
+                "title": ""
+            },
+            "extensions": {
+                "media": {
+                    "content": [
+                        {
+                            "name": "content",
+                            "value": "",
+                            "attrs": {
+                                "medium": "image",
+                                "url": "https://example.com/blog-open.png"
+                            },
+                            "children": {
+                                "title": [
+                                    {
+                                        "name": "title",
+                                        "value": "blog-open",
+                                        "attrs": {
+                                            "type": "html"
+                                        },
+                                        "children": {}
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

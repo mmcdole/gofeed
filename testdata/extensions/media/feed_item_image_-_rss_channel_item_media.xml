@@ -1,0 +1,13 @@
+<!--
+Description: rss item image from media content
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <title>rss item image from media content</title>
+      <media:content url="https://example.com/blog-open.png" medium="image">
+        <media:title type="html">blog-open</media:title>
+      </media:content>
+    </item>
+  </channel>
+</rss>
