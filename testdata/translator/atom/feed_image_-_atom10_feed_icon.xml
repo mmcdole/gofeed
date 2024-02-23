@@ -1,7 +1,6 @@
 <!--
-Description: feed logo
+Description: feed icon
 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <logo>http://example.org/logo.jpg</logo>
   <icon>http://example.org/icon.jpg</icon>
 </feed>
