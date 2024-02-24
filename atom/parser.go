@@ -658,10 +658,20 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 		InnerXML string `xml:",innerxml"`
 	}
 
+    // DecodeElement pops the base stack if the element contains an xml:base
+    // attribute, so we need to save and restore it before resolving any
+    // relative URLs below
+	oldBase := p.BaseStack
 	err := p.DecodeElement(&text)
 	if err != nil {
 		return "", err
 	}
+	newBase := p.BaseStack
+	p.BaseStack = oldBase
+	defer func() {
+		// pop base when we're done with the decoded element
+		p.BaseStack = newBase
+	}()
 
 	result := text.InnerXML
 	result = strings.TrimSpace(result)
