@@ -1,0 +1,10 @@
+<!--
+Description: rss item with atom author
+-->
+<rss version="2.0" xmlns:a10="http://www.w3.org/2005/Atom">
+  <channel>
+    <item>
+      <a10:author><a10:name>Item Author</a10:name></a10:author>
+    </item>
+  </channel>
+</rss>

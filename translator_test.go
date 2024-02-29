@@ -31,8 +31,17 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 		// Parse actual feed
 		translator := &gofeed.DefaultRSSTranslator{}
 		fp := &rss.Parser{}
-		rssFeed, _ := fp.Parse(f)
+		rssFeed, _ := fp.Parse(f, gofeed.NewParser().BuildRSSExtParsers())
 		actual, _ := translator.Translate(rssFeed)
+
+		// the `Parsed` part of extensions is not correctly unmarshalled from JSON
+		// workaround: move the actual extensions through a round of json marshalling so that we get the same
+		for _, i := range actual.Items {
+			if len(i.Extensions) > 0 {
+				b, _ := jsonEncoding.Marshal(i.Extensions)
+				jsonEncoding.Unmarshal(b, &i.Extensions)
+			}
+		}
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/rss/%s.json", name)

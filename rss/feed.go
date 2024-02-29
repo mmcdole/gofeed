@@ -38,6 +38,10 @@ type Feed struct {
 	Version             string                   `json:"version"`
 }
 
+func (f Feed) GetExtensions() ext.Extensions {
+	return f.Extensions
+}
+
 func (f Feed) String() string {
 	json, _ := json.MarshalIndent(f, "", "    ")
 	return string(json)
@@ -63,6 +67,10 @@ type Item struct {
 	ITunesExt     *ext.ITunesItemExtension `json:"itunesExt,omitempty"`
 	Extensions    ext.Extensions           `json:"extensions,omitempty"`
 	Custom        map[string]string        `json:"custom,omitempty"`
+}
+
+func (i Item) GetExtensions() ext.Extensions {
+	return i.Extensions
 }
 
 // Image is an image that represents the feed

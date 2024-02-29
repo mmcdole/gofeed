@@ -21,6 +21,9 @@ var (
 		"uri":  true,
 		"url":  true, // atom 0.3
 	}
+
+	// No known explicit extension parsers for Atom, currently
+	emptyExtParsers = make(shared.ExtParsers)
 )
 
 // Parser is an Atom Parser
@@ -36,6 +39,14 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	}
 
 	return ap.parseRoot(p)
+}
+
+func (ap *Parser) ParseAsExtension(p *xpp.XMLPullParser) (interface{}, error) {
+	entry := &Entry{}
+	if err := ap.parseEntryContent(p, entry); err != nil {
+		return nil, err
+	}
+	return entry, nil
 }
 
 func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
@@ -69,7 +80,7 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 			name := strings.ToLower(p.Name)
 
 			if shared.IsExtension(p) {
-				e, err := shared.ParseExtension(extensions, p)
+				e, err := shared.ParseExtension(extensions, p, emptyExtParsers)
 				if err != nil {
 					return nil, err
 				}
@@ -202,10 +213,6 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 	}
 	entry := &Entry{}
 
-	contributors := []*Person{}
-	authors := []*Person{}
-	categories := []*Category{}
-	links := []*Link{}
 	extensions := ext.Extensions{}
 
 	for {
@@ -219,123 +226,18 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 		}
 
 		if tok == xpp.StartTag {
-
-			name := strings.ToLower(p.Name)
-
 			if shared.IsExtension(p) {
-				e, err := shared.ParseExtension(extensions, p)
+				e, err := shared.ParseExtension(extensions, p, emptyExtParsers)
 				if err != nil {
 					return nil, err
 				}
 				extensions = e
-			} else if name == "title" {
-				result, err := ap.parseAtomText(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.Title = result
-			} else if name == "id" {
-				result, err := ap.parseAtomText(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.ID = result
-			} else if name == "rights" ||
-				name == "copyright" {
-				result, err := ap.parseAtomText(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.Rights = result
-			} else if name == "summary" {
-				result, err := ap.parseAtomText(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.Summary = result
-			} else if name == "source" {
-				result, err := ap.parseSource(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.Source = result
-			} else if name == "updated" ||
-				name == "modified" {
-				result, err := ap.parseAtomText(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.Updated = result
-				date, err := shared.ParseDate(result)
-				if err == nil {
-					utcDate := date.UTC()
-					entry.UpdatedParsed = &utcDate
-				}
-			} else if name == "contributor" {
-				result, err := ap.parsePerson("contributor", p)
-				if err != nil {
-					return nil, err
-				}
-				contributors = append(contributors, result)
-			} else if name == "author" {
-				result, err := ap.parsePerson("author", p)
-				if err != nil {
-					return nil, err
-				}
-				authors = append(authors, result)
-			} else if name == "category" {
-				result, err := ap.parseCategory(p)
-				if err != nil {
-					return nil, err
-				}
-				categories = append(categories, result)
-			} else if name == "link" {
-				result, err := ap.parseLink(p)
-				if err != nil {
-					return nil, err
-				}
-				links = append(links, result)
-			} else if name == "published" ||
-				name == "issued" {
-				result, err := ap.parseAtomText(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.Published = result
-				date, err := shared.ParseDate(result)
-				if err == nil {
-					utcDate := date.UTC()
-					entry.PublishedParsed = &utcDate
-				}
-			} else if name == "content" {
-				result, err := ap.parseContent(p)
-				if err != nil {
-					return nil, err
-				}
-				entry.Content = result
 			} else {
-				err := p.Skip()
-				if err != nil {
+				if err := ap.parseEntryContent(p, entry); err != nil {
 					return nil, err
 				}
 			}
 		}
-	}
-
-	if len(categories) > 0 {
-		entry.Categories = categories
-	}
-
-	if len(authors) > 0 {
-		entry.Authors = authors
-	}
-
-	if len(links) > 0 {
-		entry.Links = links
-	}
-
-	if len(contributors) > 0 {
-		entry.Contributors = contributors
 	}
 
 	if len(extensions) > 0 {
@@ -347,6 +249,103 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 	}
 
 	return entry, nil
+}
+
+func (ap *Parser) parseEntryContent(p *xpp.XMLPullParser, entry *Entry) error {
+	name := strings.ToLower(p.Name)
+
+	if name == "title" {
+		result, err := ap.parseAtomText(p)
+		if err != nil {
+			return err
+		}
+		entry.Title = result
+	} else if name == "id" {
+		result, err := ap.parseAtomText(p)
+		if err != nil {
+			return err
+		}
+		entry.ID = result
+	} else if name == "rights" ||
+		name == "copyright" {
+		result, err := ap.parseAtomText(p)
+		if err != nil {
+			return err
+		}
+		entry.Rights = result
+	} else if name == "summary" {
+		result, err := ap.parseAtomText(p)
+		if err != nil {
+			return err
+		}
+		entry.Summary = result
+	} else if name == "source" {
+		result, err := ap.parseSource(p)
+		if err != nil {
+			return err
+		}
+		entry.Source = result
+	} else if name == "updated" ||
+		name == "modified" {
+		result, err := ap.parseAtomText(p)
+		if err != nil {
+			return err
+		}
+		entry.Updated = result
+		date, err := shared.ParseDate(result)
+		if err == nil {
+			utcDate := date.UTC()
+			entry.UpdatedParsed = &utcDate
+		}
+	} else if name == "contributor" {
+		result, err := ap.parsePerson("contributor", p)
+		if err != nil {
+			return err
+		}
+		entry.Contributors = append(entry.Contributors, result)
+	} else if name == "author" {
+		result, err := ap.parsePerson("author", p)
+		if err != nil {
+			return err
+		}
+		entry.Authors = append(entry.Authors, result)
+	} else if name == "category" {
+		result, err := ap.parseCategory(p)
+		if err != nil {
+			return err
+		}
+		entry.Categories = append(entry.Categories, result)
+	} else if name == "link" {
+		result, err := ap.parseLink(p)
+		if err != nil {
+			return err
+		}
+		entry.Links = append(entry.Links, result)
+	} else if name == "published" ||
+		name == "issued" {
+		result, err := ap.parseAtomText(p)
+		if err != nil {
+			return err
+		}
+		entry.Published = result
+		date, err := shared.ParseDate(result)
+		if err == nil {
+			utcDate := date.UTC()
+			entry.PublishedParsed = &utcDate
+		}
+	} else if name == "content" {
+		result, err := ap.parseContent(p)
+		if err != nil {
+			return err
+		}
+		entry.Content = result
+	} else {
+		err := p.Skip()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
@@ -378,7 +377,7 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 			name := strings.ToLower(p.Name)
 
 			if shared.IsExtension(p) {
-				e, err := shared.ParseExtension(extensions, p)
+				e, err := shared.ParseExtension(extensions, p, emptyExtParsers)
 				if err != nil {
 					return nil, err
 				}
