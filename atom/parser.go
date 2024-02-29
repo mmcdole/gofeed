@@ -658,20 +658,12 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 		InnerXML string `xml:",innerxml"`
 	}
 
-    // DecodeElement pops the base stack if the element contains an xml:base
-    // attribute, so we need to save and restore it before resolving any
-    // relative URLs below
-	oldBase := p.BaseStack
+	// get current base URL before it is clobbered by DecodeElement
+	base := p.BaseStack.Top()
 	err := p.DecodeElement(&text)
 	if err != nil {
 		return "", err
 	}
-	newBase := p.BaseStack
-	p.BaseStack = oldBase
-	defer func() {
-		// pop base when we're done with the decoded element
-		p.BaseStack = newBase
-	}()
 
 	result := text.InnerXML
 	result = strings.TrimSpace(result)
@@ -682,7 +674,7 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	if strings.Contains(result, "<![CDATA[") {
 		result = shared.StripCDATA(result)
 		if lowerType == "html" || strings.Contains(lowerType, "xhtml") {
-			result, _ = shared.ResolveHTML(p, result)
+			result, _ = shared.ResolveHTML(base, result)
 		}
 	} else {
 		// decode non-CDATA contents depending on type
@@ -693,12 +685,12 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 			result, err = shared.DecodeEntities(result)
 		} else if strings.Contains(lowerType, "xhtml") {
 			result = ap.stripWrappingDiv(result)
-			result, _ = shared.ResolveHTML(p, result)
+			result, _ = shared.ResolveHTML(base, result)
 		} else if lowerType == "html" {
 			result = ap.stripWrappingDiv(result)
 			result, err = shared.DecodeEntities(result)
 			if err == nil {
-				result, _ = shared.ResolveHTML(p, result)
+				result, _ = shared.ResolveHTML(base, result)
 			}
 		} else {
 			decodedStr, err := base64.StdEncoding.DecodeString(result)
@@ -711,7 +703,7 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	// resolve relative URIs in URI-containing elements according to xml:base
 	name := strings.ToLower(p.Name)
 	if atomUriElements[name] {
-		resolved, err := p.XmlBaseResolveUrl(result)
+		resolved, err := shared.XmlBaseResolveUrl(base, result)
 		if resolved != nil && err == nil {
 			result = resolved.String()
 		}
