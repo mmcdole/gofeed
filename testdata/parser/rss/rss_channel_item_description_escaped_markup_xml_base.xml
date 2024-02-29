@@ -1,0 +1,10 @@
+<!--
+Description: rss item description - escaped markup 
+-->
+<rss version="2.0">
+  <channel xml:base="http://example.org/base/">
+    <item xml:base="/item">
+      <description>&lt;a href="link"&gt;Item Description&lt;/a&gt;</description>
+    </item>
+  </channel>
+</rss>
