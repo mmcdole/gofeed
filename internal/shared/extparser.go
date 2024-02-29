@@ -12,18 +12,15 @@ import (
 // non empty prefix)
 func IsExtension(p *xpp.XMLPullParser) bool {
 	space := strings.TrimSpace(p.Space)
-	if prefix, ok := p.Spaces[space]; ok {
-		return !(prefix == "" || prefix == "rss" || prefix == "rdf" || prefix == "content")
-	}
-
-	return p.Space != ""
+	prefix := PrefixForNamespace(space, p)
+	return !(prefix == "" || prefix == "rss" || prefix == "rdf" || prefix == "content")
 }
 
 // ParseExtension parses the current element of the
 // XMLPullParser as an extension element and updates
 // the extension map
 func ParseExtension(fe ext.Extensions, p *xpp.XMLPullParser) (ext.Extensions, error) {
-	prefix := prefixForNamespace(p.Space, p)
+	prefix := PrefixForNamespace(p.Space, p)
 
 	result, err := parseExtensionElement(p)
 	if err != nil {
@@ -93,7 +90,7 @@ func parseExtensionElement(p *xpp.XMLPullParser) (e ext.Extension, err error) {
 	return e, nil
 }
 
-func prefixForNamespace(space string, p *xpp.XMLPullParser) string {
+func PrefixForNamespace(space string, p *xpp.XMLPullParser) string {
 	// First we check if the global namespace map
 	// contains an entry for this namespace/prefix.
 	// This way we can use the canonical prefix for this

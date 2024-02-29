@@ -4,7 +4,7 @@ Description: item image from content
 <rss version="0.91">
   <channel>
     <item>
-      <content><![CDATA[<img src="http://example.com/content.png">]]></content>
+      <content:encoded><![CDATA[<img src="http://example.com/content.png">]]></content:encoded>
     </item>
   </channel>
 </rss>
