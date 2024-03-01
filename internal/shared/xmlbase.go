@@ -3,6 +3,7 @@ package shared
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"strings"
 
 	xpp "github.com/mmcdole/goxpp"
@@ -83,7 +84,7 @@ func resolveAttrs(p *xpp.XMLPullParser) error {
 	for i, attr := range p.Attrs {
 		lowerName := strings.ToLower(attr.Name.Local)
 		if uriAttrs[lowerName] {
-			absURL, err := p.XmlBaseResolveUrl(attr.Value)
+			absURL, err := XmlBaseResolveUrl(p.BaseStack.Top(), attr.Value)
 			if err != nil {
 				return err
 			}
@@ -95,11 +96,31 @@ func resolveAttrs(p *xpp.XMLPullParser) error {
 	return nil
 }
 
+// resolve u relative to b
+func XmlBaseResolveUrl(b *url.URL, u string) (*url.URL, error) {
+	relURL, err := url.Parse(u)
+	if err != nil {
+		return nil, err
+	}
+
+	if b == nil {
+		return relURL, nil
+	}
+
+	if b.Path != "" && u != "" && b.Path[len(b.Path)-1] != '/' {
+		// There's no reason someone would use a path in xml:base if they
+		// didn't mean for it to be a directory
+		b.Path = b.Path + "/"
+	}
+	absURL := b.ResolveReference(relURL)
+	return absURL, nil
+}
+
 // Transforms html by resolving any relative URIs in attributes
 // if an error occurs during parsing or serialization, then the original string
 // is returned along with the error.
-func ResolveHTML(p *xpp.XMLPullParser, relHTML string) (string, error) {
-	if p.BaseStack.Top() == nil {
+func ResolveHTML(base *url.URL, relHTML string) (string, error) {
+	if base == nil {
 		return relHTML, nil
 	}
 
@@ -117,7 +138,7 @@ func ResolveHTML(p *xpp.XMLPullParser, relHTML string) (string, error) {
 		if n.Type == html.ElementNode {
 			for i, a := range n.Attr {
 				if htmlURIAttrs[a.Key] {
-					absVal, err := p.XmlBaseResolveUrl(a.Val)
+					absVal, err := XmlBaseResolveUrl(base, a.Val)
 					if absVal != nil && err == nil {
 						n.Attr[i].Val = absVal.String()
 					}
