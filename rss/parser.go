@@ -357,7 +357,8 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				item.Description = result
 			} else if name == "encoded" {
 				space := strings.TrimSpace(p.Space)
-				if prefix, ok := p.Spaces[space]; ok && prefix == "content" {
+				prefix := shared.PrefixForNamespace(space, p)
+				if prefix == "content" {
 					result, err := shared.ParseText(p)
 					if err != nil {
 						return nil, err
