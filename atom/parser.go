@@ -296,7 +296,7 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 				}
 				links = append(links, result)
 			} else if name == "published" ||
-				name == "issued" {
+				name == "issued" || name == "pubdate" {
 				result, err := ap.parseAtomText(p)
 				if err != nil {
 					return nil, err
