@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/json"
@@ -91,10 +92,21 @@ func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 	return nil, ErrFeedTypeNotDetected
 }
 
+type HTTPOptions struct {
+	Etag 					string
+	LastModified 			*time.Time
+}
+
+type HTTPFeed struct {
+	Feed 					*Feed
+	Etag 					string
+	LastModified 			*time.Time
+}
+
 // ParseURL fetches the contents of a given url and
 // attempts to parse the response into the universal feed type.
-func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
-	return f.ParseURLWithContext(feedURL, context.Background())
+func (f *Parser) ParseURL(feedURL string, options HTTPOptions) (feed *HTTPFeed, err error) {
+	return f.ParseURLWithContext(feedURL, context.Background(), options)
 }
 
 // ParseURLWithContext fetches contents of a given url and
@@ -103,14 +115,23 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 // to use the BasicAuth during the HTTP call.
 // It will be automatically added to the header of the request
 // Request could be canceled or timeout via given context
-func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed *Feed, err error) {
+func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context, options HTTPOptions) (feed *HTTPFeed, err error) {
 	client := f.httpClient()
+	location := time.FixedZone("GMT", 0)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", feedURL, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("User-Agent", f.UserAgent)
+
+	if options.Etag != "" {
+		req.Header.Set("If-None-Match", options.Etag)
+	}
+
+	if options.LastModified != nil {
+		req.Header.Set("If-Modified-Since", options.LastModified.In(location).Format(time.RFC1123))
+	}
 
 	if f.AuthConfig != nil && f.AuthConfig.Username != "" && f.AuthConfig.Password != "" {
 		req.SetBasicAuth(f.AuthConfig.Username, f.AuthConfig.Password)
@@ -122,23 +143,43 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 		return nil, err
 	}
 
-	if resp != nil {
-		defer func() {
-			ce := resp.Body.Close()
-			if ce != nil {
-				err = ce
-			}
-		}()
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode != 200 && resp.StatusCode != 206 && resp.StatusCode != 304 {
 		return nil, HTTPError{
 			StatusCode: resp.StatusCode,
 			Status:     resp.Status,
 		}
 	}
 
-	return f.Parse(resp.Body)
+	httpFeed := HTTPFeed {
+		Etag: resp.Header.Get("Etag"),
+		LastModified: options.LastModified,
+	}
+
+	if lastModified := resp.Header.Get("Last-Modified"); lastModified != "" {
+		parsed, err := time.ParseInLocation(time.RFC1123, lastModified, location)
+		if err == nil {
+			httpFeed.LastModified = &parsed
+		}
+	}
+
+	if resp.StatusCode == 304 {
+		return &httpFeed, nil
+	}
+
+	defer func() {
+		ce := resp.Body.Close()
+		if ce != nil {
+			err = ce
+		}
+	}()
+
+	res, err := f.Parse(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	httpFeed.Feed = res
+
+	return &httpFeed, nil
 }
 
 // ParseString parses a feed XML string and into the
