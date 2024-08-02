@@ -14,9 +14,11 @@ import (
 	"github.com/mmcdole/gofeed/rss"
 )
 
+const DefaultUserAgent string = "Gofeed/1.0"
+
 // ErrFeedTypeNotDetected is returned when the detection system can not figure
 // out the Feed format
-var ErrFeedTypeNotDetected = errors.New("Failed to detect feed type")
+var ErrFeedTypeNotDetected = errors.New("failed to detect feed type")
 
 // HTTPError represents an HTTP error returned by a server.
 type HTTPError struct {
@@ -52,12 +54,16 @@ type Auth struct {
 }
 
 // NewParser creates a universal feed parser.
-func NewParser() *Parser {
+func NewParser(useragent string) *Parser {
+	if useragent == "" {
+		useragent = DefaultUserAgent
+	}
+
 	fp := Parser{
 		rp:        &rss.Parser{},
 		ap:        &atom.Parser{},
 		jp:        &json.Parser{},
-		UserAgent: "Gofeed/1.0",
+		UserAgent: useragent,
 	}
 	return &fp
 }

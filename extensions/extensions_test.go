@@ -26,7 +26,7 @@ func TestITunes_Extensions(t *testing.T) {
 		f, _ := os.ReadFile(ff)
 
 		// Parse actual feed
-		fp := gofeed.NewParser()
+		fp := gofeed.NewParser(gofeed.DefaultUserAgent)
 		actual, _ := fp.Parse(bytes.NewReader(f))
 
 		// Get json encoded expected feed result
@@ -45,7 +45,6 @@ func TestITunes_Extensions(t *testing.T) {
 	}
 }
 
-
 func TestMedia_Extensions(t *testing.T) {
 	files, _ := filepath.Glob("../testdata/extensions/media/*.xml")
 	for _, f := range files {
@@ -59,7 +58,7 @@ func TestMedia_Extensions(t *testing.T) {
 		f, _ := os.ReadFile(ff)
 
 		// Parse actual feed
-		fp := gofeed.NewParser()
+		fp := gofeed.NewParser(gofeed.DefaultUserAgent)
 		actual, _ := fp.Parse(bytes.NewReader(f))
 
 		// Get json encoded expected feed result

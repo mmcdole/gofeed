@@ -50,7 +50,7 @@ func main() {
 			p := atom.Parser{}
 			feed, err = p.Parse(strings.NewReader(fc))
 		} else {
-			p := gofeed.NewParser()
+			p := gofeed.NewParser(gofeed.DefaultUserAgent)
 			feed, err = p.ParseString(fc)
 		}
 
