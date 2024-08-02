@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	ext "github.com/mmcdole/gofeed/extensions"
-	"github.com/mmcdole/gofeed/internal/shared"
+	ext "github.com/hartza-capital/gofeed/extensions"
+	"github.com/hartza-capital/gofeed/internal/shared"
 	xpp "github.com/mmcdole/goxpp"
 )
 

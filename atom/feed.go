@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/mmcdole/gofeed/extensions"
+	"github.com/hartza-capital/gofeed/extensions"
 )
 
 // Feed is an Atom Feed

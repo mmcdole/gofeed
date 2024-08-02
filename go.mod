@@ -1,6 +1,6 @@
-module github.com/mmcdole/gofeed
+module github.com/hartza-capital/gofeed
 
-go 1.19
+go 1.22.5
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.2
