@@ -4,28 +4,30 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/mmcdole/gofeed/extensions"
+	ext "github.com/mmcdole/gofeed/extensions"
 )
 
 // Feed is an Atom Feed
 type Feed struct {
-	Title         string         `json:"title,omitempty"`
-	ID            string         `json:"id,omitempty"`
-	Updated       string         `json:"updated,omitempty"`
-	UpdatedParsed *time.Time     `json:"updatedParsed,omitempty"`
-	Subtitle      string         `json:"subtitle,omitempty"`
-	Links         []*Link        `json:"links,omitempty"`
-	Language      string         `json:"language,omitempty"`
-	Generator     *Generator     `json:"generator,omitempty"`
-	Icon          string         `json:"icon,omitempty"`
-	Logo          string         `json:"logo,omitempty"`
-	Rights        string         `json:"rights,omitempty"`
-	Contributors  []*Person      `json:"contributors,omitempty"`
-	Authors       []*Person      `json:"authors,omitempty"`
-	Categories    []*Category    `json:"categories,omitempty"`
-	Entries       []*Entry       `json:"entries"`
-	Extensions    ext.Extensions `json:"extensions,omitempty"`
-	Version       string         `json:"version"`
+	Title           string         `json:"title,omitempty"`
+	ID              string         `json:"id,omitempty"`
+	Updated         string         `json:"updated,omitempty"`
+	UpdatedParsed   *time.Time     `json:"updatedParsed,omitempty"`
+	Subtitle        string         `json:"subtitle,omitempty"`
+	Links           []*Link        `json:"links,omitempty"`
+	Language        string         `json:"language,omitempty"`
+	Generator       *Generator     `json:"generator,omitempty"`
+	Icon            string         `json:"icon,omitempty"`
+	Logo            string         `json:"logo,omitempty"`
+	Rights          string         `json:"rights,omitempty"`
+	Contributors    []*Person      `json:"contributors,omitempty"`
+	Authors         []*Person      `json:"authors,omitempty"`
+	Categories      []*Category    `json:"categories,omitempty"`
+	Entries         []*Entry       `json:"entries"`
+	Extensions      ext.Extensions `json:"extensions,omitempty"`
+	Version         string         `json:"version"`
+	Published       string         `json:"published"`
+	PublishedParsed *time.Time     `json:"publishedParsed"`
 }
 
 func (f Feed) String() string {
