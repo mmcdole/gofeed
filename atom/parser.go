@@ -86,6 +86,17 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 					return nil, err
 				}
 				atom.ID = result
+			} else if name == "published" {
+				result, err := ap.parseAtomText(p)
+				if err != nil {
+					return nil, err
+				}
+				atom.Published = result
+				date, err := shared.ParseDate(result)
+				if err == nil {
+					utcDate := date.UTC()
+					atom.PublishedParsed = &utcDate
+				}
 			} else if name == "updated" ||
 				name == "modified" {
 				result, err := ap.parseAtomText(p)
