@@ -19,6 +19,8 @@ type Feed struct {
 	WebMaster           string                   `json:"webMaster,omitempty"`
 	PubDate             string                   `json:"pubDate,omitempty"`
 	PubDateParsed       *time.Time               `json:"pubDateParsed,omitempty"`
+	Published           string                   `json:"published,omitempty"`
+	PublishedParsed     *time.Time               `json:"publishedParsed,omitempty"`
 	LastBuildDate       string                   `json:"lastBuildDate,omitempty"`
 	LastBuildDateParsed *time.Time               `json:"lastBuildDateParsed,omitempty"`
 	Categories          []*Category              `json:"categories,omitempty"`

@@ -550,6 +550,8 @@ func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Links = t.translateFeedLinks(atom)
 	result.Updated = t.translateFeedUpdated(atom)
 	result.UpdatedParsed = t.translateFeedUpdatedParsed(atom)
+	result.Published = t.translateFeedPublished(atom)
+	result.PublishedParsed = t.translateFeedPublishedParsed(atom)
 	result.Author = t.translateFeedAuthor(atom)
 	result.Authors = t.translateFeedAuthors(atom)
 	result.Language = t.translateFeedLanguage(atom)
@@ -624,6 +626,14 @@ func (t *DefaultAtomTranslator) translateFeedUpdated(atom *atom.Feed) (updated s
 
 func (t *DefaultAtomTranslator) translateFeedUpdatedParsed(atom *atom.Feed) (updated *time.Time) {
 	return atom.UpdatedParsed
+}
+
+func (t *DefaultAtomTranslator) translateFeedPublished(atom *atom.Feed) (published string) {
+	return atom.Published
+}
+
+func (t *DefaultAtomTranslator) translateFeedPublishedParsed(atom *atom.Feed) (published *time.Time) {
+	return atom.PublishedParsed
 }
 
 func (t *DefaultAtomTranslator) translateFeedAuthor(atom *atom.Feed) (author *Person) {
