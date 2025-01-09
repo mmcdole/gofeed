@@ -134,16 +134,17 @@ func TestParser_ParseURL_Success(t *testing.T) {
 		server, client := mockServerResponse(200, string(f), 0)
 		fp := gofeed.NewParser()
 		fp.Client = client
-		feed, err := fp.ParseURL(server.URL)
+		feed, err := fp.ParseURL(server.URL, gofeed.HTTPOptions{})
 
 		if test.hasError {
 			assert.NotNil(t, err)
 			assert.Nil(t, feed)
 		} else {
-			assert.NotNil(t, feed)
 			assert.Nil(t, err)
-			assert.Equal(t, feed.FeedType, test.feedType)
-			assert.Equal(t, feed.Title, test.feedTitle)
+			assert.NotNil(t, feed)
+			assert.NotNil(t, feed.Feed)
+			assert.Equal(t, feed.Feed.FeedType, test.feedType)
+			assert.Equal(t, feed.Feed.Title, test.feedTitle)
 		}
 	}
 }
@@ -154,7 +155,7 @@ func TestParser_ParseURLWithContext(t *testing.T) {
 	defer cancel()
 	fp := gofeed.NewParser()
 	fp.Client = client
-	_, err := fp.ParseURLWithContext(server.URL, ctx)
+	_, err := fp.ParseURLWithContext(server.URL, ctx, gofeed.HTTPOptions{})
 	assert.True(t, strings.Contains(err.Error(), ctx.Err().Error()))
 }
 
@@ -162,7 +163,7 @@ func TestParser_ParseURL_Failure(t *testing.T) {
 	server, client := mockServerResponse(404, "", 0)
 	fp := gofeed.NewParser()
 	fp.Client = client
-	feed, err := fp.ParseURL(server.URL)
+	feed, err := fp.ParseURL(server.URL, gofeed.HTTPOptions{})
 
 	assert.NotNil(t, err)
 	assert.IsType(t, gofeed.HTTPError{}, err)
@@ -179,8 +180,34 @@ func TestParser_ParseURLWithContextAndBasicAuth(t *testing.T) {
 		Password: "bar",
 	}
 	fp.Client = client
-	_, err := fp.ParseURLWithContext(server.URL, ctx)
+	_, err := fp.ParseURLWithContext(server.URL, ctx, gofeed.HTTPOptions{})
 	assert.True(t, strings.Contains(err.Error(), ctx.Err().Error()))
+}
+
+func TestParser_ParseURL_Remote_Success(t *testing.T) {
+	testUrl := "https://developer.mozilla.org/en-US/blog/rss.xml"
+	fmt.Printf("Testing %s... ", testUrl)
+
+	fp := gofeed.NewParser()
+
+	feed1, err := fp.ParseURL("https://developer.mozilla.org/en-US/blog/rss.xml", gofeed.HTTPOptions{})
+	assert.Nil(t, err)
+	assert.NotNil(t, feed1)
+	assert.NotNil(t, feed1.Feed)
+
+	feed2, err := fp.ParseURL("https://developer.mozilla.org/en-US/blog/rss.xml", gofeed.HTTPOptions{
+		Etag: feed1.Etag,
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, feed2)
+	assert.Nil(t, feed2.Feed)
+
+	feed3, err := fp.ParseURL("https://developer.mozilla.org/en-US/blog/rss.xml", gofeed.HTTPOptions{
+		LastModified: feed1.LastModified,
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, feed3)
+	assert.Nil(t, feed3.Feed)
 }
 
 // to detect race conditions, run with go test -race
@@ -218,6 +245,7 @@ func mockServerResponse(code int, body string, delay time.Duration) (*httptest.S
 		time.Sleep(delay)
 		w.WriteHeader(code)
 		w.Header().Set("Content-Type", "application/xml")
+		w.Header().Set("Accept-Encoding", "gzip, deflate")
 		io.WriteString(w, body)
 	}))
 
@@ -249,11 +277,11 @@ func ExampleParser_Parse() {
 
 func ExampleParser_ParseURL() {
 	fp := gofeed.NewParser()
-	feed, err := fp.ParseURL("http://feeds.twit.tv/twit.xml")
+	feed, err := fp.ParseURL("http://feeds.twit.tv/twit.xml", gofeed.HTTPOptions{})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(feed.Title)
+	fmt.Println(feed.Feed.Title)
 }
 
 func ExampleParser_ParseString() {
@@ -276,9 +304,9 @@ func ExampleParserWithBasicAuth_ParseURL() {
 		Username: "foo",
 		Password: "bar",
 	}
-	feed, err := fp.ParseURL("http://feeds.twit.tv/twit.xml")
+	feed, err := fp.ParseURL("http://feeds.twit.tv/twit.xml", gofeed.HTTPOptions{})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(feed.Title)
+	fmt.Println(feed.Feed.Title)
 }
