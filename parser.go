@@ -24,6 +24,9 @@ type HTTPError struct {
 	Status     string
 }
 
+// HTTPHeaders represents the Headers to add to http request.
+type HTTPHeaders map[string]string
+
 func (err HTTPError) Error() string {
 	return fmt.Sprintf("http error: %s", err.Status)
 }
@@ -104,12 +107,28 @@ func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
 // It will be automatically added to the header of the request
 // Request could be canceled or timeout via given context
 func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed *Feed, err error) {
-	client := f.httpClient()
+	return f.ParseURLWithContextAndHeaders(feedURL, ctx, nil)
+}
+
+// ParseURLWithHeaders  use default context and add headers.
+func (f *Parser) ParseURLWithHeaders(feedURL string, headers HTTPHeaders) (feed *Feed, err error) {
+	return f.ParseURLWithContextAndHeaders(feedURL, context.Background(), headers)
+}
+
+// ParseURLWithContextAndHeaders include http headers in request
+func (f *Parser) ParseURLWithContextAndHeaders(feedURL string, ctx context.Context, headers HTTPHeaders) (feed *Feed, err error) {
+		client := f.httpClient()
 
 	req, err := http.NewRequestWithContext(ctx, "GET", feedURL, nil)
 	if err != nil {
 		return nil, err
 	}
+	req = req.WithContext(ctx)
+
+	for _, k := range headers {
+		req.Header.Set(k, headers[k])
+	}
+	
 	req.Header.Set("User-Agent", f.UserAgent)
 
 	if f.AuthConfig != nil && f.AuthConfig.Username != "" && f.AuthConfig.Password != "" {
