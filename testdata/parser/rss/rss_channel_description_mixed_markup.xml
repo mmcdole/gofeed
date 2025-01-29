@@ -1,0 +1,8 @@
+<!--
+Description: rss channel description - escaped markup
+-->
+<rss version="2.0">
+  <channel>
+  <description>&lt;p&gt;Feed &amp;lt;tag&amp;gt; Description&lt;/p&gt;</description>
+  </channel>
+</rss>

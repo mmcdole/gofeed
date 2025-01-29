@@ -1,0 +1,8 @@
+<!--
+Description: rss channel description 
+-->
+<rss version="2.0" xml:base="http://example.com/parent/">
+  <channel>
+  <description xml:base="/test/"><a href="test.html">Feed Description</a></description>
+  </channel>
+</rss>

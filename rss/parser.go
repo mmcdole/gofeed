@@ -2,12 +2,21 @@ package rss
 
 import (
 	"fmt"
+	"html"
 	"io"
 	"strings"
 
 	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
 	xpp "github.com/mmcdole/goxpp"
+)
+
+var (
+	// RSS elements which contain URIs
+	rssUriElements = map[string]bool{
+		"about":    true,
+		"resource": true,
+	}
 )
 
 // Parser is a RSS Parser
@@ -147,13 +156,13 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				}
 				extensions = ext
 			} else if name == "title" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Title = result
 			} else if name == "description" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -166,31 +175,31 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				rss.Link = result
 				links = append(links, result)
 			} else if name == "language" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Language = result
 			} else if name == "copyright" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Copyright = result
 			} else if name == "managingeditor" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.ManagingEditor = result
 			} else if name == "webmaster" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.WebMaster = result
 			} else if name == "pubdate" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -201,7 +210,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 					rss.PubDateParsed = &utcDate
 				}
 			} else if name == "lastbuilddate" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -212,25 +221,25 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 					rss.LastBuildDateParsed = &utcDate
 				}
 			} else if name == "generator" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Generator = result
 			} else if name == "docs" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.Docs = result
 			} else if name == "ttl" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				rss.TTL = result
 			} else if name == "rating" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -344,13 +353,13 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				}
 				item.Extensions = ext
 			} else if name == "title" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Title = result
 			} else if name == "description" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -359,7 +368,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				space := strings.TrimSpace(p.Space)
 				prefix := shared.PrefixForNamespace(space, p)
 				if prefix == "content" {
-					result, err := shared.ParseText(p)
+					result, err := parseText(p)
 					if err != nil {
 						return nil, err
 					}
@@ -373,19 +382,19 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				item.Link = result
 				links = append(links, result)
 			} else if name == "author" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Author = result
 			} else if name == "comments" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				item.Comments = result
 			} else if name == "pubdate" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -421,7 +430,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				}
 				categories = append(categories, result)
 			} else {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					continue
 				}
@@ -465,13 +474,14 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 }
 
 func (rp *Parser) parseLink(p *xpp.XMLPullParser) (url string, err error) {
-	href := p.Attribute("href")
-	url, err = shared.ParseText(p)
+	hrefBase := p.Attribute("href")
+	href, err := shared.XmlBaseResolveUrl(p.BaseStack.Top(), hrefBase)
+	url, err = parseText(p)
 	if err != nil {
 		return
 	}
-	if url == "" && href != "" {
-		url = href
+	if url == "" && hrefBase != "" {
+		url = href.String()
 	}
 	return url, err
 }
@@ -484,7 +494,7 @@ func (rp *Parser) parseSource(p *xpp.XMLPullParser) (source *Source, err error) 
 	source = &Source{}
 	source.URL = p.Attribute("url")
 
-	result, err := shared.ParseText(p)
+	result, err := parseText(p)
 	if err != nil {
 		return source, err
 	}
@@ -542,37 +552,37 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 			name := strings.ToLower(p.Name)
 
 			if name == "url" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.URL = result
 			} else if name == "title" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.Title = result
 			} else if name == "link" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.Link = result
 			} else if name == "width" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.Width = result
 			} else if name == "height" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				image.Height = result
 			} else if name == "description" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -598,7 +608,7 @@ func (rp *Parser) parseGUID(p *xpp.XMLPullParser) (guid *GUID, err error) {
 	guid = &GUID{}
 	guid.IsPermalink = p.Attribute("isPermalink")
 
-	result, err := shared.ParseText(p)
+	result, err := parseText(p)
 	if err != nil {
 		return
 	}
@@ -619,7 +629,7 @@ func (rp *Parser) parseCategory(p *xpp.XMLPullParser) (cat *Category, err error)
 	cat = &Category{}
 	cat.Domain = p.Attribute("domain")
 
-	result, err := shared.ParseText(p)
+	result, err := parseText(p)
 	if err != nil {
 		return nil, err
 	}
@@ -653,25 +663,25 @@ func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
 			name := strings.ToLower(p.Name)
 
 			if name == "title" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				ti.Title = result
 			} else if name == "description" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				ti.Description = result
 			} else if name == "name" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
 				ti.Name = result
 			} else if name == "link" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -709,7 +719,7 @@ func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
 		if tok == xpp.StartTag {
 			name := strings.ToLower(p.Name)
 			if name == "hour" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -747,7 +757,7 @@ func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 		if tok == xpp.StartTag {
 			name := strings.ToLower(p.Name)
 			if name == "day" {
-				result, err := shared.ParseText(p)
+				result, err := parseText(p)
 				if err != nil {
 					return nil, err
 				}
@@ -800,4 +810,49 @@ func (rp *Parser) parseVersion(p *xpp.XMLPullParser) (ver string) {
 		}
 	}
 	return
+}
+
+// parseText is a helper function for parsing the text
+// from the current element of the XMLPullParser.
+// This function can handle parsing naked XML text from
+// an element.
+func parseText(p *xpp.XMLPullParser) (string, error) {
+	var text struct {
+		Type     string `xml:"type,attr"`
+		InnerXML string `xml:",innerxml"`
+	}
+
+	base := p.BaseStack.Top()
+	err := p.DecodeElement(&text)
+	if err != nil {
+		return "", err
+	}
+
+	result := text.InnerXML
+	result = strings.TrimSpace(result)
+
+	// attempt to interpret text as HTML so that any URIs can be resolved to
+	// xml:base
+	if strings.Contains(result, shared.CDATA_START) {
+		result = shared.StripCDATA(result)
+		result, _ = shared.ResolveHTML(base, result)
+		return result, nil
+	} else {
+		result, err = shared.DecodeEntities(result)
+		if err == nil {
+			result, _ = shared.ResolveHTML(base, result)
+			result = html.EscapeString(result)
+		}
+	}
+
+	// resolve relative URIs in URI-containing elements according to xml:base
+	name := strings.ToLower(p.Name)
+	if rssUriElements[name] {
+		resolved, err := shared.XmlBaseResolveUrl(base, result)
+		if resolved != nil && err == nil {
+			result = resolved.String()
+		}
+	}
+
+	return shared.DecodeEntities(result)
 }
