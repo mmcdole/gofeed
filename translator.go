@@ -38,6 +38,7 @@ func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
 	}
 
 	result := &Feed{}
+	result.originalFeed = rss
 	result.Title = t.translateFeedTitle(rss)
 	result.Description = t.translateFeedDescription(rss)
 	result.Link = t.translateFeedLink(rss)
@@ -543,6 +544,7 @@ func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
 	}
 
 	result := &Feed{}
+	result.originalFeed = atom
 	result.Title = t.translateFeedTitle(atom)
 	result.Description = t.translateFeedDescription(atom)
 	result.Link = t.translateFeedLink(atom)
@@ -871,6 +873,7 @@ func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
 	}
 
 	result := &Feed{}
+	result.originalFeed = json
 	result.FeedVersion = json.Version
 	result.Title = t.translateFeedTitle(json)
 	result.Link = t.translateFeedLink(json)
