@@ -1,0 +1,13 @@
+{
+    "entries": [
+        {
+            "links": [
+                {
+                    "rel": "alternate",
+                    "href": "http://example.org"
+                }
+            ]
+        }
+    ],
+    "version": "1.0"
+}
