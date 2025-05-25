@@ -24,7 +24,6 @@ type HTTPError struct {
 	Status     string
 }
 
-// Error returns the string representation of the HTTP error.
 func (err HTTPError) Error() string {
 	return fmt.Sprintf("http error: %s", err.Status)
 }
@@ -125,7 +124,8 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 
 	if resp != nil {
 		defer func() {
-			if ce := resp.Body.Close(); ce != nil && err == nil {
+			ce := resp.Body.Close()
+			if ce != nil {
 				err = ce
 			}
 		}()

@@ -38,7 +38,6 @@ type Feed struct {
 	FeedVersion     string                   `json:"feedVersion"`
 }
 
-// String returns a JSON representation of the Feed for debugging purposes.
 func (f Feed) String() string {
 	json, _ := json.MarshalIndent(f, "", "    ")
 	return string(json)
@@ -98,19 +97,9 @@ func (f Feed) Len() int {
 // Less compares PublishedParsed of Items[i], Items[k]
 // and returns true if Items[i] is less than Items[k].
 func (f Feed) Less(i, k int) bool {
-	iParsed := f.Items[i].PublishedParsed
-	kParsed := f.Items[k].PublishedParsed
-	
-	if iParsed == nil && kParsed == nil {
-		return false
-	}
-	if iParsed == nil {
-		return true
-	}
-	if kParsed == nil {
-		return false
-	}
-	return iParsed.Before(*kParsed)
+	return f.Items[i].PublishedParsed.Before(
+		*f.Items[k].PublishedParsed,
+	)
 }
 
 // Swap swaps Items[i] and Items[k].

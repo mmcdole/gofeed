@@ -7,6 +7,9 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
+var (
+	j = jsoniter.ConfigCompatibleWithStandardLibrary
+)
 
 // Parser is an JSON Feed Parser
 type Parser struct{}
@@ -18,7 +21,6 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	buffer := new(bytes.Buffer)
 	buffer.ReadFrom(feed)
 
-	j := jsoniter.ConfigCompatibleWithStandardLibrary
 	err := j.Unmarshal(buffer.Bytes(), jsonFeed)
 	if err != nil {
 		return nil, err
