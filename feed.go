@@ -38,6 +38,7 @@ type Feed struct {
 	FeedVersion     string                   `json:"feedVersion"`
 }
 
+// String returns a JSON representation of the Feed for debugging purposes.
 func (f Feed) String() string {
 	json, _ := json.MarshalIndent(f, "", "    ")
 	return string(json)
