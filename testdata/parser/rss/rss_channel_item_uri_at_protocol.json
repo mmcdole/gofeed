@@ -1,0 +1,19 @@
+{
+    "title": "Test Feed",
+    "link": "http://example.com",
+    "links": [
+        "http://example.com"
+    ],
+    "description": "Test Description",
+    "items": [
+        {
+            "title": "Test Item",
+            "link": "http://example.com/item",
+            "links": [
+                "http://example.com/item"
+            ],
+            "description": "Test item description"
+        }
+    ],
+    "version": "2.0"
+}

@@ -1,0 +1,15 @@
+<!--
+Description: rss item with AT Protocol URI that should not fail parsing
+-->
+<rss version="2.0">
+  <channel>
+    <title>Test Feed</title>
+    <description>Test Description</description>
+    <link>http://example.com</link>
+    <item>
+      <title>Test Item</title>
+      <description>Test item description</description>
+      <link uri="at://did:plc:pzznkrzajsaqev3ffamg3jnr/app.bsky.feed.post/3ljkhwqun7l2b">http://example.com/item</link>
+    </item>
+  </channel>
+</rss>

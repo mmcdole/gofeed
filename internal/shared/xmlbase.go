@@ -85,12 +85,10 @@ func resolveAttrs(p *xpp.XMLPullParser) error {
 		lowerName := strings.ToLower(attr.Name.Local)
 		if uriAttrs[lowerName] {
 			absURL, err := XmlBaseResolveUrl(p.BaseStack.Top(), attr.Value)
-			if err != nil {
-				return err
-			}
-			if absURL != nil {
+			if err == nil && absURL != nil {
 				p.Attrs[i].Value = absURL.String()
 			}
+			// Continue processing even if URL resolution fails (e.g., for non-HTTP URIs like at://)
 		}
 	}
 	return nil
