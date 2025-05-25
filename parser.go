@@ -24,6 +24,7 @@ type HTTPError struct {
 	Status     string
 }
 
+// Error returns the string representation of the HTTP error.
 func (err HTTPError) Error() string {
 	return fmt.Sprintf("http error: %s", err.Status)
 }
