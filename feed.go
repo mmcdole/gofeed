@@ -97,9 +97,19 @@ func (f Feed) Len() int {
 // Less compares PublishedParsed of Items[i], Items[k]
 // and returns true if Items[i] is less than Items[k].
 func (f Feed) Less(i, k int) bool {
-	return f.Items[i].PublishedParsed.Before(
-		*f.Items[k].PublishedParsed,
-	)
+	iParsed := f.Items[i].PublishedParsed
+	kParsed := f.Items[k].PublishedParsed
+	
+	if iParsed == nil && kParsed == nil {
+		return false
+	}
+	if iParsed == nil {
+		return true
+	}
+	if kParsed == nil {
+		return false
+	}
+	return iParsed.Before(*kParsed)
 }
 
 // Swap swaps Items[i] and Items[k].
