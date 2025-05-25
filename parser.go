@@ -124,8 +124,7 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 
 	if resp != nil {
 		defer func() {
-			ce := resp.Body.Close()
-			if ce != nil {
+			if ce := resp.Body.Close(); ce != nil && err == nil {
 				err = ce
 			}
 		}()
