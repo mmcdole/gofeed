@@ -257,8 +257,9 @@ func (t *DefaultRSSTranslator) translateFeedGenerator(rss *rss.Feed) (generator 
 }
 
 func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categories []string) {
-	cats := []string{}
+	var cats []string
 	if rss.Categories != nil {
+		cats = make([]string, 0, len(rss.Categories))
 		for _, c := range rss.Categories {
 			cats = append(cats, c.Value)
 		}
@@ -290,7 +291,7 @@ func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categorie
 }
 
 func (t *DefaultRSSTranslator) translateFeedItems(rss *rss.Feed) (items []*Item) {
-	items = []*Item{}
+	items = make([]*Item, 0, len(rss.Items))
 	for _, i := range rss.Items {
 		items = append(items, t.translateFeedItem(i))
 	}
@@ -457,8 +458,9 @@ func firstImageFromHtmlDocument(document string) *Image {
 }
 
 func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categories []string) {
-	cats := []string{}
+	var cats []string
 	if rssItem.Categories != nil {
+		cats = make([]string, 0, len(rssItem.Categories))
 		for _, c := range rssItem.Categories {
 			cats = append(cats, c.Value)
 		}
@@ -639,7 +641,7 @@ func (t *DefaultAtomTranslator) translateFeedAuthor(atom *atom.Feed) (author *Pe
 
 func (t *DefaultAtomTranslator) translateFeedAuthors(atom *atom.Feed) (authors []*Person) {
 	if atom.Authors != nil {
-		authors = []*Person{}
+		authors = make([]*Person, 0, len(atom.Authors))
 
 		for _, a := range atom.Authors {
 			authors = append(authors, &Person{
@@ -691,7 +693,7 @@ func (t *DefaultAtomTranslator) translateFeedGenerator(atom *atom.Feed) (generat
 
 func (t *DefaultAtomTranslator) translateFeedCategories(atom *atom.Feed) (categories []string) {
 	if atom.Categories != nil {
-		categories = []string{}
+		categories = make([]string, 0, len(atom.Categories))
 		for _, c := range atom.Categories {
 			if c.Label != "" {
 				categories = append(categories, c.Label)
@@ -704,7 +706,7 @@ func (t *DefaultAtomTranslator) translateFeedCategories(atom *atom.Feed) (catego
 }
 
 func (t *DefaultAtomTranslator) translateFeedItems(atom *atom.Feed) (items []*Item) {
-	items = []*Item{}
+	items = make([]*Item, 0, len(atom.Entries))
 	for _, entry := range atom.Entries {
 		items = append(items, t.translateFeedItem(entry))
 	}
@@ -779,7 +781,7 @@ func (t *DefaultAtomTranslator) translateItemAuthor(entry *atom.Entry) (author *
 
 func (t *DefaultAtomTranslator) translateItemAuthors(entry *atom.Entry) (authors []*Person) {
 	if entry.Authors != nil {
-		authors = []*Person{}
+		authors = make([]*Person, 0, len(entry.Authors))
 		for _, a := range entry.Authors {
 			authors = append(authors, &Person{
 				Name:  a.Name,
@@ -800,7 +802,7 @@ func (t *DefaultAtomTranslator) translateItemImage(entry *atom.Entry) (image *Im
 
 func (t *DefaultAtomTranslator) translateItemCategories(entry *atom.Entry) (categories []string) {
 	if entry.Categories != nil {
-		categories = []string{}
+		categories = make([]string, 0, len(entry.Categories))
 		for _, c := range entry.Categories {
 			if c.Label != "" {
 				categories = append(categories, c.Label)
@@ -814,7 +816,7 @@ func (t *DefaultAtomTranslator) translateItemCategories(entry *atom.Entry) (cate
 
 func (t *DefaultAtomTranslator) translateItemEnclosures(entry *atom.Entry) (enclosures []*Enclosure) {
 	if entry.Links != nil {
-		enclosures = []*Enclosure{}
+		enclosures = make([]*Enclosure, 0, len(entry.Links))
 		for _, e := range entry.Links {
 			if e.Rel == "enclosure" {
 				enclosure := &Enclosure{}
@@ -1001,7 +1003,7 @@ func (t *DefaultJSONTranslator) translateFeedAuthor(json *json.Feed) (author *Pe
 
 func (t *DefaultJSONTranslator) translateFeedAuthors(json *json.Feed) (authors []*Person) {
 	if json.Authors != nil {
-		authors = []*Person{}
+		authors = make([]*Person, 0, len(json.Authors))
 		for _, a := range json.Authors {
 			name, address := shared.ParseNameAddress(a.Name)
 			author := &Person{}
@@ -1034,7 +1036,7 @@ func (t *DefaultJSONTranslator) translateFeedImage(json *json.Feed) (image *Imag
 }
 
 func (t *DefaultJSONTranslator) translateFeedItems(json *json.Feed) (items []*Item) {
-	items = []*Item{}
+	items = make([]*Item, 0, len(json.Items))
 	for _, i := range json.Items {
 		items = append(items, t.translateFeedItem(i))
 	}
@@ -1126,7 +1128,7 @@ func (t *DefaultJSONTranslator) translateItemAuthor(jsonItem *json.Item) (author
 
 func (t *DefaultJSONTranslator) translateItemAuthors(jsonItem *json.Item) (authors []*Person) {
 	if jsonItem.Authors != nil {
-		authors = []*Person{}
+		authors = make([]*Person, 0, len(jsonItem.Authors))
 		for _, a := range jsonItem.Authors {
 			name, address := shared.ParseNameAddress(a.Name)
 			author := &Person{}
