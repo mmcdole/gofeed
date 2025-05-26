@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/mmcdole/gofeed/extensions"
+	"github.com/mmcdole/gofeed/v2/extensions"
 )
 
 // Feed is an Atom Feed
