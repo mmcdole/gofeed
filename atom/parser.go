@@ -5,7 +5,6 @@ import (
 	"io"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
 	ext "github.com/mmcdole/gofeed/v2/extensions"
 	"github.com/mmcdole/gofeed/v2/internal/shared"
 	xpp "github.com/mmcdole/goxpp"
@@ -786,18 +785,6 @@ func (ap *Parser) parseVersion(p *xpp.XMLPullParser) string {
 	return ""
 }
 
-func (ap *Parser) stripWrappingDiv(content string) (result string) {
-	result = content
-	r := strings.NewReader(result)
-	doc, err := goquery.NewDocumentFromReader(r)
-	if err == nil {
-		root := doc.Find("body").Children()
-		if root.Is("div") && root.Siblings().Size() == 0 {
-			html, err := root.Unwrap().Html()
-			if err == nil {
-				result = html
-			}
-		}
-	}
-	return
+func (ap *Parser) stripWrappingDiv(content string) string {
+	return shared.StripWrappingDiv(content)
 }
