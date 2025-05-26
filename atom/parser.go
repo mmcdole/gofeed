@@ -25,6 +25,11 @@ var (
 // Parser is an Atom Parser
 type Parser struct{}
 
+// NewParser creates a new Atom parser
+func NewParser() *Parser {
+	return &Parser{}
+}
+
 // Parse parses an xml feed into an atom.Feed
 func (ap *Parser) Parse(feed io.Reader, opts *shared.ParseOptions) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
@@ -154,12 +159,6 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser, opts *shared.ParseOptions) (*F
 				}
 				categories = append(categories, result)
 			} else if name == "entry" {
-				// Check if we've reached the MaxItems limit
-				if opts != nil && opts.MaxItems > 0 && len(atom.Entries) >= opts.MaxItems {
-					p.Skip() // Skip this entry
-					continue
-				}
-				
 				result, err := ap.parseEntry(p)
 				if err != nil {
 					return nil, err

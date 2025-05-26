@@ -13,6 +13,11 @@ import (
 // Parser is a RSS Parser
 type Parser struct{}
 
+// NewParser creates a new RSS parser
+func NewParser() *Parser {
+	return &Parser{}
+}
+
 // Parse parses an xml feed into an rss.Feed
 func (rp *Parser) Parse(feed io.Reader, opts *shared.ParseOptions) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
@@ -66,12 +71,6 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser, opts *shared.ParseOptions) (*F
 					return nil, err
 				}
 			} else if name == "item" {
-				// Check if we've reached the MaxItems limit
-				if opts != nil && opts.MaxItems > 0 && len(items) >= opts.MaxItems {
-					p.Skip() // Skip this item
-					continue
-				}
-				
 				item, err := rp.parseItem(p)
 				if err != nil {
 					return nil, err
@@ -254,12 +253,6 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser, opts *shared.ParseOptions) 
 				}
 				rss.SkipDays = result
 			} else if name == "item" {
-				// Check if we've reached the MaxItems limit
-				if opts != nil && opts.MaxItems > 0 && len(rss.Items) >= opts.MaxItems {
-					p.Skip() // Skip this item
-					continue
-				}
-				
 				result, err := rp.parseItem(p)
 				if err != nil {
 					return nil, err

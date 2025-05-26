@@ -28,7 +28,7 @@ func TestParser_Parse(t *testing.T) {
 		f, _ := os.ReadFile(ff)
 
 		// Parse actual feed
-		fp := &atom.Parser{}
+		fp := atom.NewParser()
 		actual, _ := fp.Parse(bytes.NewReader(f), nil)
 
 		// Get json encoded expected feed result

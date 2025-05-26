@@ -30,7 +30,7 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 
 		// Parse actual feed
 		translator := &gofeed.DefaultRSSTranslator{}
-		fp := &rss.Parser{}
+		fp := rss.NewParser()
 		rssFeed, _ := fp.Parse(f, nil)
 		actual, _ := translator.Translate(rssFeed, nil)
 
@@ -72,7 +72,7 @@ func TestDefaultAtomTranslator_Translate(t *testing.T) {
 
 		// Parse actual feed
 		translator := &gofeed.DefaultAtomTranslator{}
-		fp := &atom.Parser{}
+		fp := atom.NewParser()
 		atomFeed, _ := fp.Parse(f, nil)
 		actual, _ := translator.Translate(atomFeed, nil)
 
@@ -118,7 +118,7 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 
 		// Parse actual feed
 		translator := &gofeed.DefaultJSONTranslator{}
-		fp := json.Parser{}
+		fp := json.NewParser()
 		jsonFeed, _ := fp.Parse(f, nil)
 		actual, _ := translator.Translate(jsonFeed, nil)
 
@@ -151,7 +151,7 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 
 	// Parse actual feed
 	translator := &gofeed.DefaultJSONTranslator{}
-	fp := json.Parser{}
+	fp := json.NewParser()
 	feed, _ := fp.Parse(bytes.NewReader(f), nil)
 	actual, _ := translator.Translate(feed, nil)
 

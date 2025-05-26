@@ -16,9 +16,6 @@ type ParseOptions struct {
 	// Parsing behavior options
 	StrictnessOptions StrictnessOptions
 	
-	// Limit the number of items parsed from the feed
-	MaxItems int
-	
 	// HTTP request configuration for ParseURL
 	RequestOptions RequestOptions
 }
@@ -50,7 +47,6 @@ func DefaultParseOptions() *ParseOptions {
 			AllowMissingRequired:  true,
 			AllowUnescapedMarkup:  true,
 		},
-		MaxItems: 0, // No limit
 		RequestOptions: RequestOptions{
 			UserAgent: "gofeed/2.0 (+https://github.com/mmcdole/gofeed)",
 			Timeout:   60 * time.Second,

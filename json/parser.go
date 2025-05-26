@@ -12,6 +12,11 @@ import (
 // Parser is an JSON Feed Parser
 type Parser struct{}
 
+// NewParser creates a new JSON Feed parser
+func NewParser() *Parser {
+	return &Parser{}
+}
+
 // Parse parses an json feed into an json.Feed
 func (ap *Parser) Parse(feed io.Reader, opts *shared.ParseOptions) (*Feed, error) {
 	jsonFeed := &Feed{}
@@ -22,11 +27,6 @@ func (ap *Parser) Parse(feed io.Reader, opts *shared.ParseOptions) (*Feed, error
 	err := json.Unmarshal(buffer.Bytes(), jsonFeed)
 	if err != nil {
 		return nil, err
-	}
-	
-	// Apply MaxItems limit after unmarshaling
-	if opts != nil && opts.MaxItems > 0 && len(jsonFeed.Items) > opts.MaxItems {
-		jsonFeed.Items = jsonFeed.Items[:opts.MaxItems]
 	}
 	
 	return jsonFeed, nil
