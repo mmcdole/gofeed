@@ -1,0 +1,31 @@
+{
+  "items": [
+    {
+      "extensions": {
+        "rss": {
+          "customField": [
+            {
+              "name": "customField",
+              "value": "Custom Value",
+              "attrs": {
+                "id": "123",
+                "type": "special"
+              }
+            }
+          ],
+          "rating": [
+            {
+              "name": "rating",
+              "value": "8",
+              "attrs": {
+                "scale": "1-10",
+                "reviewer": "John"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0"
+}

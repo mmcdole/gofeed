@@ -1,0 +1,13 @@
+<!--
+Description: rss item with both custom elements and namespaced extensions
+-->
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <item>
+      <title>Test Item</title>
+      <customTag>Custom Content</customTag>
+      <media:content url="http://example.com/media.jpg" type="image/jpeg" />
+      <internalId>12345</internalId>
+    </item>
+  </channel>
+</rss>

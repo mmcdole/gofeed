@@ -277,10 +277,41 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 					return nil, err
 				}
 				rss.TextInput = result
-			} else {
-				// Skip element as it isn't an extension and not
-				// part of the spec
+			} else if name == "items" {
+				// Skip RDF items element - it's a structural element
+				// that contains item references, not actual content
 				p.Skip()
+			} else {
+				// For non-standard RSS channel elements, add them to extensions
+				// under a special "rss" namespace prefix
+				customExt := ext.Extension{
+					Name:  p.Name,
+					Attrs: make(map[string]string),
+				}
+				
+				// Copy attributes
+				for _, attr := range p.Attrs {
+					customExt.Attrs[attr.Name.Local] = attr.Value
+				}
+				
+				// Parse the text content
+				result, err := shared.ParseText(p)
+				if err != nil {
+					p.Skip()
+					continue
+				}
+				customExt.Value = result
+				
+				// Initialize extensions map if needed
+				if extensions == nil {
+					extensions = make(ext.Extensions)
+				}
+				if extensions["rss"] == nil {
+					extensions["rss"] = make(map[string][]ext.Extension)
+				}
+				
+				// Add to extensions
+				extensions["rss"][p.Name] = append(extensions["rss"][p.Name], customExt)
 			}
 		}
 	}
@@ -421,14 +452,35 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				}
 				categories = append(categories, result)
 			} else {
+				// For non-standard RSS elements, add them to extensions
+				// under a special "rss" namespace prefix
+				customExt := ext.Extension{
+					Name:  p.Name,
+					Attrs: make(map[string]string),
+				}
+				
+				// Copy attributes
+				for _, attr := range p.Attrs {
+					customExt.Attrs[attr.Name.Local] = attr.Value
+				}
+				
+				// Parse the text content
 				result, err := shared.ParseText(p)
 				if err != nil {
 					continue
 				}
-				if item.Custom == nil {
-					item.Custom = make(map[string]string, 0)
+				customExt.Value = result
+				
+				// Initialize extensions map if needed
+				if extensions == nil {
+					extensions = make(ext.Extensions)
 				}
-				item.Custom[p.Name] = result
+				if extensions["rss"] == nil {
+					extensions["rss"] = make(map[string][]ext.Extension)
+				}
+				
+				// Add to extensions
+				extensions["rss"][p.Name] = append(extensions["rss"][p.Name], customExt)
 			}
 		}
 	}

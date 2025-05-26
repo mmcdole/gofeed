@@ -1,0 +1,11 @@
+<!--
+Description: rss item with custom elements that have attributes
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <customField id="123" type="special">Custom Value</customField>
+      <rating scale="1-10" reviewer="John">8</rating>
+    </item>
+  </channel>
+</rss>
