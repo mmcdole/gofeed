@@ -34,7 +34,7 @@ func TestParser_Parse(t *testing.T) {
 		f, _ := os.ReadFile(ff)
 
 		// Parse actual feed
-		fp := &jsonParser.Parser{}
+		fp := jsonParser.NewParser()
 		actual, _ := fp.Parse(bytes.NewReader(f), nil)
 
 		// Get json encoded expected feed result
@@ -64,7 +64,7 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 	f, _ := os.ReadFile(ff)
 
 	// Parse actual feed
-	fp := &jsonParser.Parser{}
+	fp := jsonParser.NewParser()
 	_, err := fp.Parse(bytes.NewReader(f), nil)
 	assert.Contains(t, err.Error(), "unexpected end of JSON input")
 

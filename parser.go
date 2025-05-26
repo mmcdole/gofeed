@@ -52,9 +52,9 @@ type Auth struct {
 // NewParser creates a universal feed parser.
 func NewParser() *Parser {
 	fp := Parser{
-		rp:        &rss.Parser{},
-		ap:        &atom.Parser{},
-		jp:        &json.Parser{},
+		rp:        rss.NewParser(),
+		ap:        atom.NewParser(),
+		jp:        json.NewParser(),
 	}
 	return &fp
 }
