@@ -1,7 +1,7 @@
 package gofeed
 
 import (
-	ext "github.com/mmcdole/gofeed/extensions"
+	ext "github.com/mmcdole/gofeed/v2/extensions"
 )
 
 // GetExtension retrieves extension values by namespace and element name.

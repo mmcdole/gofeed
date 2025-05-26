@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mmcdole/gofeed"
+	"github.com/mmcdole/gofeed/v2"
 	"github.com/stretchr/testify/assert"
 )
 

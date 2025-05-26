@@ -3,7 +3,7 @@ package gofeed
 import (
 	"testing"
 
-	ext "github.com/mmcdole/gofeed/extensions"
+	ext "github.com/mmcdole/gofeed/v2/extensions"
 	"github.com/stretchr/testify/assert"
 )
 

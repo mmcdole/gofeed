@@ -2,9 +2,8 @@ package json
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
-
-	jsoniter "github.com/json-iterator/go"
 )
 
 
@@ -18,8 +17,7 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	buffer := new(bytes.Buffer)
 	buffer.ReadFrom(feed)
 
-	j := jsoniter.ConfigCompatibleWithStandardLibrary
-	err := j.Unmarshal(buffer.Bytes(), jsonFeed)
+	err := json.Unmarshal(buffer.Bytes(), jsonFeed)
 	if err != nil {
 		return nil, err
 	}

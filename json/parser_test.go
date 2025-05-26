@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	jsonParser "github.com/mmcdole/gofeed/json"
+	jsonParser "github.com/mmcdole/gofeed/v2/json"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -66,7 +66,7 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 	// Parse actual feed
 	fp := &jsonParser.Parser{}
 	_, err := fp.Parse(bytes.NewReader(f))
-	assert.Contains(t, err.Error(), "expect }")
+	assert.Contains(t, err.Error(), "unexpected end of JSON input")
 
 	name = "version_json_10"
 	fmt.Printf("Testing %s... ", name)
