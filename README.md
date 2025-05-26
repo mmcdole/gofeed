@@ -11,6 +11,7 @@
 
 ## Table of Contents
 - [Features](#features)
+- [Installation](#installation)
 - [Overview](#overview)
 - [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
@@ -42,6 +43,28 @@ For added convenience, gofeed includes native support for parsing certain well-k
 
 - Dublin Core: Accessible via `Feed.DublinCoreExt` and `Item.DublinCoreExt`
 - Apple iTunes: Accessible via `Feed.ITunesExt` and `Item.ITunesExt`
+
+## Installation
+
+```bash
+go get github.com/mmcdole/gofeed/v2
+```
+
+Import in your code:
+
+```go
+import "github.com/mmcdole/gofeed/v2"
+```
+
+For feed-specific parsers:
+
+```go
+import (
+    "github.com/mmcdole/gofeed/v2/rss"
+    "github.com/mmcdole/gofeed/v2/atom" 
+    "github.com/mmcdole/gofeed/v2/json"
+)
+```
   
 ## Overview
 
@@ -66,6 +89,11 @@ Here's how to parse feeds using `gofeed.Parser`:
 
 #### From a URL
 ```go
+import (
+    "fmt"
+    "github.com/mmcdole/gofeed/v2"
+)
+
 fp := gofeed.NewParser()
 feed, _ := fp.ParseURL("http://feeds.twit.tv/twit.xml")
 fmt.Println(feed.Title)
@@ -120,6 +148,11 @@ If you have a usage scenario that requires a specialized parser:
 #### RSS Feed
 
 ```go
+import (
+    "strings"
+    "github.com/mmcdole/gofeed/v2/rss"
+)
+
 feedData := `<rss version="2.0">
 <channel>
 <webMaster>example@site.com (Example Name)</webMaster>
