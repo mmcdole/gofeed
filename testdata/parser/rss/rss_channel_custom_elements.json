@@ -1,0 +1,32 @@
+{
+  "title": "Test Feed",
+  "items": [],
+  "extensions": {
+    "rss": {
+      "customFeedId": [
+        {
+          "name": "customFeedId",
+          "value": "feed-123",
+          "attrs": {}
+        }
+      ],
+      "updateFrequency": [
+        {
+          "name": "updateFrequency",
+          "value": "hourly",
+          "attrs": {}
+        }
+      ],
+      "customMetadata": [
+        {
+          "name": "customMetadata",
+          "value": "Some metadata",
+          "attrs": {
+            "type": "internal"
+          }
+        }
+      ]
+    }
+  },
+  "version": "2.0"
+}

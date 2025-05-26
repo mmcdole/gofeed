@@ -1,0 +1,15 @@
+<!--
+Description: rss item with custom elements containing CDATA
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <htmlContent><![CDATA[<div>Some <b>HTML</b> content</div>]]></htmlContent>
+      <script><![CDATA[
+        function test() {
+          return "Hello & <World>";
+        }
+      ]]></script>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "extensions": {
+        "rss": {
+          "htmlContent": [
+            {
+              "name": "htmlContent",
+              "value": "<div>Some <b>HTML</b> content</div>",
+              "attrs": {}
+            }
+          ],
+          "script": [
+            {
+              "name": "script",
+              "value": "\n        function test() {\n          return \"Hello & <World>\";\n        }\n      ",
+              "attrs": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0"
+}

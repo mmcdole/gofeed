@@ -1,0 +1,14 @@
+<!--
+Description: rss item with multiple custom elements of the same name
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <tag>First Tag</tag>
+      <tag>Second Tag</tag>
+      <tag>Third Tag</tag>
+      <customId type="primary">123</customId>
+      <customId type="secondary">456</customId>
+    </item>
+  </channel>
+</rss>

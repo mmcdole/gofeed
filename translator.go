@@ -81,7 +81,6 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.DublinCoreExt = rssItem.DublinCoreExt
 	item.ITunesExt = rssItem.ITunesExt
 	item.Extensions = rssItem.Extensions
-	item.Custom = rssItem.Custom
 	return
 }
 

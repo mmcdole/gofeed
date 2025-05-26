@@ -1,9 +1,23 @@
 {
   "items": [
     {
-      "custom": {
-        "apcategory": "s",
-        "test": "test"
+      "extensions": {
+        "rss": {
+          "apcategory": [
+            {
+              "name": "apcategory",
+              "value": "s",
+              "attrs": {}
+            }
+          ],
+          "test": [
+            {
+              "name": "test",
+              "value": "test",
+              "attrs": {}
+            }
+          ]
+        }
       }
     }
   ],

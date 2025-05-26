@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "extensions": {
+        "rss": {
+          "tag": [
+            {
+              "name": "tag",
+              "value": "First Tag",
+              "attrs": {}
+            },
+            {
+              "name": "tag",
+              "value": "Second Tag",
+              "attrs": {}
+            },
+            {
+              "name": "tag",
+              "value": "Third Tag",
+              "attrs": {}
+            }
+          ],
+          "customId": [
+            {
+              "name": "customId",
+              "value": "123",
+              "attrs": {
+                "type": "primary"
+              }
+            },
+            {
+              "name": "customId",
+              "value": "456",
+              "attrs": {
+                "type": "secondary"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0"
+}

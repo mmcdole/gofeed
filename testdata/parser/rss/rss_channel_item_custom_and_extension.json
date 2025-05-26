@@ -1,0 +1,39 @@
+{
+  "items": [
+    {
+      "title": "Test Item",
+      "extensions": {
+        "media": {
+          "content": [
+            {
+              "name": "content",
+              "value": "",
+              "attrs": {
+                "url": "http://example.com/media.jpg",
+                "type": "image/jpeg"
+              },
+              "children": {}
+            }
+          ]
+        },
+        "rss": {
+          "customTag": [
+            {
+              "name": "customTag",
+              "value": "Custom Content",
+              "attrs": {}
+            }
+          ],
+          "internalId": [
+            {
+              "name": "internalId",
+              "value": "12345",
+              "attrs": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0"
+}

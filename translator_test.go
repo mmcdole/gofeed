@@ -174,7 +174,6 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 	assert.Equal(t, (*ext.DublinCoreExtension)(nil), actual.DublinCoreExt)
 	assert.Equal(t, (*ext.ITunesFeedExtension)(nil), actual.ITunesExt)
 	assert.Equal(t, ext.Extensions(nil), actual.Extensions)
-	assert.Equal(t, map[string]string(nil), actual.Custom)
 	assert.Equal(t, "json", actual.FeedType)
 	assert.Equal(t, "1.0", actual.FeedVersion)
 	assert.Equal(t, "title", actual.Items[0].Title)
@@ -198,7 +197,6 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 	assert.Equal(t, (*ext.DublinCoreExtension)(nil), actual.Items[0].DublinCoreExt)
 	assert.Equal(t, (*ext.ITunesItemExtension)(nil), actual.Items[0].ITunesExt)
 	assert.Equal(t, ext.Extensions(nil), actual.Items[0].Extensions)
-	assert.Equal(t, map[string]string(nil), actual.Items[0].Custom)
 
 	name = "sample2"
 	fmt.Printf("Testing %s... ", name)
