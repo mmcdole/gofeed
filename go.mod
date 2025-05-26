@@ -1,6 +1,7 @@
 module github.com/mmcdole/gofeed/v2
 
-go 1.23
+go 1.21
+
 
 require (
 	github.com/mmcdole/goxpp v1.1.1-0.20240225020742-a0c311522b23
