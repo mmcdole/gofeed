@@ -29,7 +29,7 @@ func TestParser_Parse(t *testing.T) {
 
 		// Parse actual feed
 		fp := &atom.Parser{}
-		actual, _ := fp.Parse(bytes.NewReader(f))
+		actual, _ := fp.Parse(bytes.NewReader(f), nil)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/atom/%s.json", name)

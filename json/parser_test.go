@@ -35,7 +35,7 @@ func TestParser_Parse(t *testing.T) {
 
 		// Parse actual feed
 		fp := &jsonParser.Parser{}
-		actual, _ := fp.Parse(bytes.NewReader(f))
+		actual, _ := fp.Parse(bytes.NewReader(f), nil)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/parser/json/%s_expected.json", name)
@@ -65,7 +65,7 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 
 	// Parse actual feed
 	fp := &jsonParser.Parser{}
-	_, err := fp.Parse(bytes.NewReader(f))
+	_, err := fp.Parse(bytes.NewReader(f), nil)
 	assert.Contains(t, err.Error(), "unexpected end of JSON input")
 
 	name = "version_json_10"
@@ -77,7 +77,7 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 	f, _ = os.ReadFile(ff)
 
 	// Parse actual feed
-	actual, _ := fp.Parse(bytes.NewReader(f))
+	actual, _ := fp.Parse(bytes.NewReader(f), nil)
 
 	assert.Equal(t, "1.0", actual.Version)
 	assert.Equal(t, "title", actual.Title)

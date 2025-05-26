@@ -44,14 +44,14 @@ func main() {
 		if strings.EqualFold(feedType, "rss") ||
 			strings.EqualFold(feedType, "r") {
 			p := rss.Parser{}
-			feed, err = p.Parse(strings.NewReader(fc))
+			feed, err = p.Parse(strings.NewReader(fc), nil)
 		} else if strings.EqualFold(feedType, "atom") ||
 			strings.EqualFold(feedType, "a") {
 			p := atom.Parser{}
-			feed, err = p.Parse(strings.NewReader(fc))
+			feed, err = p.Parse(strings.NewReader(fc), nil)
 		} else {
 			p := gofeed.NewParser()
-			feed, err = p.ParseString(fc)
+			feed, err = p.ParseString(fc, nil)
 		}
 
 		if err != nil {

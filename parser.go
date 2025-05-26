@@ -36,9 +36,6 @@ type Parser struct {
 	AtomTranslator Translator
 	RSSTranslator  Translator
 	JSONTranslator Translator
-	UserAgent      string
-	AuthConfig     *Auth
-	Client         *http.Client
 	rp             *rss.Parser
 	ap             *atom.Parser
 	jp             *json.Parser
@@ -58,7 +55,6 @@ func NewParser() *Parser {
 		rp:        &rss.Parser{},
 		ap:        &atom.Parser{},
 		jp:        &json.Parser{},
-		UserAgent: "Gofeed/1.0",
 	}
 	return &fp
 }
@@ -66,7 +62,11 @@ func NewParser() *Parser {
 // Parse parses a RSS or Atom or JSON feed into
 // the universal gofeed.Feed.  It takes an
 // io.Reader which should return the xml/json content.
-func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
+func (f *Parser) Parse(feed io.Reader, opts *ParseOptions) (*Feed, error) {
+	if opts == nil {
+		opts = DefaultParseOptions()
+	}
+	
 	// Wrap the feed io.Reader in a io.TeeReader
 	// so we can capture all the bytes read by the
 	// DetectFeedType function and construct a new
@@ -82,43 +82,50 @@ func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 
 	switch feedType {
 	case FeedTypeAtom:
-		return f.parseAtomFeed(r)
+		return f.parseAtomFeed(r, opts)
 	case FeedTypeRSS:
-		return f.parseRSSFeed(r)
+		return f.parseRSSFeed(r, opts)
 	case FeedTypeJSON:
-		return f.parseJSONFeed(r)
+		return f.parseJSONFeed(r, opts)
 	}
 
 	return nil, ErrFeedTypeNotDetected
 }
 
-// ParseURL fetches the contents of a given url and
-// attempts to parse the response into the universal feed type.
-func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
-	return f.ParseURLWithContext(feedURL, context.Background())
-}
+// ParseURL fetches the contents of a given url and attempts to parse
+// the response into the universal feed type. Context can be used to control
+// timeout and cancellation.
+func (f *Parser) ParseURL(ctx context.Context, feedURL string, opts *ParseOptions) (feed *Feed, err error) {
+	if opts == nil {
+		opts = DefaultParseOptions()
+	}
 
-// ParseURLWithContext fetches contents of a given url and
-// attempts to parse the response into the universal feed type.
-// You can instantiate the Auth structure with your Username and Password
-// to use the BasicAuth during the HTTP call.
-// It will be automatically added to the header of the request
-// Request could be canceled or timeout via given context
-func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed *Feed, err error) {
-	client := f.httpClient()
+	client := opts.RequestOptions.Client
+	if client == nil {
+		client = &http.Client{
+			Timeout: opts.RequestOptions.Timeout,
+		}
+	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", feedURL, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", f.UserAgent)
+	
+	// Set user agent
+	if opts.RequestOptions.UserAgent != "" {
+		req.Header.Set("User-Agent", opts.RequestOptions.UserAgent)
+	}
 
-	if f.AuthConfig != nil && f.AuthConfig.Username != "" && f.AuthConfig.Password != "" {
-		req.SetBasicAuth(f.AuthConfig.Username, f.AuthConfig.Password)
+	// TODO: Implement conditional request support (IfNoneMatch, IfModifiedSince)
+	// This will be implemented as part of issue #247
+
+	// Set auth if provided
+	if auth, ok := opts.RequestOptions.AuthConfig.(*Auth); ok && auth != nil && auth.Username != "" && auth.Password != "" {
+		req.SetBasicAuth(auth.Username, auth.Password)
 	}
 
 	resp, err := client.Do(req)
-
 	if err != nil {
 		return nil, err
 	}
@@ -138,38 +145,68 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 		}
 	}
 
-	return f.Parse(resp.Body)
+	// Parse the feed
+	return f.Parse(resp.Body, opts)
 }
 
 // ParseString parses a feed XML string and into the
 // universal feed type.
-func (f *Parser) ParseString(feed string) (*Feed, error) {
-	return f.Parse(strings.NewReader(feed))
+func (f *Parser) ParseString(feed string, opts *ParseOptions) (*Feed, error) {
+	return f.Parse(strings.NewReader(feed), opts)
 }
 
-func (f *Parser) parseAtomFeed(feed io.Reader) (*Feed, error) {
-	af, err := f.ap.Parse(feed)
+func (f *Parser) parseAtomFeed(feed io.Reader, opts *ParseOptions) (*Feed, error) {
+	af, err := f.ap.Parse(feed, opts)
 	if err != nil {
 		return nil, err
 	}
-	return f.atomTrans().Translate(af)
+	
+	result, err := f.atomTrans().Translate(af, opts)
+	if err != nil {
+		return nil, err
+	}
+	
+	if opts != nil && opts.KeepOriginalFeed {
+		result.OriginalFeed = af
+	}
+	
+	return result, nil
 }
 
-func (f *Parser) parseRSSFeed(feed io.Reader) (*Feed, error) {
-	rf, err := f.rp.Parse(feed)
+func (f *Parser) parseRSSFeed(feed io.Reader, opts *ParseOptions) (*Feed, error) {
+	rf, err := f.rp.Parse(feed, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	return f.rssTrans().Translate(rf)
-}
-
-func (f *Parser) parseJSONFeed(feed io.Reader) (*Feed, error) {
-	jf, err := f.jp.Parse(feed)
+	result, err := f.rssTrans().Translate(rf, opts)
 	if err != nil {
 		return nil, err
 	}
-	return f.jsonTrans().Translate(jf)
+	
+	if opts != nil && opts.KeepOriginalFeed {
+		result.OriginalFeed = rf
+	}
+	
+	return result, nil
+}
+
+func (f *Parser) parseJSONFeed(feed io.Reader, opts *ParseOptions) (*Feed, error) {
+	jf, err := f.jp.Parse(feed, opts)
+	if err != nil {
+		return nil, err
+	}
+	
+	result, err := f.jsonTrans().Translate(jf, opts)
+	if err != nil {
+		return nil, err
+	}
+	
+	if opts != nil && opts.KeepOriginalFeed {
+		result.OriginalFeed = jf
+	}
+	
+	return result, nil
 }
 
 func (f *Parser) atomTrans() Translator {
@@ -196,10 +233,3 @@ func (f *Parser) jsonTrans() Translator {
 	return f.JSONTranslator
 }
 
-func (f *Parser) httpClient() *http.Client {
-	if f.Client != nil {
-		return f.Client
-	}
-	f.Client = &http.Client{}
-	return f.Client
-}
