@@ -36,12 +36,26 @@ type Feed struct {
 	Items           []*Item                  `json:"items"`
 	FeedType        string                   `json:"feedType"`
 	FeedVersion     string                   `json:"feedVersion"`
+
+	originalFeed interface{}
 }
 
 // String returns a JSON representation of the Feed for debugging purposes.
 func (f Feed) String() string {
 	json, _ := json.MarshalIndent(f, "", "    ")
 	return string(json)
+}
+
+// OriginalFeed returns the source feed object if
+// this Feed was translated from an RSS, Atom, or
+// json feed type by the default translators, else
+// it returns null. This provides access to
+// feed-specific fields and features at
+// translation time, but the original feed data is
+// not preserved through a
+// serialization/deserialization cycle.
+func (f Feed) OriginalFeed() interface{} {
+	return f.originalFeed
 }
 
 // Item is the universal Item type that atom.Entry
