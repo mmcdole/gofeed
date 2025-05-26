@@ -283,7 +283,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				p.Skip()
 			} else {
 				// For non-standard RSS channel elements, add them to extensions
-				// under a special "rss" namespace prefix
+				// under a special "_custom" namespace prefix
 				customExt := ext.Extension{
 					Name:  p.Name,
 					Attrs: make(map[string]string),
@@ -306,12 +306,12 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				if extensions == nil {
 					extensions = make(ext.Extensions)
 				}
-				if extensions["rss"] == nil {
-					extensions["rss"] = make(map[string][]ext.Extension)
+				if extensions["_custom"] == nil {
+					extensions["_custom"] = make(map[string][]ext.Extension)
 				}
 				
 				// Add to extensions
-				extensions["rss"][p.Name] = append(extensions["rss"][p.Name], customExt)
+				extensions["_custom"][p.Name] = append(extensions["_custom"][p.Name], customExt)
 			}
 		}
 	}
@@ -453,7 +453,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				categories = append(categories, result)
 			} else {
 				// For non-standard RSS elements, add them to extensions
-				// under a special "rss" namespace prefix
+				// under a special "_custom" namespace prefix
 				customExt := ext.Extension{
 					Name:  p.Name,
 					Attrs: make(map[string]string),
@@ -475,12 +475,12 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				if extensions == nil {
 					extensions = make(ext.Extensions)
 				}
-				if extensions["rss"] == nil {
-					extensions["rss"] = make(map[string][]ext.Extension)
+				if extensions["_custom"] == nil {
+					extensions["_custom"] = make(map[string][]ext.Extension)
 				}
 				
 				// Add to extensions
-				extensions["rss"][p.Name] = append(extensions["rss"][p.Name], customExt)
+				extensions["_custom"][p.Name] = append(extensions["_custom"][p.Name], customExt)
 			}
 		}
 	}

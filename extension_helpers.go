@@ -56,9 +56,15 @@ func (i *Item) GetExtensionValue(namespace, element string) string {
 	return exts[0].Value
 }
 
-// GetCustomValue retrieves the text value of a non-namespaced custom RSS element.
+// GetCustomValue retrieves the text value of a non-namespaced custom element.
 // This is a convenience method that replaces the previous Item.Custom[key] access pattern.
 // Returns empty string if the element is not found.
 func (i *Item) GetCustomValue(element string) string {
-	return i.GetExtensionValue("rss", element)
+	return i.GetExtensionValue("_custom", element)
+}
+
+// GetCustomValue retrieves the text value of a non-namespaced custom element at the feed level.
+// Returns empty string if the element is not found.
+func (f *Feed) GetCustomValue(element string) string {
+	return f.GetExtensionValue("_custom", element)
 }

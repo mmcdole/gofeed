@@ -1,0 +1,42 @@
+{
+  "title": "Test Feed",
+  "id": "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
+  "updated": "2003-12-13T18:30:02Z",
+  "updatedParsed": "2003-12-13T18:30:02Z",
+  "entries": [
+    {
+      "title": "Test Entry",
+      "id": "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a",
+      "updated": "2003-12-13T18:30:02Z",
+      "updatedParsed": "2003-12-13T18:30:02Z",
+      "extensions": {
+        "_custom": {
+          "customId": [
+            {
+              "name": "customId",
+              "value": "entry-123",
+              "attrs": {}
+            }
+          ],
+          "priority": [
+            {
+              "name": "priority",
+              "value": "1",
+              "attrs": {
+                "level": "high"
+              }
+            }
+          ],
+          "customTag": [
+            {
+              "name": "customTag",
+              "value": "Custom Value",
+              "attrs": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "1.0"
+}
