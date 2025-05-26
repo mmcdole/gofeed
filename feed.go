@@ -35,6 +35,9 @@ type Feed struct {
 	Items           []*Item                  `json:"items"`
 	FeedType        string                   `json:"feedType"`
 	FeedVersion     string                   `json:"feedVersion"`
+	
+	// Original format-specific feed data (only populated if KeepOriginalFeed is true)
+	OriginalFeed interface{} `json:"-"`
 }
 
 // String returns a JSON representation of the Feed for debugging purposes.

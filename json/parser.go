@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	
+	"github.com/mmcdole/gofeed/v2/internal/shared"
 )
 
 
@@ -11,7 +13,7 @@ import (
 type Parser struct{}
 
 // Parse parses an json feed into an json.Feed
-func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
+func (ap *Parser) Parse(feed io.Reader, opts *shared.ParseOptions) (*Feed, error) {
 	jsonFeed := &Feed{}
 
 	buffer := new(bytes.Buffer)
@@ -21,5 +23,11 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	return jsonFeed, err
+	
+	// Apply MaxItems limit after unmarshaling
+	if opts != nil && opts.MaxItems > 0 && len(jsonFeed.Items) > opts.MaxItems {
+		jsonFeed.Items = jsonFeed.Items[:opts.MaxItems]
+	}
+	
+	return jsonFeed, nil
 }

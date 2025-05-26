@@ -27,7 +27,7 @@ func TestITunes_Extensions(t *testing.T) {
 
 		// Parse actual feed
 		fp := gofeed.NewParser()
-		actual, _ := fp.Parse(bytes.NewReader(f))
+		actual, _ := fp.Parse(bytes.NewReader(f), nil)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/extensions/itunes/%s.json", name)
@@ -60,7 +60,7 @@ func TestMedia_Extensions(t *testing.T) {
 
 		// Parse actual feed
 		fp := gofeed.NewParser()
-		actual, _ := fp.Parse(bytes.NewReader(f))
+		actual, _ := fp.Parse(bytes.NewReader(f), nil)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("../testdata/extensions/media/%s.json", name)

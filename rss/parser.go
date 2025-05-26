@@ -14,7 +14,7 @@ import (
 type Parser struct{}
 
 // Parse parses an xml feed into an rss.Feed
-func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
+func (rp *Parser) Parse(feed io.Reader, opts *shared.ParseOptions) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
 
 	_, err := shared.FindRoot(p)
@@ -22,10 +22,10 @@ func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
 		return nil, err
 	}
 
-	return rp.parseRoot(p)
+	return rp.parseRoot(p, opts)
 }
 
-func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
+func (rp *Parser) parseRoot(p *xpp.XMLPullParser, opts *shared.ParseOptions) (*Feed, error) {
 	rssErr := p.Expect(xpp.StartTag, "rss")
 	rdfErr := p.Expect(xpp.StartTag, "rdf")
 	if rssErr != nil && rdfErr != nil {
@@ -61,11 +61,17 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 			name := strings.ToLower(p.Name)
 
 			if name == "channel" {
-				channel, err = rp.parseChannel(p)
+				channel, err = rp.parseChannel(p, opts)
 				if err != nil {
 					return nil, err
 				}
 			} else if name == "item" {
+				// Check if we've reached the MaxItems limit
+				if opts != nil && opts.MaxItems > 0 && len(items) >= opts.MaxItems {
+					p.Skip() // Skip this item
+					continue
+				}
+				
 				item, err := rp.parseItem(p)
 				if err != nil {
 					return nil, err
@@ -114,7 +120,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	return channel, nil
 }
 
-func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
+func (rp *Parser) parseChannel(p *xpp.XMLPullParser, opts *shared.ParseOptions) (rss *Feed, err error) {
 	if err = p.Expect(xpp.StartTag, "channel"); err != nil {
 		return nil, err
 	}
@@ -248,6 +254,12 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				}
 				rss.SkipDays = result
 			} else if name == "item" {
+				// Check if we've reached the MaxItems limit
+				if opts != nil && opts.MaxItems > 0 && len(rss.Items) >= opts.MaxItems {
+					p.Skip() // Skip this item
+					continue
+				}
+				
 				result, err := rp.parseItem(p)
 				if err != nil {
 					return nil, err

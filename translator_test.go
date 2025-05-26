@@ -31,8 +31,8 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 		// Parse actual feed
 		translator := &gofeed.DefaultRSSTranslator{}
 		fp := &rss.Parser{}
-		rssFeed, _ := fp.Parse(f)
-		actual, _ := translator.Translate(rssFeed)
+		rssFeed, _ := fp.Parse(f, nil)
+		actual, _ := translator.Translate(rssFeed, nil)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/rss/%s.json", name)
@@ -52,7 +52,7 @@ func TestDefaultRSSTranslator_Translate(t *testing.T) {
 
 func TestDefaultRSSTranslator_Translate_WrongType(t *testing.T) {
 	translator := &gofeed.DefaultRSSTranslator{}
-	af, err := translator.Translate("wrong type")
+	af, err := translator.Translate("wrong type", nil)
 	assert.Nil(t, af)
 	assert.NotNil(t, err)
 }
@@ -73,8 +73,8 @@ func TestDefaultAtomTranslator_Translate(t *testing.T) {
 		// Parse actual feed
 		translator := &gofeed.DefaultAtomTranslator{}
 		fp := &atom.Parser{}
-		atomFeed, _ := fp.Parse(f)
-		actual, _ := translator.Translate(atomFeed)
+		atomFeed, _ := fp.Parse(f, nil)
+		actual, _ := translator.Translate(atomFeed, nil)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/atom/%s.json", name)
@@ -94,7 +94,7 @@ func TestDefaultAtomTranslator_Translate(t *testing.T) {
 
 func TestDefaultAtomTranslator_Translate_WrongType(t *testing.T) {
 	translator := &gofeed.DefaultAtomTranslator{}
-	af, err := translator.Translate("wrong type")
+	af, err := translator.Translate("wrong type", nil)
 	assert.Nil(t, af)
 	assert.NotNil(t, err)
 }
@@ -119,8 +119,8 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 		// Parse actual feed
 		translator := &gofeed.DefaultJSONTranslator{}
 		fp := json.Parser{}
-		jsonFeed, _ := fp.Parse(f)
-		actual, _ := translator.Translate(jsonFeed)
+		jsonFeed, _ := fp.Parse(f, nil)
+		actual, _ := translator.Translate(jsonFeed, nil)
 
 		// Get json encoded expected feed result
 		ef := fmt.Sprintf("testdata/translator/json/%s_expected.json", name)
@@ -152,8 +152,8 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 	// Parse actual feed
 	translator := &gofeed.DefaultJSONTranslator{}
 	fp := json.Parser{}
-	feed, _ := fp.Parse(bytes.NewReader(f))
-	actual, _ := translator.Translate(feed)
+	feed, _ := fp.Parse(bytes.NewReader(f), nil)
+	actual, _ := translator.Translate(feed, nil)
 
 	assert.Equal(t, "title", actual.Title)
 	assert.Equal(t, "description", actual.Description)
@@ -207,8 +207,8 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 	f, _ = ioutil.ReadFile(ff)
 
 	// Parse actual feed
-	feed, _ = fp.Parse(bytes.NewReader(f))
-	actual, _ = translator.Translate(feed)
+	feed, _ = fp.Parse(bytes.NewReader(f), nil)
+	actual, _ = translator.Translate(feed, nil)
 
 	assert.Equal(t, "content_text", actual.Items[0].Content)
 	assert.Equal(t, "https://sample-json-feed.com/banner_image.png", actual.Items[0].Image.URL)
@@ -218,7 +218,7 @@ func TestDefaultJSONTranslator_Translate(t *testing.T) {
 
 func TestDefaultJSONTranslator_Translate_WrongType(t *testing.T) {
 	translator := &gofeed.DefaultJSONTranslator{}
-	af, err := translator.Translate("wrong type")
+	af, err := translator.Translate("wrong type", nil)
 	assert.Nil(t, af)
 	assert.NotNil(t, err)
 }
