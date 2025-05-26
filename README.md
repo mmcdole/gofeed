@@ -11,8 +11,8 @@
 
 ## Table of Contents
 - [Features](#features)
-- [Installation](#installation)
 - [Overview](#overview)
+- [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
 - [Dependencies](#dependencies)
@@ -43,6 +43,21 @@ For added convenience, gofeed includes native support for parsing certain well-k
 
 - Dublin Core: Accessible via `Feed.DublinCoreExt` and `Item.DublinCoreExt`
 - Apple iTunes: Accessible via `Feed.ITunesExt` and `Item.ITunesExt`
+  
+## Overview
+
+In `gofeed`, you have two primary choices for feed parsing: a universal parser for handling multiple feed types seamlessly, and specialized parsers for more granular control over individual feed types.
+
+
+### Universal Feed Parser 
+
+The universal `gofeed.Parser` is designed to make it easy to work with various types of feeds—RSS, Atom, JSON—by converting them into a unified `gofeed.Feed` model. This is especially useful when you're dealing with multiple feed formats and you want to treat them the same way.
+
+The universal parser uses built-in translators like `DefaultRSSTranslator`, `DefaultAtomTranslator`, and `DefaultJSONTranslator` to convert between the specific feed types and the universal feed. Not happy with the defaults? Implement your own `gofeed.Translator` to tailor the translation process to your needs.
+
+### Specialized Feed Parsers: RSS, Atom, JSON
+
+Alternatively, if your focus is on a single feed type, then using a specialized parser offers advantages in terms of performance and granularity. For example, if you're interested solely in RSS feeds, you can use `rss.Parser` directly. These feed-specific parsers map fields to their corresponding models, ensuring names and structures that match the feed type exactly.
 
 ## Installation
 
@@ -65,21 +80,6 @@ import (
     "github.com/mmcdole/gofeed/v2/json"
 )
 ```
-  
-## Overview
-
-In `gofeed`, you have two primary choices for feed parsing: a universal parser for handling multiple feed types seamlessly, and specialized parsers for more granular control over individual feed types.
-
-
-### Universal Feed Parser 
-
-The universal `gofeed.Parser` is designed to make it easy to work with various types of feeds—RSS, Atom, JSON—by converting them into a unified `gofeed.Feed` model. This is especially useful when you're dealing with multiple feed formats and you want to treat them the same way.
-
-The universal parser uses built-in translators like `DefaultRSSTranslator`, `DefaultAtomTranslator`, and `DefaultJSONTranslator` to convert between the specific feed types and the universal feed. Not happy with the defaults? Implement your own `gofeed.Translator` to tailor the translation process to your needs.
-
-### Specialized Feed Parsers: RSS, Atom, JSON
-
-Alternatively, if your focus is on a single feed type, then using a specialized parser offers advantages in terms of performance and granularity. For example, if you're interested solely in RSS feeds, you can use `rss.Parser` directly. These feed-specific parsers map fields to their corresponding models, ensuring names and structures that match the feed type exactly.
 
 ## Basic Usage
 
@@ -257,9 +257,9 @@ fmt.Println(feed.Author) // Valentine Wiggin
 ## Dependencies
 
 * [goxpp](https://github.com/mmcdole/goxpp) - XML Pull Parser
-* [goquery](https://github.com/PuerkitoBio/goquery) - Go jQuery-like interface
 * [testify](https://github.com/stretchr/testify) - Unit test enhancements
-* [jsoniter](https://github.com/json-iterator/go) - Faster JSON Parsing
+* [golang.org/x/net](https://pkg.go.dev/golang.org/x/net) - Go supplementary network libraries
+* [golang.org/x/text](https://pkg.go.dev/golang.org/x/text) - Go supplementary text processing libraries
 
 ## License
 
