@@ -2,7 +2,7 @@
   "items": [
     {
       "extensions": {
-        "rss": {
+        "_custom": {
           "htmlContent": [
             {
               "name": "htmlContent",

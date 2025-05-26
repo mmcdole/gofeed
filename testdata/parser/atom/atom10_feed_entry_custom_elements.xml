@@ -1,0 +1,18 @@
+<!--
+Description: atom10 feed with custom elements at entry level
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Test Feed</title>
+  <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+  <updated>2003-12-13T18:30:02Z</updated>
+  
+  <entry>
+    <title>Test Entry</title>
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <customId>entry-123</customId>
+    <priority level="high">1</priority>
+    <customTag>Custom Value</customTag>
+  </entry>
+</feed>

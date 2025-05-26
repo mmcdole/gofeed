@@ -161,10 +161,36 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 				}
 				atom.Entries = append(atom.Entries, result)
 			} else {
-				err := p.Skip()
-				if err != nil {
-					return nil, err
+				// For non-standard Atom feed elements, add them to extensions
+				// under a special "_custom" namespace prefix
+				customExt := ext.Extension{
+					Name:  p.Name,
+					Attrs: make(map[string]string),
 				}
+				
+				// Copy attributes
+				for _, attr := range p.Attrs {
+					customExt.Attrs[attr.Name.Local] = attr.Value
+				}
+				
+				// Parse the text content
+				result, err := shared.ParseText(p)
+				if err != nil {
+					p.Skip()
+					continue
+				}
+				customExt.Value = result
+				
+				// Initialize extensions map if needed
+				if extensions == nil {
+					extensions = make(ext.Extensions)
+				}
+				if extensions["_custom"] == nil {
+					extensions["_custom"] = make(map[string][]ext.Extension)
+				}
+				
+				// Add to extensions
+				extensions["_custom"][p.Name] = append(extensions["_custom"][p.Name], customExt)
 			}
 		}
 	}
@@ -314,10 +340,36 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 				}
 				entry.Content = result
 			} else {
-				err := p.Skip()
-				if err != nil {
-					return nil, err
+				// For non-standard Atom entry elements, add them to extensions
+				// under a special "_custom" namespace prefix
+				customExt := ext.Extension{
+					Name:  p.Name,
+					Attrs: make(map[string]string),
 				}
+				
+				// Copy attributes
+				for _, attr := range p.Attrs {
+					customExt.Attrs[attr.Name.Local] = attr.Value
+				}
+				
+				// Parse the text content
+				result, err := shared.ParseText(p)
+				if err != nil {
+					p.Skip()
+					continue
+				}
+				customExt.Value = result
+				
+				// Initialize extensions map if needed
+				if extensions == nil {
+					extensions = make(ext.Extensions)
+				}
+				if extensions["_custom"] == nil {
+					extensions["_custom"] = make(map[string][]ext.Extension)
+				}
+				
+				// Add to extensions
+				extensions["_custom"][p.Name] = append(extensions["_custom"][p.Name], customExt)
 			}
 		}
 	}

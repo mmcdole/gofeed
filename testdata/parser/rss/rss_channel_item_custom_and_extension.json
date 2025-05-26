@@ -16,7 +16,7 @@
             }
           ]
         },
-        "rss": {
+        "_custom": {
           "customTag": [
             {
               "name": "customTag",

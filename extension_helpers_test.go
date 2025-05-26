@@ -15,7 +15,7 @@ func TestItemGetExtension(t *testing.T) {
 					{Name: "creator", Value: "John Doe"},
 				},
 			},
-			"rss": {
+			"_custom": {
 				"customField": []ext.Extension{
 					{Name: "customField", Value: "Custom Value", Attrs: map[string]string{"id": "123"}},
 				},
@@ -28,8 +28,8 @@ func TestItemGetExtension(t *testing.T) {
 	assert.Len(t, creators, 1)
 	assert.Equal(t, "John Doe", creators[0].Value)
 
-	// Test getting custom RSS element
-	custom := item.GetExtension("rss", "customField")
+	// Test getting custom element
+	custom := item.GetExtension("_custom", "customField")
 	assert.Len(t, custom, 1)
 	assert.Equal(t, "Custom Value", custom[0].Value)
 	assert.Equal(t, "123", custom[0].Attrs["id"])
@@ -47,7 +47,7 @@ func TestItemGetExtensionValue(t *testing.T) {
 					{Name: "creator", Value: "John Doe"},
 				},
 			},
-			"rss": {
+			"_custom": {
 				"customField": []ext.Extension{
 					{Name: "customField", Value: "Custom Value"},
 				},
@@ -57,7 +57,7 @@ func TestItemGetExtensionValue(t *testing.T) {
 
 	// Test getting existing value
 	assert.Equal(t, "John Doe", item.GetExtensionValue("dc", "creator"))
-	assert.Equal(t, "Custom Value", item.GetExtensionValue("rss", "customField"))
+	assert.Equal(t, "Custom Value", item.GetExtensionValue("_custom", "customField"))
 
 	// Test getting non-existent value
 	assert.Equal(t, "", item.GetExtensionValue("missing", "field"))
@@ -66,7 +66,7 @@ func TestItemGetExtensionValue(t *testing.T) {
 func TestItemGetCustomValue(t *testing.T) {
 	item := &Item{
 		Extensions: ext.Extensions{
-			"rss": {
+			"_custom": {
 				"customField": []ext.Extension{
 					{Name: "customField", Value: "Custom Value"},
 				},
@@ -93,7 +93,7 @@ func TestFeedGetExtension(t *testing.T) {
 					{Name: "updatePeriod", Value: "hourly"},
 				},
 			},
-			"rss": {
+			"_custom": {
 				"customFeedData": []ext.Extension{
 					{Name: "customFeedData", Value: "Feed Custom Value"},
 				},
@@ -106,16 +106,38 @@ func TestFeedGetExtension(t *testing.T) {
 	assert.Len(t, period, 1)
 	assert.Equal(t, "hourly", period[0].Value)
 
-	// Test getting custom RSS element
-	custom := feed.GetExtension("rss", "customFeedData")
+	// Test getting custom element
+	custom := feed.GetExtension("_custom", "customFeedData")
 	assert.Len(t, custom, 1)
 	assert.Equal(t, "Feed Custom Value", custom[0].Value)
+}
+
+func TestFeedGetCustomValue(t *testing.T) {
+	feed := &Feed{
+		Extensions: ext.Extensions{
+			"_custom": {
+				"customFeedId": []ext.Extension{
+					{Name: "customFeedId", Value: "feed-123"},
+				},
+				"updateFrequency": []ext.Extension{
+					{Name: "updateFrequency", Value: "hourly"},
+				},
+			},
+		},
+	}
+
+	// Test getting custom values at feed level
+	assert.Equal(t, "feed-123", feed.GetCustomValue("customFeedId"))
+	assert.Equal(t, "hourly", feed.GetCustomValue("updateFrequency"))
+
+	// Test getting non-existent custom value
+	assert.Equal(t, "", feed.GetCustomValue("missing"))
 }
 
 func TestMultipleExtensionsWithSameName(t *testing.T) {
 	item := &Item{
 		Extensions: ext.Extensions{
-			"rss": {
+			"_custom": {
 				"tag": []ext.Extension{
 					{Name: "tag", Value: "First"},
 					{Name: "tag", Value: "Second"},
@@ -126,12 +148,12 @@ func TestMultipleExtensionsWithSameName(t *testing.T) {
 	}
 
 	// Test getting all tags
-	tags := item.GetExtension("rss", "tag")
+	tags := item.GetExtension("_custom", "tag")
 	assert.Len(t, tags, 3)
 	assert.Equal(t, "First", tags[0].Value)
 	assert.Equal(t, "Second", tags[1].Value)
 	assert.Equal(t, "Third", tags[2].Value)
 
 	// GetExtensionValue returns the first one
-	assert.Equal(t, "First", item.GetExtensionValue("rss", "tag"))
+	assert.Equal(t, "First", item.GetExtensionValue("_custom", "tag"))
 }

@@ -1,6 +1,8 @@
 {
   "title": "Test Feed",
-  "items": [],
+  "id": "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
+  "updated": "2003-12-13T18:30:02Z",
+  "updatedParsed": "2003-12-13T18:30:02Z",
   "extensions": {
     "_custom": {
       "customFeedId": [
@@ -10,11 +12,13 @@
           "attrs": {}
         }
       ],
-      "updateFrequency": [
+      "updateInterval": [
         {
-          "name": "updateFrequency",
-          "value": "hourly",
-          "attrs": {}
+          "name": "updateInterval",
+          "value": "30",
+          "attrs": {
+            "units": "minutes"
+          }
         }
       ],
       "customMetadata": [
@@ -28,5 +32,6 @@
       ]
     }
   },
-  "version": "2.0"
+  "entries": [],
+  "version": "1.0"
 }

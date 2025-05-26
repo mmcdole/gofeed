@@ -1,0 +1,12 @@
+<!--
+Description: atom10 feed with custom elements at feed level
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Test Feed</title>
+  <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+  <updated>2003-12-13T18:30:02Z</updated>
+  <customFeedId>feed-123</customFeedId>
+  <updateInterval units="minutes">30</updateInterval>
+  <customMetadata type="internal">Some metadata</customMetadata>
+</feed>
