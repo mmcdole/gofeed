@@ -1,18 +1,15 @@
 package gofeed
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/mmcdole/gofeed/v2/atom"
 	ext "github.com/mmcdole/gofeed/v2/extensions"
 	"github.com/mmcdole/gofeed/v2/internal/shared"
 	"github.com/mmcdole/gofeed/v2/json"
 	"github.com/mmcdole/gofeed/v2/rss"
-	"golang.org/x/net/html"
 )
 
 // Translator converts a particular feed (atom.Feed or rss.Feed of json.Feed)
@@ -441,16 +438,9 @@ func (t *DefaultRSSTranslator) translateItemImage(rssItem *rss.Item) *Image {
 }
 
 func firstImageFromHtmlDocument(document string) *Image {
-	if doc, err := html.Parse(bytes.NewBufferString(document)); err == nil {
-		doc := goquery.NewDocumentFromNode(doc)
-		for _, node := range doc.FindMatcher(goquery.Single("img[src]")).Nodes {
-			for _, attr := range node.Attr {
-				if attr.Key == "src" {
-					return &Image{
-						URL: attr.Val,
-					}
-				}
-			}
+	if src := shared.FindFirstImgSrc(document); src != "" {
+		return &Image{
+			URL: src,
 		}
 	}
 	return nil
