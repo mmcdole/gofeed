@@ -15,7 +15,7 @@ import (
 // Translator converts a particular feed (atom.Feed or rss.Feed of json.Feed)
 // into the generic Feed struct
 type Translator interface {
-	Translate(feed interface{}) (*Feed, error)
+	Translate(feed interface{}, opts *ParseOptions) (*Feed, error)
 }
 
 // DefaultRSSTranslator converts an rss.Feed struct
@@ -28,11 +28,12 @@ type DefaultRSSTranslator struct{}
 
 // Translate converts an RSS feed into the universal
 // feed type.
-func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
+func (t *DefaultRSSTranslator) Translate(feed interface{}, opts *ParseOptions) (*Feed, error) {
 	rss, found := feed.(*rss.Feed)
 	if !found {
 		return nil, fmt.Errorf("Feed did not match expected type of *rss.Feed")
 	}
+	
 
 	result := &Feed{}
 	result.Title = t.translateFeedTitle(rss)
@@ -527,11 +528,12 @@ type DefaultAtomTranslator struct{}
 
 // Translate converts an Atom feed into the universal
 // feed type.
-func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
+func (t *DefaultAtomTranslator) Translate(feed interface{}, opts *ParseOptions) (*Feed, error) {
 	atom, found := feed.(*atom.Feed)
 	if !found {
 		return nil, fmt.Errorf("Feed did not match expected type of *atom.Feed")
 	}
+	
 
 	result := &Feed{}
 	result.Title = t.translateFeedTitle(atom)
@@ -855,7 +857,7 @@ type DefaultJSONTranslator struct{}
 
 // Translate converts an JSON feed into the universal
 // feed type.
-func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
+func (t *DefaultJSONTranslator) Translate(feed interface{}, opts *ParseOptions) (*Feed, error) {
 	json, found := feed.(*json.Feed)
 	if !found {
 		return nil, fmt.Errorf("Feed did not match expected type of *json.Feed")

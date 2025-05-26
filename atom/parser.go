@@ -26,7 +26,7 @@ var (
 type Parser struct{}
 
 // Parse parses an xml feed into an atom.Feed
-func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
+func (ap *Parser) Parse(feed io.Reader, opts *shared.ParseOptions) (*Feed, error) {
 	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
 
 	_, err := shared.FindRoot(p)
@@ -34,10 +34,10 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 		return nil, err
 	}
 
-	return ap.parseRoot(p)
+	return ap.parseRoot(p, opts)
 }
 
-func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
+func (ap *Parser) parseRoot(p *xpp.XMLPullParser, opts *shared.ParseOptions) (*Feed, error) {
 	if err := p.Expect(xpp.StartTag, "feed"); err != nil {
 		return nil, err
 	}
@@ -154,6 +154,12 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 				}
 				categories = append(categories, result)
 			} else if name == "entry" {
+				// Check if we've reached the MaxItems limit
+				if opts != nil && opts.MaxItems > 0 && len(atom.Entries) >= opts.MaxItems {
+					p.Skip() // Skip this entry
+					continue
+				}
+				
 				result, err := ap.parseEntry(p)
 				if err != nil {
 					return nil, err
