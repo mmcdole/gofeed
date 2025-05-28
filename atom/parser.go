@@ -684,10 +684,10 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 			(lowerType == "" && lowerMode == "") {
 			result, err = shared.DecodeEntities(result)
 		} else if strings.Contains(lowerType, "xhtml") {
-			result = ap.stripWrappingDiv(result)
+			result = StripWrappingDiv(result)
 			result, _ = shared.ResolveHTML(base, result)
 		} else if lowerType == "html" {
-			result = ap.stripWrappingDiv(result)
+			result = StripWrappingDiv(result)
 			result, err = shared.DecodeEntities(result)
 			if err == nil {
 				result, _ = shared.ResolveHTML(base, result)
@@ -734,7 +734,7 @@ func (ap *Parser) parseVersion(p *xpp.XMLPullParser) string {
 	return ""
 }
 
-func (ap *Parser) stripWrappingDiv(content string) (result string) {
+func StripWrappingDiv(content string) (result string) {
 	result = content
 	r := strings.NewReader(result)
 	doc, err := goquery.NewDocumentFromReader(r)
