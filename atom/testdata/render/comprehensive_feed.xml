@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" lang="en-US">
+  <title>Comprehensive Atom Feed</title>
+  <id>http://example.com/comprehensive-feed</id>
+  <updated>2024-01-01T12:00:00Z</updated>
+  <subtitle>A comprehensive test feed showcasing all Atom 1.0 features</subtitle>
+  <link href="http://example.com" rel="alternate" type="text/html"></link>
+  <link href="http://example.com/feed.xml" rel="self" type="application/atom+xml"></link>
+  <link href="http://example.com/related" hreflang="en" rel="related" type="text/html" title="Related Site" length="1024"></link>
+  <generator uri="http://atomgenerator.example.com" version="1.0">Atom Generator</generator>
+  <icon>http://example.com/icon.png</icon>
+  <logo>http://example.com/logo.png</logo>
+  <rights>Copyright 2024 Example Corp. All rights reserved.</rights>
+  <contributor>
+    <name>Bob Contributor</name>
+    <email>bob@example.com</email>
+    <uri>http://bob.example.com</uri>
+  </contributor>
+  <author>
+    <name>John Doe</name>
+    <email>john@example.com</email>
+    <uri>http://johndoe.example.com</uri>
+  </author>
+  <author>
+    <name>Jane Smith</name>
+    <email>jane@example.com</email>
+    <uri></uri>
+  </author>
+  <category term="technology" scheme="http://example.com/categories" label="Technology"></category>
+  <category term="programming" scheme="" label="Programming"></category>
+</feed>

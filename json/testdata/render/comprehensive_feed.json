@@ -1,0 +1,29 @@
+{
+  "author": {
+    "avatar": "http://johndoe.example.com/avatar.png",
+    "name": "John Doe",
+    "url": "http://johndoe.example.com"
+  },
+  "authors": [
+    {
+      "avatar": "http://johndoe.example.com/avatar.png",
+      "name": "John Doe",
+      "url": "http://johndoe.example.com"
+    },
+    {
+      "name": "Jane Smith",
+      "url": "http://janesmith.example.com"
+    }
+  ],
+  "description": "A comprehensive test feed showcasing all JSON Feed 1.1 features",
+  "favicon": "http://example.com/favicon.ico",
+  "feed_url": "http://example.com/feed.json",
+  "home_page_url": "http://example.com",
+  "icon": "http://example.com/icon.png",
+  "items": null,
+  "language": "en-US",
+  "next_url": "http://example.com/feed.json?page=2",
+  "title": "Comprehensive JSON Feed",
+  "user_comment": "This is a test feed for demonstration purposes",
+  "version": "https://jsonfeed.org/version/1.1"
+}

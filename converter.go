@@ -64,14 +64,14 @@ func (c *DefaultRSSConverter) Convert(feed *Feed) (*rss.Feed, error) {
 	}
 
 	if feedAuthor != nil {
-		rssFeed.ManagingEditor = c.formatPersonForRSS(feedAuthor)
+		rssFeed.ManagingEditor = c.FormatPersonForRSS(feedAuthor)
 
 		// Also populate DublinCore Creator to improve round-trip fidelity
 		if rssFeed.DublinCoreExt == nil {
 			rssFeed.DublinCoreExt = &ext.DublinCoreExtension{}
 		}
 		// Only add if not already present
-		dcAuthor := c.formatPersonForRSS(feedAuthor)
+		dcAuthor := c.FormatPersonForRSS(feedAuthor)
 		creatorExists := false
 		for _, creator := range rssFeed.DublinCoreExt.Creator {
 			if creator == dcAuthor {
@@ -136,14 +136,14 @@ func (c *DefaultRSSConverter) convertItem(item *Item) *rss.Item {
 	}
 
 	if itemAuthor != nil {
-		rssItem.Author = c.formatPersonForRSS(itemAuthor)
+		rssItem.Author = c.FormatPersonForRSS(itemAuthor)
 
 		// Also populate DublinCore Creator to improve round-trip fidelity
 		if rssItem.DublinCoreExt == nil {
 			rssItem.DublinCoreExt = &ext.DublinCoreExtension{}
 		}
 		// Only add if not already present
-		dcAuthor := c.formatPersonForRSS(itemAuthor)
+		dcAuthor := c.FormatPersonForRSS(itemAuthor)
 		creatorExists := false
 		for _, creator := range rssItem.DublinCoreExt.Creator {
 			if creator == dcAuthor {
@@ -157,7 +157,7 @@ func (c *DefaultRSSConverter) convertItem(item *Item) *rss.Item {
 
 		// Also populate iTunes Author if iTunes extension exists
 		if rssItem.ITunesExt != nil && rssItem.ITunesExt.Author == "" {
-			rssItem.ITunesExt.Author = c.formatPersonForRSS(itemAuthor)
+			rssItem.ITunesExt.Author = c.FormatPersonForRSS(itemAuthor)
 		}
 	}
 
@@ -232,7 +232,7 @@ func (c *DefaultRSSConverter) convertItem(item *Item) *rss.Item {
 	return rssItem
 }
 
-func (c *DefaultRSSConverter) formatPersonForRSS(person *Person) string {
+func (c *DefaultRSSConverter) FormatPersonForRSS(person *Person) string {
 	if person.Email != "" && person.Name != "" {
 		return person.Email + " (" + person.Name + ")"
 	} else if person.Email != "" {

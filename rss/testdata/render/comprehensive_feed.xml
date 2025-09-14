@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Comprehensive Test Feed</title>
+    <link>http://example.com</link>
+    <description>A comprehensive test feed with all RSS 2.0 fields</description>
+    <language>en-us</language>
+    <copyright>Copyright 2024 Example Corp</copyright>
+    <managingEditor>editor@example.com (John Editor)</managingEditor>
+    <webMaster>webmaster@example.com (Jane Webmaster)</webMaster>
+    <pubDate>Mon, 01 Jan 2024 12:00:00 GMT</pubDate>
+    <lastBuildDate>Mon, 01 Jan 2024 13:00:00 GMT</lastBuildDate>
+    <category domain="http://example.com/categories">Technology</category>
+    <category>Software</category>
+    <generator>Test RSS Generator v1.0</generator>
+    <docs>http://www.rssboard.org/rss-specification</docs>
+    <ttl>60</ttl>
+    <image>
+      <url>http://example.com/logo.png</url>
+      <link>http://example.com</link>
+      <title>Test Feed Logo</title>
+      <width>144</width>
+      <height>144</height>
+      <description>The official logo of Test Feed</description>
+    </image>
+    <rating>PICS-1.1 &#39;http://www.rsac.org/ratingsv01.html&#39; l gen true comment &#39;RSACi North America Server&#39;</rating>
+    <skipHours>
+      <hour>0</hour>
+      <hour>1</hour>
+      <hour>2</hour>
+      <hour>3</hour>
+      <hour>4</hour>
+      <hour>5</hour>
+    </skipHours>
+    <skipDays>
+      <day>Saturday</day>
+      <day>Sunday</day>
+    </skipDays>
+    <cloud domain="rpc.example.com" port="80" path="/RPC2" registerProcedure="myCloud.rssPleaseNotify" protocol="xml-rpc"></cloud>
+    <textInput>
+      <title>Search</title>
+      <description>Search our feed</description>
+      <name>query</name>
+      <link>http://example.com/search</link>
+    </textInput>
+  </channel>
+</rss>

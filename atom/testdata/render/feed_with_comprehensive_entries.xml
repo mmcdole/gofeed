@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Test Feed</title>
+  <id>http://example.com/feed</id>
+  <updated>2024-01-01T12:00:00Z</updated>
+  <entry>
+    <title>Comprehensive Entry</title>
+    <id>http://example.com/entry1</id>
+    <updated>2024-01-01T11:00:00Z</updated>
+    <summary>A comprehensive Atom entry with all fields</summary>
+    <author>
+      <name>Entry Author</name>
+      <email>entryauthor@example.com</email>
+      <uri></uri>
+    </author>
+    <contributor>
+      <name>Entry Contributor</name>
+      <email></email>
+      <uri>http://contributor.example.com</uri>
+    </contributor>
+    <category term="news" scheme="http://example.com/entry-categories" label="News"></category>
+    <link href="http://example.com/entry1" rel="alternate" type="text/html"></link>
+    <link href="http://example.com/entry1.mp3" rel="enclosure" type="audio/mpeg" length="1048576"></link>
+    <rights>Entry-specific rights</rights>
+    <published>2024-01-01T10:00:00Z</published>
+    <source>
+      <title>Original Source Feed</title>
+      <id>http://originalsource.com/feed</id>
+      <updated>2024-01-01T09:00:00Z</updated>
+    </source>
+    <content src="" type="html">&lt;p&gt;Rich HTML content for the entry&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Simple Entry</title>
+    <id>http://example.com/entry2</id>
+    <updated>2024-01-01T11:30:00Z</updated>
+    <summary>A simple Atom entry</summary>
+    <published></published>
+    <content src="" type="text">Plain text content</content>
+  </entry>
+</feed>

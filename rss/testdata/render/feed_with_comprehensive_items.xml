@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Test Feed</title>
+    <link>http://example.com</link>
+    <description>Test Description</description>
+    <skipHours></skipHours>
+    <skipDays></skipDays>
+    <item>
+      <title>Comprehensive Item</title>
+      <link>http://example.com/item1</link>
+      <description>A comprehensive RSS item with all fields</description>
+      <author>author@example.com (Item Author)</author>
+      <category domain="http://example.com/itemcats">News</category>
+      <category>Breaking</category>
+      <comments>http://example.com/item1/comments</comments>
+      <enclosure url="http://example.com/item1.mp3" length="1048576" type="audio/mpeg"></enclosure>
+      <guid isPermaLink="true">http://example.com/item1/guid</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <source url="http://originalsource.com/rss">Original Source</source>
+    </item>
+    <item>
+      <title>Simple Item</title>
+      <link>http://example.com/item2</link>
+      <description>A simple RSS item</description>
+      <author></author>
+      <comments></comments>
+      <guid isPermaLink="false">unique-item-2</guid>
+      <pubDate>Tue, 02 Jan 2024 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
