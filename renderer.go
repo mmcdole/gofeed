@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/mmcdole/gofeed/atom"
+	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/json"
 	"github.com/mmcdole/gofeed/rss"
 )
@@ -17,7 +18,6 @@ import (
 // always possible due to format differences:
 //
 // 1. RSS limitations:
-//    - No native item-level "updated" field (would need DublinCore extension)
 //    - Complex extension-based author fallbacks are simplified
 //
 // 2. Atom limitations:
@@ -168,6 +168,24 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 	rssItem.ITunesExt = item.ITunesExt
 	rssItem.Extensions = item.Extensions
 	rssItem.Custom = item.Custom
+
+	// Handle item Updated field via DublinCore extension (RSS doesn't have native updated field)
+	if item.Updated != "" {
+		if rssItem.DublinCoreExt == nil {
+			rssItem.DublinCoreExt = &ext.DublinCoreExtension{}
+		}
+		// Only add if not already present in DublinCore Date
+		dateExists := false
+		for _, date := range rssItem.DublinCoreExt.Date {
+			if date == item.Updated {
+				dateExists = true
+				break
+			}
+		}
+		if !dateExists {
+			rssItem.DublinCoreExt.Date = append(rssItem.DublinCoreExt.Date, item.Updated)
+		}
+	}
 
 	return rssItem
 }

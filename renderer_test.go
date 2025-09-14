@@ -389,9 +389,9 @@ func TestJSONRenderer_EnclosureConversion(t *testing.T) {
 
 // Test known round-trip limitations
 func TestRoundTripLimitations(t *testing.T) {
-	t.Run("RSS Updated field loss", func(t *testing.T) {
+	t.Run("RSS Updated field preservation via DublinCore", func(t *testing.T) {
 		// RSS doesn't have native item-level updated field
-		// It gets lost in round-trip unless stored in DublinCore extension
+		// It should be stored in DublinCore extension Date field
 		universalFeed := &gofeed.Feed{
 			Title: "Test Feed",
 			Items: []*gofeed.Item{
@@ -406,10 +406,11 @@ func TestRoundTripLimitations(t *testing.T) {
 		rssFeed, err := renderer.Render(universalFeed)
 		require.NoError(t, err)
 
-		// RSS item doesn't have Updated field in the struct
-		// This is a documented limitation
+		// RSS item doesn't have Updated field in the struct, but should be in DublinCore
 		assert.Equal(t, "Test Item", rssFeed.Items[0].Title)
-		// Updated is lost unless we use DublinCore extensions
+		require.NotNil(t, rssFeed.Items[0].DublinCoreExt)
+		require.Len(t, rssFeed.Items[0].DublinCoreExt.Date, 1)
+		assert.Equal(t, "2023-01-01T12:00:00Z", rssFeed.Items[0].DublinCoreExt.Date[0])
 	})
 
 	t.Run("JSON feed-level date handling", func(t *testing.T) {
@@ -453,25 +454,8 @@ func TestRoundTripLimitations(t *testing.T) {
 
 // Test Custom field handling
 func TestCustomFieldHandling(t *testing.T) {
-	t.Run("RSS feed-level custom fields", func(t *testing.T) {
-		feed := &gofeed.Feed{
-			Title:       "Test Feed",
-			Description: "Test Description",
-			Custom: map[string]string{
-				"customField1": "value1",
-				"customField2": "value2",
-			},
-			Items: []*gofeed.Item{},
-		}
-
-		renderer := &gofeed.RSSRenderer{}
-		rssFeed, err := renderer.Render(feed)
-		require.NoError(t, err)
-
-		require.NotNil(t, rssFeed.Custom)
-		assert.Equal(t, "value1", rssFeed.Custom["customField1"])
-		assert.Equal(t, "value2", rssFeed.Custom["customField2"])
-	})
+	// Note: RSS feed-level custom fields are not supported
+	// Custom fields are only supported at the item level in RSS
 
 	t.Run("RSS item-level custom fields", func(t *testing.T) {
 		feed := &gofeed.Feed{
@@ -636,17 +620,23 @@ func TestRendererEdgeCases(t *testing.T) {
 			},
 		}
 
-		renderers := []gofeed.Renderer{
-			&gofeed.RSSRenderer{},
-			&gofeed.AtomRenderer{},
-			&gofeed.JSONRenderer{},
-		}
+		// Test RSS renderer
+		rssRenderer := &gofeed.RSSRenderer{}
+		rssResult, err := rssRenderer.Render(feed)
+		require.NoError(t, err)
+		assert.NotNil(t, rssResult)
 
-		for _, renderer := range renderers {
-			result, err := renderer.Render(feed)
-			require.NoError(t, err)
-			assert.NotNil(t, result)
-		}
+		// Test Atom renderer
+		atomRenderer := &gofeed.AtomRenderer{}
+		atomResult, err := atomRenderer.Render(feed)
+		require.NoError(t, err)
+		assert.NotNil(t, atomResult)
+
+		// Test JSON renderer
+		jsonRenderer := &gofeed.JSONRenderer{}
+		jsonResult, err := jsonRenderer.Render(feed)
+		require.NoError(t, err)
+		assert.NotNil(t, jsonResult)
 	})
 
 	t.Run("Mixed enclosures and images", func(t *testing.T) {
