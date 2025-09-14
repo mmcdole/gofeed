@@ -58,10 +58,10 @@ func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
 	rssFeed.PubDateParsed = feed.PublishedParsed
 
 	// Handle author information
-	if feed.Author != nil {
-		rssFeed.ManagingEditor = r.FormatPersonForRSS(feed.Author)
-	} else if len(feed.Authors) > 0 {
+	if len(feed.Authors) > 0 {
 		rssFeed.ManagingEditor = r.FormatPersonForRSS(feed.Authors[0])
+	} else if feed.Author != nil {
+		rssFeed.ManagingEditor = r.FormatPersonForRSS(feed.Author)
 	}
 
 	// Handle image
@@ -107,10 +107,10 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 	rssItem.PubDateParsed = item.PublishedParsed
 
 	// Handle author
-	if item.Author != nil {
-		rssItem.Author = r.FormatPersonForRSS(item.Author)
-	} else if len(item.Authors) > 0 {
+	if len(item.Authors) > 0 {
 		rssItem.Author = r.FormatPersonForRSS(item.Authors[0])
+	} else if item.Author != nil {
+		rssItem.Author = r.FormatPersonForRSS(item.Author)
 	}
 
 	// Handle GUID
