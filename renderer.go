@@ -21,7 +21,6 @@ import (
 //    - Complex extension-based author fallbacks may not preserve exact original location
 //
 // 2. Atom limitations:
-//    - Generator combines Value+Version+URI in translator, renderer only uses Value
 //    - Icon/Logo preference logic is simplified
 //
 // 3. JSON Feed limitations:
@@ -113,7 +112,6 @@ func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
 	for i, item := range feed.Items {
 		rssFeed.Items[i] = r.renderItem(item)
 	}
-
 
 	return rssFeed, nil
 }
@@ -219,7 +217,6 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 		rssItem.Enclosure = enclosures[0]
 	}
 
-
 	// Handle item Updated field via DublinCore extension (RSS doesn't have native updated field)
 	if item.Updated != "" {
 		if rssItem.DublinCoreExt == nil {
@@ -323,13 +320,17 @@ func (r *AtomRenderer) Render(feed *Feed) (*atom.Feed, error) {
 		}
 	}
 
-	// Handle image
 	if feed.Image != nil {
 		atomFeed.Logo = feed.Image.URL
 	}
 
-	// Handle generator
-	if feed.Generator != "" {
+	if feed.GeneratorDetail != nil {
+		atomFeed.Generator = &atom.Generator{
+			Value:   feed.GeneratorDetail.Value,
+			URI:     feed.GeneratorDetail.URI,
+			Version: feed.GeneratorDetail.Version,
+		}
+	} else if feed.Generator != "" {
 		atomFeed.Generator = &atom.Generator{Value: feed.Generator}
 	}
 

@@ -53,6 +53,7 @@ func (t *DefaultRSSTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Image = t.translateFeedImage(rss)
 	result.Copyright = t.translateFeedCopyright(rss)
 	result.Generator = t.translateFeedGenerator(rss)
+	result.GeneratorDetail = t.translateFeedGeneratorDetail(rss)
 	result.Categories = t.translateFeedCategories(rss)
 	result.Items = t.translateFeedItems(rss)
 	result.ITunesExt = rss.ITunesExt
@@ -254,6 +255,13 @@ func (t *DefaultRSSTranslator) translateFeedCopyright(rss *rss.Feed) (rights str
 
 func (t *DefaultRSSTranslator) translateFeedGenerator(rss *rss.Feed) (generator string) {
 	return rss.Generator
+}
+
+func (t *DefaultRSSTranslator) translateFeedGeneratorDetail(rss *rss.Feed) *Generator {
+	if rss.Generator == "" {
+		return nil
+	}
+	return &Generator{Value: rss.Generator}
 }
 
 func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categories []string) {
@@ -559,6 +567,7 @@ func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Copyright = t.translateFeedCopyright(atom)
 	result.Categories = t.translateFeedCategories(atom)
 	result.Generator = t.translateFeedGenerator(atom)
+	result.GeneratorDetail = t.translateFeedGeneratorDetail(atom)
 	result.Items = t.translateFeedItems(atom)
 	result.Extensions = atom.Extensions
 	result.FeedVersion = atom.Version
@@ -689,6 +698,17 @@ func (t *DefaultAtomTranslator) translateFeedGenerator(atom *atom.Feed) (generat
 		generator = strings.TrimSpace(generator)
 	}
 	return
+}
+
+func (t *DefaultAtomTranslator) translateFeedGeneratorDetail(atom *atom.Feed) *Generator {
+	if atom.Generator == nil {
+		return nil
+	}
+	return &Generator{
+		Value:   atom.Generator.Value,
+		URI:     atom.Generator.URI,
+		Version: atom.Generator.Version,
+	}
 }
 
 func (t *DefaultAtomTranslator) translateFeedCategories(atom *atom.Feed) (categories []string) {

@@ -1,5 +1,10 @@
 {
     "generator": "Feed Generator v0.3 http://example.org",
+    "generatorDetail": {
+        "value": "Feed Generator",
+        "uri": "http://example.org",
+        "version": "0.3"
+    },
     "items": [],
     "feedType": "atom",
     "feedVersion": "0.3"
