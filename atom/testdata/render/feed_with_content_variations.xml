@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Content Test Feed</title>
+  <id>http://example.com/content-feed</id>
+  <updated>2024-01-01T12:00:00Z</updated>
+  <entry>
+    <title>Entry with external content</title>
+    <id>http://example.com/external-content</id>
+    <updated>2024-01-01T11:00:00Z</updated>
+    <summary></summary>
+    <published></published>
+    <content src="http://example.com/external-content.html" type="html"></content>
+  </entry>
+  <entry>
+    <title>Entry with XHTML content</title>
+    <id>http://example.com/xhtml-content</id>
+    <updated>2024-01-01T11:15:00Z</updated>
+    <summary></summary>
+    <published></published>
+    <content src="" type="xhtml">&lt;div xmlns=&#34;http://www.w3.org/1999/xhtml&#34;&gt;&lt;p&gt;XHTML content&lt;/p&gt;&lt;/div&gt;</content>
+  </entry>
+</feed>

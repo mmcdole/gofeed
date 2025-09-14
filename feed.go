@@ -7,6 +7,13 @@ import (
 	ext "github.com/mmcdole/gofeed/extensions"
 )
 
+// Constants for Custom field keys
+const (
+	// CustomAtomIcon is the key used to store Atom icon data in the Custom field
+	// when the Logo is the primary image
+	CustomAtomIcon = "atom:icon"
+)
+
 // Feed is the universal Feed type that atom.Feed
 // and rss.Feed gets translated to. It represents
 // a web feed.
@@ -27,7 +34,8 @@ type Feed struct {
 	Language        string                   `json:"language,omitempty"`
 	Image           *Image                   `json:"image,omitempty"`
 	Copyright       string                   `json:"copyright,omitempty"`
-	Generator       string                   `json:"generator,omitempty"`
+	Generator       string                   `json:"generator,omitempty"` // Deprecated: use feed.GeneratorDetail instead
+	GeneratorDetail *Generator               `json:"generatorDetail,omitempty"`
 	Categories      []string                 `json:"categories,omitempty"`
 	DublinCoreExt   *ext.DublinCoreExtension `json:"dcExt,omitempty"`
 	ITunesExt       *ext.ITunesFeedExtension `json:"itunesExt,omitempty"`
@@ -90,6 +98,12 @@ type Enclosure struct {
 	Type   string `json:"type,omitempty"`
 }
 
+type Generator struct {
+	Value   string `json:"value,omitempty"`
+	URI     string `json:"uri,omitempty"`
+	Version string `json:"version,omitempty"`
+}
+
 // Len returns the length of Items.
 func (f Feed) Len() int {
 	return len(f.Items)
@@ -100,7 +114,7 @@ func (f Feed) Len() int {
 func (f Feed) Less(i, k int) bool {
 	iParsed := f.Items[i].PublishedParsed
 	kParsed := f.Items[k].PublishedParsed
-	
+
 	if iParsed == nil && kParsed == nil {
 		return false
 	}

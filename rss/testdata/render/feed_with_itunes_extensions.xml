@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>iTunes Podcast Feed</title>
+    <link>http://example.com</link>
+    <description>A podcast feed with iTunes extensions</description>
+    <skipHours></skipHours>
+    <skipDays></skipDays>
+    <item>
+      <title>Podcast Episode 1</title>
+      <link>http://example.com/episode1</link>
+      <description>First episode of our podcast</description>
+      <author></author>
+      <comments></comments>
+      <enclosure url="http://example.com/episode1.mp3" length="10485760" type="audio/mpeg"></enclosure>
+      <guid isPermaLink="">episode-1</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

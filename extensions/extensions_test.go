@@ -45,7 +45,6 @@ func TestITunes_Extensions(t *testing.T) {
 	}
 }
 
-
 func TestMedia_Extensions(t *testing.T) {
 	files, _ := filepath.Glob("../testdata/extensions/media/*.xml")
 	for _, f := range files {

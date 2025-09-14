@@ -1,0 +1,72 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Test Feed",
+  "home_page_url": "http://example.com",
+  "items": [
+    {
+      "id": "http://example.com/item1",
+      "url": "http://example.com/item1",
+      "external_url": "http://external.example.com/article",
+      "title": "Comprehensive Item",
+      "content_html": "\u003cp\u003eRich HTML content for the item\u003c/p\u003e",
+      "content_text": "Plain text version of the content",
+      "summary": "A comprehensive JSON Feed item with all fields",
+      "image": "http://example.com/item1-image.jpg",
+      "banner_image": "http://example.com/item1-banner.jpg",
+      "date_published": "2024-01-01T10:00:00Z",
+      "date_modified": "2024-01-01T11:00:00Z",
+      "author": {
+        "name": "Item Author",
+        "url": "http://itemauthor.example.com",
+        "avatar": "http://itemauthor.example.com/avatar.png"
+      },
+      "tags": [
+        "technology",
+        "programming",
+        "json"
+      ],
+      "attachments": [
+        {
+          "url": "http://example.com/item1.mp3",
+          "mime_type": "audio/mpeg",
+          "title": "Episode Audio",
+          "size_in_bytes": 1048576,
+          "duration_in_seconds": 3600
+        },
+        {
+          "url": "http://example.com/item1.pdf",
+          "mime_type": "application/pdf",
+          "title": "Episode Transcript",
+          "size_in_bytes": 2097152
+        }
+      ],
+      "authors": [
+        {
+          "name": "Item Author",
+          "url": "http://itemauthor.example.com"
+        },
+        {
+          "name": "Co-Author",
+          "url": "http://coauthor.example.com"
+        }
+      ],
+      "language": "en-US"
+    },
+    {
+      "id": "http://example.com/item2",
+      "url": "http://example.com/item2",
+      "title": "Simple Item",
+      "content_text": "Simple plain text content",
+      "date_published": "2024-01-02T10:00:00Z",
+      "tags": [
+        "simple"
+      ]
+    },
+    {
+      "id": "http://example.com/item3",
+      "title": "Item with only HTML content",
+      "content_html": "\u003ch1\u003eHTML Only\u003c/h1\u003e\u003cp\u003eThis item has only HTML content\u003c/p\u003e",
+      "date_modified": "2024-01-03T10:00:00Z"
+    }
+  ]
+}

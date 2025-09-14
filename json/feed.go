@@ -1,6 +1,8 @@
 package json
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 // Feed describes the structure for JSON Feed v1.0
 // https://www.jsonfeed.org/version/1/
