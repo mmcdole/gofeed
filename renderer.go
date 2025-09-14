@@ -18,7 +18,7 @@ import (
 // always possible due to format differences:
 //
 // 1. RSS limitations:
-//    - Complex extension-based author fallbacks are simplified
+//    - Complex extension-based author fallbacks may not preserve exact original location
 //
 // 2. Atom limitations:
 //    - Generator combines Value+Version+URI in translator, renderer only uses Value
@@ -57,11 +57,38 @@ func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
 	rssFeed.PubDate = feed.Published
 	rssFeed.PubDateParsed = feed.PublishedParsed
 
-	// Handle author information
+	// Handle extensions first
+	rssFeed.DublinCoreExt = feed.DublinCoreExt
+	rssFeed.ITunesExt = feed.ITunesExt
+	rssFeed.Extensions = feed.Extensions
+
+	// Handle author information with extension fallbacks
+	var feedAuthor *Person
 	if len(feed.Authors) > 0 {
-		rssFeed.ManagingEditor = r.FormatPersonForRSS(feed.Authors[0])
+		feedAuthor = feed.Authors[0]
 	} else if feed.Author != nil {
-		rssFeed.ManagingEditor = r.FormatPersonForRSS(feed.Author)
+		feedAuthor = feed.Author
+	}
+
+	if feedAuthor != nil {
+		rssFeed.ManagingEditor = r.FormatPersonForRSS(feedAuthor)
+
+		// Also populate DublinCore Creator to improve round-trip fidelity
+		if rssFeed.DublinCoreExt == nil {
+			rssFeed.DublinCoreExt = &ext.DublinCoreExtension{}
+		}
+		// Only add if not already present
+		dcAuthor := r.FormatPersonForRSS(feedAuthor)
+		creatorExists := false
+		for _, creator := range rssFeed.DublinCoreExt.Creator {
+			if creator == dcAuthor {
+				creatorExists = true
+				break
+			}
+		}
+		if !creatorExists {
+			rssFeed.DublinCoreExt.Creator = append(rssFeed.DublinCoreExt.Creator, dcAuthor)
+		}
 	}
 
 	// Handle image
@@ -87,10 +114,6 @@ func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
 		rssFeed.Items[i] = r.renderItem(item)
 	}
 
-	// Handle extensions
-	rssFeed.DublinCoreExt = feed.DublinCoreExt
-	rssFeed.ITunesExt = feed.ITunesExt
-	rssFeed.Extensions = feed.Extensions
 
 	return rssFeed, nil
 }
@@ -106,11 +129,44 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 	rssItem.PubDate = item.Published
 	rssItem.PubDateParsed = item.PublishedParsed
 
-	// Handle author
+	// Handle extensions first
+	rssItem.DublinCoreExt = item.DublinCoreExt
+	rssItem.ITunesExt = item.ITunesExt
+	rssItem.Extensions = item.Extensions
+	rssItem.Custom = item.Custom
+
+	// Handle author with extension fallbacks
+	var itemAuthor *Person
 	if len(item.Authors) > 0 {
-		rssItem.Author = r.FormatPersonForRSS(item.Authors[0])
+		itemAuthor = item.Authors[0]
 	} else if item.Author != nil {
-		rssItem.Author = r.FormatPersonForRSS(item.Author)
+		itemAuthor = item.Author
+	}
+
+	if itemAuthor != nil {
+		rssItem.Author = r.FormatPersonForRSS(itemAuthor)
+
+		// Also populate DublinCore Creator to improve round-trip fidelity
+		if rssItem.DublinCoreExt == nil {
+			rssItem.DublinCoreExt = &ext.DublinCoreExtension{}
+		}
+		// Only add if not already present
+		dcAuthor := r.FormatPersonForRSS(itemAuthor)
+		creatorExists := false
+		for _, creator := range rssItem.DublinCoreExt.Creator {
+			if creator == dcAuthor {
+				creatorExists = true
+				break
+			}
+		}
+		if !creatorExists {
+			rssItem.DublinCoreExt.Creator = append(rssItem.DublinCoreExt.Creator, dcAuthor)
+		}
+
+		// Also populate iTunes Author if iTunes extension exists
+		if rssItem.ITunesExt != nil && rssItem.ITunesExt.Author == "" {
+			rssItem.ITunesExt.Author = r.FormatPersonForRSS(itemAuthor)
+		}
 	}
 
 	// Handle GUID
@@ -163,11 +219,6 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 		rssItem.Enclosure = enclosures[0]
 	}
 
-	// Handle extensions
-	rssItem.DublinCoreExt = item.DublinCoreExt
-	rssItem.ITunesExt = item.ITunesExt
-	rssItem.Extensions = item.Extensions
-	rssItem.Custom = item.Custom
 
 	// Handle item Updated field via DublinCore extension (RSS doesn't have native updated field)
 	if item.Updated != "" {
@@ -438,17 +489,7 @@ func (r *JSONRenderer) Render(feed *Feed) (*json.Feed, error) {
 	}
 
 	// Handle author
-	if feed.Author != nil {
-		jsonFeed.Author = &json.Author{
-			Name: feed.Author.Name,
-		}
-		// JSON Feed doesn't support email in author, but we could put it in name
-		if feed.Author.Email != "" && feed.Author.Name != "" {
-			jsonFeed.Author.Name = feed.Author.Name + " <" + feed.Author.Email + ">"
-		} else if feed.Author.Email != "" {
-			jsonFeed.Author.Name = feed.Author.Email
-		}
-	} else if len(feed.Authors) > 0 {
+	if len(feed.Authors) > 0 {
 		// Use the first author for the feed-level author
 		jsonFeed.Author = &json.Author{
 			Name: feed.Authors[0].Name,
@@ -470,6 +511,16 @@ func (r *JSONRenderer) Render(feed *Feed) (*json.Feed, error) {
 			} else if author.Email != "" {
 				jsonFeed.Authors[i].Name = author.Email
 			}
+		}
+	} else if feed.Author != nil {
+		jsonFeed.Author = &json.Author{
+			Name: feed.Author.Name,
+		}
+		// JSON Feed doesn't support email in author, but we could put it in name
+		if feed.Author.Email != "" && feed.Author.Name != "" {
+			jsonFeed.Author.Name = feed.Author.Name + " <" + feed.Author.Email + ">"
+		} else if feed.Author.Email != "" {
+			jsonFeed.Author.Name = feed.Author.Email
 		}
 	}
 
@@ -508,16 +559,7 @@ func (r *JSONRenderer) renderItem(item *Item) *json.Item {
 	}
 
 	// Handle author
-	if item.Author != nil {
-		jsonItem.Author = &json.Author{
-			Name: item.Author.Name,
-		}
-		if item.Author.Email != "" && item.Author.Name != "" {
-			jsonItem.Author.Name = item.Author.Name + " <" + item.Author.Email + ">"
-		} else if item.Author.Email != "" {
-			jsonItem.Author.Name = item.Author.Email
-		}
-	} else if len(item.Authors) > 0 {
+	if len(item.Authors) > 0 {
 		// Use the first author for the item-level author
 		jsonItem.Author = &json.Author{
 			Name: item.Authors[0].Name,
@@ -539,6 +581,15 @@ func (r *JSONRenderer) renderItem(item *Item) *json.Item {
 			} else if author.Email != "" {
 				jsonItem.Authors[i].Name = author.Email
 			}
+		}
+	} else if item.Author != nil {
+		jsonItem.Author = &json.Author{
+			Name: item.Author.Name,
+		}
+		if item.Author.Email != "" && item.Author.Name != "" {
+			jsonItem.Author.Name = item.Author.Name + " <" + item.Author.Email + ">"
+		} else if item.Author.Email != "" {
+			jsonItem.Author.Name = item.Author.Email
 		}
 	}
 

@@ -9,6 +9,7 @@ import (
 
 	"github.com/mmcdole/gofeed"
 	"github.com/mmcdole/gofeed/atom"
+	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/json"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
@@ -898,4 +899,92 @@ func TestJSONRenderer_TagsHandling(t *testing.T) {
 	item := jsonFeed.Items[0]
 	require.Len(t, item.Tags, 3)
 	assert.Equal(t, []string{"golang", "testing", "feeds"}, item.Tags)
+}
+
+// Test multi-field author preservation
+func TestRSSRenderer_MultiFieldAuthorPreservation(t *testing.T) {
+	t.Run("Feed-level author populates both ManagingEditor and DublinCore Creator", func(t *testing.T) {
+		feed := &gofeed.Feed{
+			Title:       "Test Feed",
+			Description: "Test Description",
+			Authors: []*gofeed.Person{
+				{Name: "John Doe", Email: "john@example.com"},
+			},
+			Items: []*gofeed.Item{},
+		}
+
+		renderer := &gofeed.RSSRenderer{}
+		rssFeed, err := renderer.Render(feed)
+		require.NoError(t, err)
+
+		// Should populate ManagingEditor
+		assert.Equal(t, "john@example.com (John Doe)", rssFeed.ManagingEditor)
+
+		// Should also populate DublinCore Creator
+		require.NotNil(t, rssFeed.DublinCoreExt)
+		require.Len(t, rssFeed.DublinCoreExt.Creator, 1)
+		assert.Equal(t, "john@example.com (John Doe)", rssFeed.DublinCoreExt.Creator[0])
+	})
+
+	t.Run("Item-level author populates Author, DublinCore Creator, and iTunes Author", func(t *testing.T) {
+		feed := &gofeed.Feed{
+			Title:       "Test Feed",
+			Description: "Test Description",
+			Items: []*gofeed.Item{
+				{
+					Title: "Test Item",
+					Authors: []*gofeed.Person{
+						{Name: "Jane Smith", Email: "jane@example.com"},
+					},
+					ITunesExt: &ext.ITunesItemExtension{
+						Duration: "30:00", // Pre-existing iTunes extension
+					},
+				},
+			},
+		}
+
+		renderer := &gofeed.RSSRenderer{}
+		rssFeed, err := renderer.Render(feed)
+		require.NoError(t, err)
+
+		require.Len(t, rssFeed.Items, 1)
+		item := rssFeed.Items[0]
+
+		// Should populate native Author field
+		assert.Equal(t, "jane@example.com (Jane Smith)", item.Author)
+
+		// Should also populate DublinCore Creator
+		require.NotNil(t, item.DublinCoreExt)
+		require.Len(t, item.DublinCoreExt.Creator, 1)
+		assert.Equal(t, "jane@example.com (Jane Smith)", item.DublinCoreExt.Creator[0])
+
+		// Should also populate iTunes Author
+		require.NotNil(t, item.ITunesExt)
+		assert.Equal(t, "jane@example.com (Jane Smith)", item.ITunesExt.Author)
+		assert.Equal(t, "30:00", item.ITunesExt.Duration) // Should preserve existing iTunes fields
+	})
+
+	t.Run("Don't duplicate existing DublinCore Creator", func(t *testing.T) {
+		feed := &gofeed.Feed{
+			Title:       "Test Feed",
+			Description: "Test Description",
+			Authors: []*gofeed.Person{
+				{Name: "Bob Wilson", Email: "bob@example.com"},
+			},
+			DublinCoreExt: &ext.DublinCoreExtension{
+				Creator: []string{"bob@example.com (Bob Wilson)", "Other Creator"},
+			},
+			Items: []*gofeed.Item{},
+		}
+
+		renderer := &gofeed.RSSRenderer{}
+		rssFeed, err := renderer.Render(feed)
+		require.NoError(t, err)
+
+		// Should not duplicate existing Creator
+		require.NotNil(t, rssFeed.DublinCoreExt)
+		require.Len(t, rssFeed.DublinCoreExt.Creator, 2)
+		assert.Equal(t, "bob@example.com (Bob Wilson)", rssFeed.DublinCoreExt.Creator[0])
+		assert.Equal(t, "Other Creator", rssFeed.DublinCoreExt.Creator[1])
+	})
 }
