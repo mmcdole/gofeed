@@ -24,11 +24,11 @@ import (
 //    - Feed-level dates are derived from first item in translator, not used in converter
 //    - Some JSON Feed specific fields (UserComment, NextURL, etc.) are not supported
 
-// RSSConverter converts a Feed struct into an RSS feed structure
-type RSSConverter struct{}
+// DefaultRSSConverter converts a Feed struct into an RSS feed structure
+type DefaultRSSConverter struct{}
 
 // Convert converts the universal Feed into an RSS feed
-func (c *RSSConverter) Convert(feed *Feed) (*rss.Feed, error) {
+func (c *DefaultRSSConverter) Convert(feed *Feed) (*rss.Feed, error) {
 	if feed == nil {
 		return nil, fmt.Errorf("feed cannot be nil")
 	}
@@ -64,14 +64,14 @@ func (c *RSSConverter) Convert(feed *Feed) (*rss.Feed, error) {
 	}
 
 	if feedAuthor != nil {
-		rssFeed.ManagingEditor = c.FormatPersonForRSS(feedAuthor)
+		rssFeed.ManagingEditor = c.formatPersonForRSS(feedAuthor)
 
 		// Also populate DublinCore Creator to improve round-trip fidelity
 		if rssFeed.DublinCoreExt == nil {
 			rssFeed.DublinCoreExt = &ext.DublinCoreExtension{}
 		}
 		// Only add if not already present
-		dcAuthor := c.FormatPersonForRSS(feedAuthor)
+		dcAuthor := c.formatPersonForRSS(feedAuthor)
 		creatorExists := false
 		for _, creator := range rssFeed.DublinCoreExt.Creator {
 			if creator == dcAuthor {
@@ -110,7 +110,7 @@ func (c *RSSConverter) Convert(feed *Feed) (*rss.Feed, error) {
 	return rssFeed, nil
 }
 
-func (c *RSSConverter) convertItem(item *Item) *rss.Item {
+func (c *DefaultRSSConverter) convertItem(item *Item) *rss.Item {
 	rssItem := &rss.Item{}
 	rssItem.Title = item.Title
 	rssItem.Description = item.Description
@@ -136,14 +136,14 @@ func (c *RSSConverter) convertItem(item *Item) *rss.Item {
 	}
 
 	if itemAuthor != nil {
-		rssItem.Author = c.FormatPersonForRSS(itemAuthor)
+		rssItem.Author = c.formatPersonForRSS(itemAuthor)
 
 		// Also populate DublinCore Creator to improve round-trip fidelity
 		if rssItem.DublinCoreExt == nil {
 			rssItem.DublinCoreExt = &ext.DublinCoreExtension{}
 		}
 		// Only add if not already present
-		dcAuthor := c.FormatPersonForRSS(itemAuthor)
+		dcAuthor := c.formatPersonForRSS(itemAuthor)
 		creatorExists := false
 		for _, creator := range rssItem.DublinCoreExt.Creator {
 			if creator == dcAuthor {
@@ -157,7 +157,7 @@ func (c *RSSConverter) convertItem(item *Item) *rss.Item {
 
 		// Also populate iTunes Author if iTunes extension exists
 		if rssItem.ITunesExt != nil && rssItem.ITunesExt.Author == "" {
-			rssItem.ITunesExt.Author = c.FormatPersonForRSS(itemAuthor)
+			rssItem.ITunesExt.Author = c.formatPersonForRSS(itemAuthor)
 		}
 	}
 
@@ -232,7 +232,7 @@ func (c *RSSConverter) convertItem(item *Item) *rss.Item {
 	return rssItem
 }
 
-func (c *RSSConverter) FormatPersonForRSS(person *Person) string {
+func (c *DefaultRSSConverter) formatPersonForRSS(person *Person) string {
 	if person.Email != "" && person.Name != "" {
 		return person.Email + " (" + person.Name + ")"
 	} else if person.Email != "" {
@@ -243,11 +243,11 @@ func (c *RSSConverter) FormatPersonForRSS(person *Person) string {
 	return ""
 }
 
-// AtomConverter converts a Feed struct into an Atom feed structure
-type AtomConverter struct{}
+// DefaultAtomConverter converts a Feed struct into an Atom feed structure
+type DefaultAtomConverter struct{}
 
 // Convert converts the universal Feed into an Atom feed
-func (c *AtomConverter) Convert(feed *Feed) (*atom.Feed, error) {
+func (c *DefaultAtomConverter) Convert(feed *Feed) (*atom.Feed, error) {
 	if feed == nil {
 		return nil, fmt.Errorf("feed cannot be nil")
 	}
@@ -357,7 +357,7 @@ func (c *AtomConverter) Convert(feed *Feed) (*atom.Feed, error) {
 	return atomFeed, nil
 }
 
-func (c *AtomConverter) convertEntry(item *Item) *atom.Entry {
+func (c *DefaultAtomConverter) convertEntry(item *Item) *atom.Entry {
 	entry := &atom.Entry{}
 	entry.Title = item.Title
 	entry.Summary = item.Description
@@ -464,11 +464,11 @@ func (c *AtomConverter) convertEntry(item *Item) *atom.Entry {
 	return entry
 }
 
-// JSONConverter converts a Feed struct into a JSON feed structure
-type JSONConverter struct{}
+// DefaultJSONConverter converts a Feed struct into a JSON feed structure
+type DefaultJSONConverter struct{}
 
 // Convert converts the universal Feed into a JSON feed
-func (c *JSONConverter) Convert(feed *Feed) (*json.Feed, error) {
+func (c *DefaultJSONConverter) Convert(feed *Feed) (*json.Feed, error) {
 	if feed == nil {
 		return nil, fmt.Errorf("feed cannot be nil")
 	}
@@ -531,7 +531,7 @@ func (c *JSONConverter) Convert(feed *Feed) (*json.Feed, error) {
 	return jsonFeed, nil
 }
 
-func (c *JSONConverter) convertItem(item *Item) *json.Item {
+func (c *DefaultJSONConverter) convertItem(item *Item) *json.Item {
 	jsonItem := &json.Item{}
 	jsonItem.ID = item.GUID
 	if jsonItem.ID == "" {

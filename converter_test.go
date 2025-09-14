@@ -40,7 +40,7 @@ func TestRSSConverter_Render(t *testing.T) {
 		require.NoError(t, err)
 
 		// Render back to RSS
-		converter := &gofeed.RSSConverter{}
+		converter := &gofeed.DefaultRSSConverter{}
 		renderedRSSFeed, err := converter.Convert(universalFeed)
 		require.NoError(t, err)
 
@@ -79,7 +79,7 @@ func TestRSSConverter_Render(t *testing.T) {
 }
 
 func TestRSSConverter_Render_NilFeed(t *testing.T) {
-	converter := &gofeed.RSSConverter{}
+	converter := &gofeed.DefaultRSSConverter{}
 	result, err := converter.Convert(nil)
 	assert.Nil(t, result)
 	assert.NotNil(t, err)
@@ -110,7 +110,7 @@ func TestAtomConverter_Render(t *testing.T) {
 		require.NoError(t, err)
 
 		// Render back to Atom
-		converter := &gofeed.AtomConverter{}
+		converter := &gofeed.DefaultAtomConverter{}
 		renderedAtomFeed, err := converter.Convert(universalFeed)
 		require.NoError(t, err)
 
@@ -160,7 +160,7 @@ func TestAtomConverter_Render(t *testing.T) {
 }
 
 func TestAtomConverter_Render_NilFeed(t *testing.T) {
-	converter := &gofeed.AtomConverter{}
+	converter := &gofeed.DefaultAtomConverter{}
 	result, err := converter.Convert(nil)
 	assert.Nil(t, result)
 	assert.NotNil(t, err)
@@ -195,7 +195,7 @@ func TestJSONConverter_Render(t *testing.T) {
 		require.NoError(t, err)
 
 		// Render back to JSON
-		converter := &gofeed.JSONConverter{}
+		converter := &gofeed.DefaultJSONConverter{}
 		renderedJSONFeed, err := converter.Convert(universalFeed)
 		require.NoError(t, err)
 
@@ -232,7 +232,7 @@ func TestJSONConverter_Render(t *testing.T) {
 }
 
 func TestJSONConverter_Render_NilFeed(t *testing.T) {
-	converter := &gofeed.JSONConverter{}
+	converter := &gofeed.DefaultJSONConverter{}
 	result, err := converter.Convert(nil)
 	assert.Nil(t, result)
 	assert.NotNil(t, err)
@@ -241,7 +241,7 @@ func TestJSONConverter_Render_NilFeed(t *testing.T) {
 
 // Test specific field mapping scenarios
 func TestRSSConverter_AuthorFormatting(t *testing.T) {
-	converter := &gofeed.RSSConverter{}
+	converter := &gofeed.DefaultRSSConverter{}
 
 	tests := []struct {
 		name     string
@@ -272,7 +272,7 @@ func TestRSSConverter_AuthorFormatting(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := converter.FormatPersonForRSS(tt.author)
+			result := converter.formatPersonForRSS(tt.author)
 			assert.Equal(t, tt.expected, result)
 		})
 	}
@@ -287,7 +287,7 @@ func TestAtomConverter_LinkGeneration(t *testing.T) {
 		Items:       []*gofeed.Item{},
 	}
 
-	converter := &gofeed.AtomConverter{}
+	converter := &gofeed.DefaultAtomConverter{}
 	renderedAtomFeed, err := converter.Convert(feed)
 	require.NoError(t, err)
 
@@ -313,7 +313,7 @@ func TestAtomConverter_LinkGeneration(t *testing.T) {
 }
 
 func TestJSONConverter_AuthorFormatting(t *testing.T) {
-	converter := &gofeed.JSONConverter{}
+	converter := &gofeed.DefaultJSONConverter{}
 
 	tests := []struct {
 		name     string
@@ -355,7 +355,7 @@ func TestJSONConverter_AuthorFormatting(t *testing.T) {
 }
 
 func TestJSONConverter_EnclosureConversion(t *testing.T) {
-	converter := &gofeed.JSONConverter{}
+	converter := &gofeed.DefaultJSONConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -403,7 +403,7 @@ func TestRoundTripLimitations(t *testing.T) {
 			},
 		}
 
-		converter := &gofeed.RSSConverter{}
+		converter := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := converter.Convert(universalFeed)
 		require.NoError(t, err)
 
@@ -424,7 +424,7 @@ func TestRoundTripLimitations(t *testing.T) {
 			Items:     []*gofeed.Item{},
 		}
 
-		converter := &gofeed.JSONConverter{}
+		converter := &gofeed.DefaultJSONConverter{}
 		jsonFeed, err := converter.Convert(universalFeed)
 		require.NoError(t, err)
 
@@ -442,7 +442,7 @@ func TestRoundTripLimitations(t *testing.T) {
 			Items:     []*gofeed.Item{},
 		}
 
-		converter := &gofeed.AtomConverter{}
+		converter := &gofeed.DefaultAtomConverter{}
 		atomFeed, err := converter.Convert(universalFeed)
 		require.NoError(t, err)
 
@@ -472,7 +472,7 @@ func TestCustomFieldHandling(t *testing.T) {
 			},
 		}
 
-		converter := &gofeed.RSSConverter{}
+		converter := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := converter.Convert(feed)
 		require.NoError(t, err)
 
@@ -497,13 +497,13 @@ func TestCustomFieldHandling(t *testing.T) {
 		}
 
 		// Atom doesn't have Custom field support
-		atomRenderer := &gofeed.AtomConverter{}
+		atomRenderer := &gofeed.DefaultAtomConverter{}
 		atomFeed, err := atomRenderer.Convert(feed)
 		require.NoError(t, err)
 		// Can't test for absence since Atom struct doesn't have Custom field
 
-		// JSON doesn't have Custom field support  
-		jsonRenderer := &gofeed.JSONConverter{}
+		// JSON doesn't have Custom field support
+		jsonRenderer := &gofeed.DefaultJSONConverter{}
 		jsonFeed, err := jsonRenderer.Convert(feed)
 		require.NoError(t, err)
 		// Can't test for absence since JSON struct doesn't have Custom field
@@ -531,35 +531,35 @@ func TestItemImageHandling(t *testing.T) {
 	}
 
 	t.Run("RSS item image handling via enclosures", func(t *testing.T) {
-		converter := &gofeed.RSSConverter{}
+		converter := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := converter.Convert(feed)
 		require.NoError(t, err)
 
 		require.Len(t, rssFeed.Items, 1)
 		item := rssFeed.Items[0]
-		
+
 		// Should have image as enclosure
 		require.NotNil(t, item.Enclosures)
 		require.Len(t, item.Enclosures, 1)
-		
+
 		enclosure := item.Enclosures[0]
 		assert.Equal(t, "https://example.com/item-image.jpg", enclosure.URL)
-		assert.Equal(t, "", enclosure.Type) // Type not guessed for arbitrary URLs
+		assert.Equal(t, "", enclosure.Type)   // Type not guessed for arbitrary URLs
 		assert.Equal(t, "", enclosure.Length) // Length not guessed
-		
+
 		// Primary enclosure should be set
 		require.NotNil(t, item.Enclosure)
 		assert.Equal(t, "https://example.com/item-image.jpg", item.Enclosure.URL)
 	})
 
 	t.Run("Atom item image as enclosure link", func(t *testing.T) {
-		converter := &gofeed.AtomConverter{}
+		converter := &gofeed.DefaultAtomConverter{}
 		atomFeed, err := converter.Convert(feed)
 		require.NoError(t, err)
 
 		require.Len(t, atomFeed.Entries, 1)
 		entry := atomFeed.Entries[0]
-		
+
 		// Should have image as enclosure link
 		foundImageLink := false
 		for _, link := range entry.Links {
@@ -573,7 +573,7 @@ func TestItemImageHandling(t *testing.T) {
 	})
 
 	t.Run("JSON item image native support", func(t *testing.T) {
-		converter := &gofeed.JSONConverter{}
+		converter := &gofeed.DefaultJSONConverter{}
 		jsonFeed, err := converter.Convert(feed)
 		require.NoError(t, err)
 
@@ -591,21 +591,21 @@ func TestRendererEdgeCases(t *testing.T) {
 		}
 
 		// RSS converter
-		rssRenderer := &gofeed.RSSConverter{}
+		rssRenderer := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := rssRenderer.Convert(feed)
 		require.NoError(t, err)
 		assert.Equal(t, "Empty Feed", rssFeed.Title)
 		assert.Len(t, rssFeed.Items, 0)
 
 		// Atom converter
-		atomRenderer := &gofeed.AtomConverter{}
+		atomRenderer := &gofeed.DefaultAtomConverter{}
 		atomFeed, err := atomRenderer.Convert(feed)
 		require.NoError(t, err)
 		assert.Equal(t, "Empty Feed", atomFeed.Title)
 		assert.Len(t, atomFeed.Entries, 0)
 
 		// JSON converter
-		jsonRenderer := &gofeed.JSONConverter{}
+		jsonRenderer := &gofeed.DefaultJSONConverter{}
 		jsonFeed, err := jsonRenderer.Convert(feed)
 		require.NoError(t, err)
 		assert.Equal(t, "Empty Feed", jsonFeed.Title)
@@ -616,25 +616,25 @@ func TestRendererEdgeCases(t *testing.T) {
 		feed := &gofeed.Feed{
 			Title: "Minimal Feed",
 			Items: []*gofeed.Item{
-				{}, // Completely empty item
+				{},                    // Completely empty item
 				{Title: "Just Title"}, // Item with only title
 			},
 		}
 
 		// Test RSS converter
-		rssRenderer := &gofeed.RSSConverter{}
+		rssRenderer := &gofeed.DefaultRSSConverter{}
 		rssResult, err := rssRenderer.Convert(feed)
 		require.NoError(t, err)
 		assert.NotNil(t, rssResult)
 
 		// Test Atom converter
-		atomRenderer := &gofeed.AtomConverter{}
+		atomRenderer := &gofeed.DefaultAtomConverter{}
 		atomResult, err := atomRenderer.Convert(feed)
 		require.NoError(t, err)
 		assert.NotNil(t, atomResult)
 
 		// Test JSON converter
-		jsonRenderer := &gofeed.JSONConverter{}
+		jsonRenderer := &gofeed.DefaultJSONConverter{}
 		jsonResult, err := jsonRenderer.Convert(feed)
 		require.NoError(t, err)
 		assert.NotNil(t, jsonResult)
@@ -654,20 +654,20 @@ func TestRendererEdgeCases(t *testing.T) {
 			},
 		}
 
-		rssRenderer := &gofeed.RSSConverter{}
+		rssRenderer := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := rssRenderer.Convert(feed)
 		require.NoError(t, err)
 
 		item := rssFeed.Items[0]
 		require.Len(t, item.Enclosures, 2) // Original enclosure + image enclosure
-		
+
 		// Original enclosure should be first
 		assert.Equal(t, "https://example.com/audio.mp3", item.Enclosures[0].URL)
 		assert.Equal(t, "audio/mpeg", item.Enclosures[0].Type)
-		
+
 		// Image enclosure should be second
 		assert.Equal(t, "https://example.com/image.jpg", item.Enclosures[1].URL)
-		
+
 		// Primary enclosure should be the audio (first one)
 		assert.Equal(t, "https://example.com/audio.mp3", item.Enclosure.URL)
 	})
@@ -687,7 +687,7 @@ func TestRendererEdgeCases(t *testing.T) {
 		}
 
 		// RSS converter should not duplicate
-		rssRenderer := &gofeed.RSSConverter{}
+		rssRenderer := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := rssRenderer.Convert(feed)
 		require.NoError(t, err)
 
@@ -697,7 +697,7 @@ func TestRendererEdgeCases(t *testing.T) {
 		assert.Equal(t, "image/jpeg", item.Enclosures[0].Type) // Original type preserved
 
 		// Atom converter should not duplicate
-		atomRenderer := &gofeed.AtomConverter{}
+		atomRenderer := &gofeed.DefaultAtomConverter{}
 		atomFeed, err := atomRenderer.Convert(feed)
 		require.NoError(t, err)
 
@@ -713,7 +713,7 @@ func TestRendererEdgeCases(t *testing.T) {
 
 	t.Run("Authors array vs single author", func(t *testing.T) {
 		feed := &gofeed.Feed{
-			Title: "Author Test Feed",
+			Title:  "Author Test Feed",
 			Author: &gofeed.Person{Name: "Single Author", Email: "single@example.com"},
 			Authors: []*gofeed.Person{
 				{Name: "First Author", Email: "first@example.com"},
@@ -721,7 +721,7 @@ func TestRendererEdgeCases(t *testing.T) {
 			},
 			Items: []*gofeed.Item{
 				{
-					Title: "Test Item",
+					Title:  "Test Item",
 					Author: &gofeed.Person{Name: "Item Author", Email: "item@example.com"},
 					Authors: []*gofeed.Person{
 						{Name: "Item First", Email: "itemfirst@example.com"},
@@ -731,19 +731,19 @@ func TestRendererEdgeCases(t *testing.T) {
 		}
 
 		// RSS should prefer Authors over Author
-		rssRenderer := &gofeed.RSSConverter{}
+		rssRenderer := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := rssRenderer.Convert(feed)
 		require.NoError(t, err)
-		
+
 		// Should use first author from Authors array
 		assert.Contains(t, rssFeed.ManagingEditor, "First Author")
 		assert.Contains(t, rssFeed.Items[0].Author, "Item First")
 
 		// Atom should preserve all authors
-		atomRenderer := &gofeed.AtomConverter{}
+		atomRenderer := &gofeed.DefaultAtomConverter{}
 		atomFeed, err := atomRenderer.Convert(feed)
 		require.NoError(t, err)
-		
+
 		require.Len(t, atomFeed.Authors, 2)
 		assert.Equal(t, "First Author", atomFeed.Authors[0].Name)
 		assert.Equal(t, "Second Author", atomFeed.Authors[1].Name)
@@ -751,7 +751,7 @@ func TestRendererEdgeCases(t *testing.T) {
 }
 
 func TestRSSConverter_VersionDefaults(t *testing.T) {
-	converter := &gofeed.RSSConverter{}
+	converter := &gofeed.DefaultRSSConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -766,7 +766,7 @@ func TestRSSConverter_VersionDefaults(t *testing.T) {
 }
 
 func TestAtomConverter_VersionDefaults(t *testing.T) {
-	converter := &gofeed.AtomConverter{}
+	converter := &gofeed.DefaultAtomConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -781,7 +781,7 @@ func TestAtomConverter_VersionDefaults(t *testing.T) {
 }
 
 func TestJSONConverter_VersionDefaults(t *testing.T) {
-	converter := &gofeed.JSONConverter{}
+	converter := &gofeed.DefaultJSONConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -797,7 +797,7 @@ func TestJSONConverter_VersionDefaults(t *testing.T) {
 
 // Test multiple authors handling
 func TestAtomConverter_MultipleAuthors(t *testing.T) {
-	converter := &gofeed.AtomConverter{}
+	converter := &gofeed.DefaultAtomConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -821,7 +821,7 @@ func TestAtomConverter_MultipleAuthors(t *testing.T) {
 }
 
 func TestJSONConverter_MultipleAuthors(t *testing.T) {
-	converter := &gofeed.JSONConverter{}
+	converter := &gofeed.DefaultJSONConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -848,7 +848,7 @@ func TestJSONConverter_MultipleAuthors(t *testing.T) {
 
 // Test category handling
 func TestRSSConverter_Categories(t *testing.T) {
-	converter := &gofeed.RSSConverter{}
+	converter := &gofeed.DefaultRSSConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -879,7 +879,7 @@ func TestRSSConverter_Categories(t *testing.T) {
 }
 
 func TestJSONConverter_TagsHandling(t *testing.T) {
-	converter := &gofeed.JSONConverter{}
+	converter := &gofeed.DefaultJSONConverter{}
 
 	feed := &gofeed.Feed{
 		Title:       "Test Feed",
@@ -913,7 +913,7 @@ func TestRSSConverter_MultiFieldAuthorPreservation(t *testing.T) {
 			Items: []*gofeed.Item{},
 		}
 
-		converter := &gofeed.RSSConverter{}
+		converter := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := converter.Convert(feed)
 		require.NoError(t, err)
 
@@ -943,7 +943,7 @@ func TestRSSConverter_MultiFieldAuthorPreservation(t *testing.T) {
 			},
 		}
 
-		converter := &gofeed.RSSConverter{}
+		converter := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := converter.Convert(feed)
 		require.NoError(t, err)
 
@@ -977,7 +977,7 @@ func TestRSSConverter_MultiFieldAuthorPreservation(t *testing.T) {
 			Items: []*gofeed.Item{},
 		}
 
-		converter := &gofeed.RSSConverter{}
+		converter := &gofeed.DefaultRSSConverter{}
 		rssFeed, err := converter.Convert(feed)
 		require.NoError(t, err)
 
