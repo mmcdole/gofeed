@@ -24,7 +24,12 @@ import (
 //    - Feed-level dates are derived from first item in translator, not used in converter
 //    - Some JSON Feed specific fields (UserComment, NextURL, etc.) are not supported
 
-// DefaultRSSConverter converts a Feed struct into an RSS feed structure
+// RSSConverter converts a universal Feed struct into an RSS feed structure
+type RSSConverter interface {
+	Convert(feed *Feed) (*rss.Feed, error)
+}
+
+// DefaultRSSConverter converts a universal Feed struct into an RSS feed structure
 type DefaultRSSConverter struct{}
 
 // Convert converts the universal Feed into an RSS feed
@@ -243,7 +248,12 @@ func (c *DefaultRSSConverter) FormatPersonForRSS(person *Person) string {
 	return ""
 }
 
-// DefaultAtomConverter converts a Feed struct into an Atom feed structure
+// AtomConverter converts a universal Feed struct into an Atom feed structure
+type AtomConverter interface {
+	Convert(feed *Feed) (*atom.Feed, error)
+}
+
+// DefaultAtomConverter converts a universal Feed struct into an Atom feed structure
 type DefaultAtomConverter struct{}
 
 // Convert converts the universal Feed into an Atom feed
@@ -464,7 +474,12 @@ func (c *DefaultAtomConverter) convertEntry(item *Item) *atom.Entry {
 	return entry
 }
 
-// DefaultJSONConverter converts a Feed struct into a JSON feed structure
+// JSONConverter converts a universal Feed struct into a JSON feed structure
+type JSONConverter interface {
+	Convert(feed *Feed) (*json.Feed, error)
+}
+
+// DefaultJSONConverter converts a universal Feed struct into a JSON feed structure
 type DefaultJSONConverter struct{}
 
 // Convert converts the universal Feed into a JSON feed
