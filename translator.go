@@ -15,7 +15,6 @@ import (
 	"golang.org/x/net/html"
 )
 
-
 // Translator converts a particular feed (atom.Feed or rss.Feed of json.Feed)
 // into the generic Feed struct
 type Translator interface {

@@ -7,7 +7,6 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
-
 // Parser is an JSON Feed Parser
 type Parser struct{}
 
