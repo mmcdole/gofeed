@@ -2,12 +2,14 @@
 
 [![Build Status](https://travis-ci.org/mmcdole/gofeed.svg?branch=master)](https://travis-ci.org/mmcdole/gofeed) [![Coverage Status](https://coveralls.io/repos/github/mmcdole/gofeed/badge.svg?branch=master)](https://coveralls.io/github/mmcdole/gofeed?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/mmcdole/gofeed)](https://goreportcard.com/report/github.com/mmcdole/gofeed) [![](https://godoc.org/github.com/mmcdole/gofeed?status.svg)](http://godoc.org/github.com/mmcdole/gofeed) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
-# Gofeed: A Robust Feed Parser for Golang
+# Gofeed: A Robust Feed Library for Golang
 
 <img src="https://github.com/mmcdole/gofeed/assets/3767096/ab4e7b0e-1472-4249-880c-c6784000ed31" width="150" height="150"> 
 <br /><br />
 
 `gofeed` is a powerful and flexible library designed for parsing **RSS**, **Atom**, and **JSON** feeds across various formats and versions. It effectively manages non-standard elements and known extensions, and demonstrates resilience against common feed issues.
+
+`gofeed` allows you to render a feed to RSS, Atom, or JSON, allowing for conversion between feed types, creation of new feeds, or postprocessing of an existing feed. 
 
 ## Table of Contents
 - [Features](#features)
@@ -26,7 +28,9 @@
 - JSON (1.0, 1.1)
 
 ### Handling Invalid Feeds
+
 `gofeed` takes a best-effort approach to deal with broken or invalid XML feeds, capable of handling issues like:
+
 - Unescaped markup
 - Undeclared namespace prefixes
 - Missing or illegal tags
@@ -42,11 +46,14 @@ For added convenience, gofeed includes native support for parsing certain well-k
 
 - Dublin Core: Accessible via `Feed.DublinCoreExt` and `Item.DublinCoreExt`
 - Apple iTunes: Accessible via `Feed.ITunesExt` and `Item.ITunesExt`
+
+### Feed Rendering
+
+Whether a feed is created by parsing an existing feed or creating a feed from scratch, `gofeed` can render the feed to JSON Feed 1.1, RSS 2.0, or Atom 1.0.
   
 ## Overview
 
 In `gofeed`, you have two primary choices for feed parsing: a universal parser for handling multiple feed types seamlessly, and specialized parsers for more granular control over individual feed types.
-
 
 ### Universal Feed Parser 
 
@@ -150,6 +157,47 @@ jsonFeed, _ := fp.Parse(strings.NewReader(feedData))
 fmt.Println(jsonFeed.HomePageURL)
 ```
 
+### Feed Creation
+
+#### From Scratch
+
+The following example demonstrates building a feed and outputting it as Atom to standard output:
+
+```go
+feed := &Feed{
+    Title:   "Test Feed",
+    ID:      "http://example.com/feed",
+    Updated: "2024-01-01T12:00:00Z",
+	Entries: []*Entry{
+        Title:   "Simple Entry",
+        ID:      "http://example.com/entry2",
+        Updated: "2024-01-01T11:30:00Z",
+        Summary: "A simple Atom entry",
+        Content: &Content{
+            Type:  "text",
+            Value: "Plain text content",
+        },
+    },
+}
+_ = feed.RenderAtom(os.Stdout, nil)
+```
+
+#### From an Existing Feed
+
+The following example will convert a feed from RSS to Atom, printing the result to standard output:
+
+```go
+feedData := `<rss version="2.0">
+<channel>
+<webMaster>example@site.com (Example Name)</webMaster>
+</channel>
+</rss>`
+fp := gofeed.NewParser()
+feed, _ := fp.ParseString(feedData)
+
+_ = feed.RenderAtom(os.Stdout, nil)
+```
+
 ## Advanced Usage
 
 #### With Basic Authentication
@@ -240,3 +288,4 @@ This project is licensed under the [MIT License](https://raw.githubusercontent.c
 * [Matt Jibson](https://mattjibson.com/) for his date parsing function in the [goread](https://github.com/mjibson/goread) project.
 * [Jim Teeuwen](https://github.com/jteeuwen) for his method of representing arbitrary feed extensions in the [go-pkg-rss](https://github.com/jteeuwen/go-pkg-rss) library.
 * [Sudhanshu Raheja](https://revolt.ist) for supporting JSON Feed parser
+* [Chris Dzombak](https://github.com/cdzombak) for adding feed rendering
