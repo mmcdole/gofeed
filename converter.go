@@ -10,25 +10,25 @@ import (
 	"github.com/mmcdole/gofeed/rss"
 )
 
-// Renderers convert a universal Feed struct into format-specific feed structures.
+// Converters convert a universal Feed struct into format-specific feed structures.
 // These are the reverse of the Translator interfaces.
 //
 // IMPORTANT LIMITATIONS:
-// Perfect round-trip conversion (parse -> translate -> render -> parse) is not
+// Perfect round-trip conversion (parse -> translate -> convert -> parse) is not
 // always possible.
 //
 // RSS limitations:
 //    - Complex extension-based author fallbacks may not preserve exact original location
 //
 // JSON Feed limitations:
-//    - Feed-level dates are derived from first item in translator, not used in renderer
+//    - Feed-level dates are derived from first item in translator, not used in converter
 //    - Some JSON Feed specific fields (UserComment, NextURL, etc.) are not supported
 
-// RSSRenderer converts a Feed struct into an RSS feed structure
-type RSSRenderer struct{}
+// RSSConverter converts a Feed struct into an RSS feed structure
+type RSSConverter struct{}
 
-// Render converts the universal Feed into an RSS feed
-func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
+// Convert converts the universal Feed into an RSS feed
+func (c *RSSConverter) Convert(feed *Feed) (*rss.Feed, error) {
 	if feed == nil {
 		return nil, fmt.Errorf("feed cannot be nil")
 	}
@@ -64,14 +64,14 @@ func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
 	}
 
 	if feedAuthor != nil {
-		rssFeed.ManagingEditor = r.FormatPersonForRSS(feedAuthor)
+		rssFeed.ManagingEditor = c.FormatPersonForRSS(feedAuthor)
 
 		// Also populate DublinCore Creator to improve round-trip fidelity
 		if rssFeed.DublinCoreExt == nil {
 			rssFeed.DublinCoreExt = &ext.DublinCoreExtension{}
 		}
 		// Only add if not already present
-		dcAuthor := r.FormatPersonForRSS(feedAuthor)
+		dcAuthor := c.FormatPersonForRSS(feedAuthor)
 		creatorExists := false
 		for _, creator := range rssFeed.DublinCoreExt.Creator {
 			if creator == dcAuthor {
@@ -104,13 +104,13 @@ func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
 	// Handle items
 	rssFeed.Items = make([]*rss.Item, len(feed.Items))
 	for i, item := range feed.Items {
-		rssFeed.Items[i] = r.renderItem(item)
+		rssFeed.Items[i] = c.convertItem(item)
 	}
 
 	return rssFeed, nil
 }
 
-func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
+func (c *RSSConverter) convertItem(item *Item) *rss.Item {
 	rssItem := &rss.Item{}
 	rssItem.Title = item.Title
 	rssItem.Description = item.Description
@@ -136,14 +136,14 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 	}
 
 	if itemAuthor != nil {
-		rssItem.Author = r.FormatPersonForRSS(itemAuthor)
+		rssItem.Author = c.FormatPersonForRSS(itemAuthor)
 
 		// Also populate DublinCore Creator to improve round-trip fidelity
 		if rssItem.DublinCoreExt == nil {
 			rssItem.DublinCoreExt = &ext.DublinCoreExtension{}
 		}
 		// Only add if not already present
-		dcAuthor := r.FormatPersonForRSS(itemAuthor)
+		dcAuthor := c.FormatPersonForRSS(itemAuthor)
 		creatorExists := false
 		for _, creator := range rssItem.DublinCoreExt.Creator {
 			if creator == dcAuthor {
@@ -157,7 +157,7 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 
 		// Also populate iTunes Author if iTunes extension exists
 		if rssItem.ITunesExt != nil && rssItem.ITunesExt.Author == "" {
-			rssItem.ITunesExt.Author = r.FormatPersonForRSS(itemAuthor)
+			rssItem.ITunesExt.Author = c.FormatPersonForRSS(itemAuthor)
 		}
 	}
 
@@ -232,7 +232,7 @@ func (r *RSSRenderer) renderItem(item *Item) *rss.Item {
 	return rssItem
 }
 
-func (r *RSSRenderer) FormatPersonForRSS(person *Person) string {
+func (c *RSSConverter) FormatPersonForRSS(person *Person) string {
 	if person.Email != "" && person.Name != "" {
 		return person.Email + " (" + person.Name + ")"
 	} else if person.Email != "" {
@@ -243,11 +243,11 @@ func (r *RSSRenderer) FormatPersonForRSS(person *Person) string {
 	return ""
 }
 
-// AtomRenderer converts a Feed struct into an Atom feed structure
-type AtomRenderer struct{}
+// AtomConverter converts a Feed struct into an Atom feed structure
+type AtomConverter struct{}
 
-// Render converts the universal Feed into an Atom feed
-func (r *AtomRenderer) Render(feed *Feed) (*atom.Feed, error) {
+// Convert converts the universal Feed into an Atom feed
+func (c *AtomConverter) Convert(feed *Feed) (*atom.Feed, error) {
 	if feed == nil {
 		return nil, fmt.Errorf("feed cannot be nil")
 	}
@@ -348,7 +348,7 @@ func (r *AtomRenderer) Render(feed *Feed) (*atom.Feed, error) {
 	// Handle entries
 	atomFeed.Entries = make([]*atom.Entry, len(feed.Items))
 	for i, item := range feed.Items {
-		atomFeed.Entries[i] = r.renderEntry(item)
+		atomFeed.Entries[i] = c.convertEntry(item)
 	}
 
 	// Handle extensions
@@ -357,7 +357,7 @@ func (r *AtomRenderer) Render(feed *Feed) (*atom.Feed, error) {
 	return atomFeed, nil
 }
 
-func (r *AtomRenderer) renderEntry(item *Item) *atom.Entry {
+func (c *AtomConverter) convertEntry(item *Item) *atom.Entry {
 	entry := &atom.Entry{}
 	entry.Title = item.Title
 	entry.Summary = item.Description
@@ -464,11 +464,11 @@ func (r *AtomRenderer) renderEntry(item *Item) *atom.Entry {
 	return entry
 }
 
-// JSONRenderer converts a Feed struct into a JSON feed structure
-type JSONRenderer struct{}
+// JSONConverter converts a Feed struct into a JSON feed structure
+type JSONConverter struct{}
 
-// Render converts the universal Feed into a JSON feed
-func (r *JSONRenderer) Render(feed *Feed) (*json.Feed, error) {
+// Convert converts the universal Feed into a JSON feed
+func (c *JSONConverter) Convert(feed *Feed) (*json.Feed, error) {
 	if feed == nil {
 		return nil, fmt.Errorf("feed cannot be nil")
 	}
@@ -525,13 +525,13 @@ func (r *JSONRenderer) Render(feed *Feed) (*json.Feed, error) {
 	// Handle items
 	jsonFeed.Items = make([]*json.Item, len(feed.Items))
 	for i, item := range feed.Items {
-		jsonFeed.Items[i] = r.renderItem(item)
+		jsonFeed.Items[i] = c.convertItem(item)
 	}
 
 	return jsonFeed, nil
 }
 
-func (r *JSONRenderer) renderItem(item *Item) *json.Item {
+func (c *JSONConverter) convertItem(item *Item) *json.Item {
 	jsonItem := &json.Item{}
 	jsonItem.ID = item.GUID
 	if jsonItem.ID == "" {
