@@ -15,6 +15,7 @@ import (
 	"golang.org/x/net/html"
 )
 
+
 // Translator converts a particular feed (atom.Feed or rss.Feed of json.Feed)
 // into the generic Feed struct
 type Translator interface {
@@ -563,7 +564,8 @@ func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Author = t.translateFeedAuthor(atom)
 	result.Authors = t.translateFeedAuthors(atom)
 	result.Language = t.translateFeedLanguage(atom)
-	result.Image = t.translateFeedImage(atom)
+	var imageCustom map[string]string
+	result.Image, imageCustom = t.translateFeedImage(atom)
 	result.Copyright = t.translateFeedCopyright(atom)
 	result.Categories = t.translateFeedCategories(atom)
 	result.Generator = t.translateFeedGenerator(atom)
@@ -572,6 +574,14 @@ func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
 	result.Extensions = atom.Extensions
 	result.FeedVersion = atom.Version
 	result.FeedType = "atom"
+
+	// Initialize Custom map and merge image-related custom data only if needed
+	if len(imageCustom) > 0 {
+		result.Custom = make(map[string]string)
+		for k, v := range imageCustom {
+			result.Custom[k] = v
+		}
+	}
 	return result, nil
 }
 
@@ -667,15 +677,25 @@ func (t *DefaultAtomTranslator) translateFeedLanguage(atom *atom.Feed) (language
 	return atom.Language
 }
 
-func (t *DefaultAtomTranslator) translateFeedImage(atom *atom.Feed) (image *Image) {
+func (t *DefaultAtomTranslator) translateFeedImage(atom *atom.Feed) (image *Image, custom map[string]string) {
+	custom = make(map[string]string)
+
 	if atom.Logo != "" {
 		feedImage := Image{}
 		feedImage.URL = atom.Logo
 		image = &feedImage
+
+		// Store Icon as secondary image if it exists
+		if atom.Icon != "" {
+			custom[CustomAtomIcon] = atom.Icon
+		}
 	} else if atom.Icon != "" {
 		feedImage := Image{}
 		feedImage.URL = atom.Icon
 		image = &feedImage
+
+		// When Icon is the only image, no need to store in custom
+		// Only store in custom when we need to distinguish between multiple images
 	}
 	return
 }

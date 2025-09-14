@@ -15,15 +15,12 @@ import (
 //
 // IMPORTANT LIMITATIONS:
 // Perfect round-trip conversion (parse -> translate -> render -> parse) is not
-// always possible due to format differences:
+// always possible.
 //
-// 1. RSS limitations:
+// RSS limitations:
 //    - Complex extension-based author fallbacks may not preserve exact original location
 //
-// 2. Atom limitations:
-//    - Icon/Logo preference logic is simplified
-//
-// 3. JSON Feed limitations:
+// JSON Feed limitations:
 //    - Feed-level dates are derived from first item in translator, not used in renderer
 //    - Some JSON Feed specific fields (UserComment, NextURL, etc.) are not supported
 
@@ -314,8 +311,17 @@ func (r *AtomRenderer) Render(feed *Feed) (*atom.Feed, error) {
 		}
 	}
 
+	// Handle images - support both Icon and Logo for full round-trip fidelity
 	if feed.Image != nil {
-		atomFeed.Logo = feed.Image.URL
+		// Check if we have icon data in Custom field (indicates Logo is primary)
+		if feed.Custom != nil && feed.Custom[CustomAtomIcon] != "" {
+			// Primary image is Logo, secondary is Icon
+			atomFeed.Logo = feed.Image.URL
+			atomFeed.Icon = feed.Custom[CustomAtomIcon]
+		} else {
+			// Only one image exists, default to Logo
+			atomFeed.Logo = feed.Image.URL
+		}
 	}
 
 	if feed.GeneratorDetail != nil {

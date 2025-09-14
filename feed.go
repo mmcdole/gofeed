@@ -7,6 +7,13 @@ import (
 	ext "github.com/mmcdole/gofeed/extensions"
 )
 
+// Constants for Custom field keys
+const (
+	// CustomAtomIcon is the key used to store Atom icon data in the Custom field
+	// when the Logo is the primary image
+	CustomAtomIcon = "atom:icon"
+)
+
 // Feed is the universal Feed type that atom.Feed
 // and rss.Feed gets translated to. It represents
 // a web feed.

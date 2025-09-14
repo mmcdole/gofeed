@@ -2,6 +2,9 @@
     "image": {
         "url": "http://example.org/logo.jpg"
     },
+    "custom": {
+        "atom:icon": "http://example.org/icon.jpg"
+    },
     "items": [],
     "feedType": "atom",
     "feedVersion": "1.0"
