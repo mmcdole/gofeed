@@ -45,10 +45,7 @@ func (r *RSSRenderer) Render(feed *Feed) (*rss.Feed, error) {
 	rssFeed.Language = feed.Language
 	rssFeed.Copyright = feed.Copyright
 	rssFeed.Generator = feed.Generator
-	rssFeed.Version = feed.FeedVersion
-	if rssFeed.Version == "" {
-		rssFeed.Version = "2.0"
-	}
+	rssFeed.Version = "2.0"
 
 	// Handle dates
 	rssFeed.LastBuildDate = feed.Updated
@@ -265,10 +262,7 @@ func (r *AtomRenderer) Render(feed *Feed) (*atom.Feed, error) {
 	atomFeed.Rights = feed.Copyright
 	atomFeed.Updated = feed.Updated
 	atomFeed.UpdatedParsed = feed.UpdatedParsed
-	atomFeed.Version = feed.FeedVersion
-	if atomFeed.Version == "" {
-		atomFeed.Version = "1.0"
-	}
+	atomFeed.Version = "1.0"
 
 	// Generate an ID if not present
 	atomFeed.ID = feed.FeedLink
@@ -474,10 +468,7 @@ func (r *JSONRenderer) Render(feed *Feed) (*json.Feed, error) {
 	}
 
 	jsonFeed := &json.Feed{}
-	jsonFeed.Version = feed.FeedVersion
-	if jsonFeed.Version == "" {
-		jsonFeed.Version = "https://jsonfeed.org/version/1"
-	}
+	jsonFeed.Version = "https://jsonfeed.org/version/1.1"
 	jsonFeed.Title = feed.Title
 	jsonFeed.Description = feed.Description
 	jsonFeed.HomePageURL = feed.Link

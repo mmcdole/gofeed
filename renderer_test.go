@@ -792,7 +792,7 @@ func TestJSONRenderer_VersionDefaults(t *testing.T) {
 	jsonFeed, err := renderer.Render(feed)
 	require.NoError(t, err)
 
-	assert.Equal(t, "https://jsonfeed.org/version/1", jsonFeed.Version, "Should default to JSON Feed v1")
+	assert.Equal(t, "https://jsonfeed.org/version/1.1", jsonFeed.Version, "Should default to JSON Feed v1.1")
 }
 
 // Test multiple authors handling
