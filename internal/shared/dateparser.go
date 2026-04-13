@@ -138,6 +138,23 @@ var dateFormats = []string{
 	"01-02-2006",
 }
 
+// rfc822Zones maps RFC 822 §5 timezone abbreviations to their UTC offset in
+// seconds.  Go's time.Parse recognises the abbreviation but assigns offset 0,
+// and time.LoadLocation rejects short names such as "EDT", so we need an
+// explicit table.
+var rfc822Zones = map[string]int{
+	"UT":  0, // included for completeness; offset-0 entries are no-ops in fixRFC822Zone
+	"GMT": 0,
+	"EST": -5 * 3600,
+	"EDT": -4 * 3600,
+	"CST": -6 * 3600,
+	"CDT": -5 * 3600,
+	"MST": -7 * 3600,
+	"MDT": -6 * 3600,
+	"PST": -8 * 3600,
+	"PDT": -7 * 3600,
+}
+
 // Named zone cannot be consistently loaded, so handle separately
 var dateFormatsWithNamedZone = []string{
 	"Mon, January 02, 2006, 15:04:05 MST",
@@ -187,6 +204,24 @@ var dateFormatsWithNamedZone = []string{
 	"01/02/2006 15:04:05 MST",
 }
 
+// fixRFC822Zone corrects the UTC offset when Go's time.Parse recognised a
+// named timezone abbreviation (e.g. "EDT") but assigned offset 0.  If the
+// zone name appears in the RFC 822 table the time is adjusted to the correct
+// fixed offset; otherwise t is returned unchanged.
+func fixRFC822Zone(t time.Time, format, raw string) time.Time {
+	zoneName, offset := t.Zone()
+	if offset != 0 {
+		return t
+	}
+	if correctOffset, ok := rfc822Zones[zoneName]; ok && correctOffset != 0 {
+		loc := time.FixedZone(zoneName, correctOffset)
+		if fixed, err := time.ParseInLocation(format, raw, loc); err == nil {
+			return fixed
+		}
+	}
+	return t
+}
+
 // ParseDate parses a given date string using a large
 // list of commonly found feed date formats.
 func ParseDate(ds string) (t time.Time, err error) {
@@ -196,7 +231,7 @@ func ParseDate(ds string) (t time.Time, err error) {
 	}
 	for _, f := range dateFormats {
 		if t, err = time.Parse(f, d); err == nil {
-			return
+			return fixRFC822Zone(t, f, d), nil
 		}
 	}
 	for _, f := range dateFormatsWithNamedZone {
@@ -205,8 +240,13 @@ func ParseDate(ds string) (t time.Time, err error) {
 			continue
 		}
 
-		// This is a format match! Now try to load the timezone name
-		loc, err := time.LoadLocation(t.Location().String())
+		// This is a format match! Now try to load the timezone name.
+		if fixed := fixRFC822Zone(t, f, ds); fixed != t {
+			return fixed, nil
+		}
+
+		zoneName := t.Location().String()
+		loc, err := time.LoadLocation(zoneName)
 		if err != nil {
 			// We couldn't load the TZ name. Just use UTC instead...
 			return t, nil
