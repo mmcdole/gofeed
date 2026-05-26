@@ -5,10 +5,10 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -270,7 +270,7 @@ func ExampleParser_ParseString() {
 	fmt.Println(feed.Title)
 }
 
-func ExampleParserWithBasicAuth_ParseURL() {
+func ExampleParser_ParseURL_basicAuth() {
 	fp := gofeed.NewParser()
 	fp.AuthConfig = &gofeed.Auth{
 		Username: "foo",
