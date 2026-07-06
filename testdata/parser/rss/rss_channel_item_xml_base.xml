@@ -1,0 +1,18 @@
+<!--
+Description: rss relative URLs resolved against xml:base (item link, comments, image url; image before item exercises the container-close case)
+-->
+<rss version="2.0" xml:base="http://example.org/feeds/">
+  <channel>
+    <title>t</title>
+    <docs>help</docs>
+    <image>
+      <url>logo.png</url>
+      <title>x</title>
+    </image>
+    <item>
+      <title>i</title>
+      <link>post/1</link>
+      <comments>post/1/comments</comments>
+    </item>
+  </channel>
+</rss>

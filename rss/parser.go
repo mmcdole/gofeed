@@ -219,7 +219,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 				}
 				rss.Generator = result
 			} else if name == "docs" {
-				result, err := shared.ParseText(p)
+				result, err := shared.ParseTextURL(p)
 				if err != nil {
 					return nil, err
 				}
@@ -380,7 +380,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				}
 				item.Author = result
 			} else if name == "comments" {
-				result, err := shared.ParseText(p)
+				result, err := shared.ParseTextURL(p)
 				if err != nil {
 					return nil, err
 				}
@@ -466,6 +466,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 }
 
 func (rp *Parser) parseLink(p *xpp.XMLPullParser) (url string, err error) {
+	base := p.BaseStack.Top()
 	href := p.Attribute("href")
 	url, err = shared.ParseText(p)
 	if err != nil {
@@ -474,6 +475,7 @@ func (rp *Parser) parseLink(p *xpp.XMLPullParser) (url string, err error) {
 	if url == "" && href != "" {
 		url = href
 	}
+	url = shared.ResolveURLIfBase(base, url)
 	return url, err
 }
 
@@ -543,7 +545,7 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 			name := strings.ToLower(p.Name)
 
 			if name == "url" {
-				result, err := shared.ParseText(p)
+				result, err := shared.ParseTextURL(p)
 				if err != nil {
 					return nil, err
 				}
@@ -555,7 +557,7 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 				}
 				image.Title = result
 			} else if name == "link" {
-				result, err := shared.ParseText(p)
+				result, err := shared.ParseTextURL(p)
 				if err != nil {
 					return nil, err
 				}

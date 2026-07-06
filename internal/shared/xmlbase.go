@@ -118,6 +118,22 @@ func XmlBaseResolveUrl(b *url.URL, u string) (*url.URL, error) {
 	return absURL, nil
 }
 
+// ResolveURLIfBase resolves s against base when an xml:base is in scope,
+// returning s unchanged when base is nil or resolution fails. Element-content
+// URLs (e.g. an RSS <link>) don't pass through resolveAttrs, so this lets them
+// be resolved the same way attribute URLs already are. Resolving only when a
+// base is present means URLs in feeds without xml:base are never round-tripped
+// through url.Parse and so are never normalized.
+func ResolveURLIfBase(base *url.URL, s string) string {
+	if base == nil || s == "" {
+		return s
+	}
+	if abs, err := XmlBaseResolveUrl(base, s); err == nil && abs != nil {
+		return abs.String()
+	}
+	return s
+}
+
 // Transforms html by resolving any relative URIs in attributes
 // if an error occurs during parsing or serialization, then the original string
 // is returned along with the error.
