@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	xpp "github.com/mmcdole/goxpp"
+	xpp "github.com/mmcdole/goxpp/v2"
 )
 
 var (
@@ -23,7 +23,7 @@ const CDATA_END = "]]>"
 // FindRoot iterates through the tokens of an xml document until
 // it encounters its first StartTag event.  It returns an error
 // if it reaches EndDocument before finding a tag.
-func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
+func FindRoot(p *xpp.Parser) (event xpp.EventType, err error) {
 	for {
 		event, err = p.Next()
 		if err != nil {
@@ -44,7 +44,7 @@ func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
 // from the current element of the XMLPullParser.
 // This function can handle parsing naked XML text from
 // an element.
-func ParseText(p *xpp.XMLPullParser) (string, error) {
+func ParseText(p *xpp.Parser) (string, error) {
 	var text struct {
 		Type     string `xml:"type,attr"`
 		InnerXML string `xml:",innerxml"`
@@ -69,8 +69,8 @@ func ParseText(p *xpp.XMLPullParser) (string, error) {
 // value against the element's xml:base when one is in scope. The base is
 // captured before ParseText runs, because ParseText consumes the element's end
 // tag, which pops the base off the stack.
-func ParseTextURL(p *xpp.XMLPullParser) (string, error) {
-	base := p.BaseStack.Top()
+func ParseTextURL(p *xpp.Parser) (string, error) {
+	base := p.BaseURL()
 	s, err := ParseText(p)
 	if err != nil {
 		return "", err

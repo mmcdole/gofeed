@@ -7,7 +7,7 @@ import (
 
 	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
-	xpp "github.com/mmcdole/goxpp"
+	xpp "github.com/mmcdole/goxpp/v2"
 )
 
 // Parser is a RSS Parser
@@ -16,7 +16,7 @@ type Parser struct{}
 // Parse parses an xml feed into an rss.Feed
 func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
 	feed = shared.NewControlCharFilterReader(feed)
-	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
+	p := shared.NewXMLParser(feed)
 
 	_, err := shared.FindRoot(p)
 	if err != nil {
@@ -26,7 +26,7 @@ func (rp *Parser) Parse(feed io.Reader) (*Feed, error) {
 	return rp.parseRoot(p)
 }
 
-func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
+func (rp *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 	rssErr := p.Expect(xpp.StartTag, "rss")
 	rdfErr := p.Expect(xpp.StartTag, "rdf")
 	if rssErr != nil && rdfErr != nil {
@@ -59,7 +59,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 				continue
 			}
 
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if name == "channel" {
 				channel, err = rp.parseChannel(p)
@@ -115,7 +115,7 @@ func (rp *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	return channel, nil
 }
 
-func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
+func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
 	if err = p.Expect(xpp.StartTag, "channel"); err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 
 		if tok == xpp.StartTag {
 
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if shared.IsExtension(p) {
 				ext, err := shared.ParseExtension(extensions, p)
@@ -313,7 +313,7 @@ func (rp *Parser) parseChannel(p *xpp.XMLPullParser) (rss *Feed, err error) {
 	return rss, nil
 }
 
-func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
+func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 	if err = p.Expect(xpp.StartTag, "item"); err != nil {
 		return nil, err
 	}
@@ -336,7 +336,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 
 		if tok == xpp.StartTag {
 
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if shared.IsExtension(p) {
 				ext, err := shared.ParseExtension(extensions, p)
@@ -357,7 +357,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				}
 				item.Description = result
 			} else if name == "encoded" &&
-				shared.PrefixForNamespace(p.Space, p) == "content" {
+				shared.PrefixForNamespace(p.Space(), p) == "content" {
 				result, err := shared.ParseText(p)
 				if err != nil {
 					return nil, err
@@ -426,7 +426,7 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 				if item.Custom == nil {
 					item.Custom = make(map[string]string, 0)
 				}
-				item.Custom[p.Name] = result
+				item.Custom[p.Name()] = result
 			}
 		}
 	}
@@ -462,8 +462,8 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 	return item, nil
 }
 
-func (rp *Parser) parseLink(p *xpp.XMLPullParser) (url string, err error) {
-	base := p.BaseStack.Top()
+func (rp *Parser) parseLink(p *xpp.Parser) (url string, err error) {
+	base := p.BaseURL()
 	href := p.Attribute("href")
 	url, err = shared.ParseText(p)
 	if err != nil {
@@ -476,7 +476,7 @@ func (rp *Parser) parseLink(p *xpp.XMLPullParser) (url string, err error) {
 	return url, err
 }
 
-func (rp *Parser) parseSource(p *xpp.XMLPullParser) (source *Source, err error) {
+func (rp *Parser) parseSource(p *xpp.Parser) (source *Source, err error) {
 	if err = p.Expect(xpp.StartTag, "source"); err != nil {
 		return nil, err
 	}
@@ -496,7 +496,7 @@ func (rp *Parser) parseSource(p *xpp.XMLPullParser) (source *Source, err error) 
 	return source, nil
 }
 
-func (rp *Parser) parseEnclosure(p *xpp.XMLPullParser) (enclosure *Enclosure, err error) {
+func (rp *Parser) parseEnclosure(p *xpp.Parser) (enclosure *Enclosure, err error) {
 	if err = p.Expect(xpp.StartTag, "enclosure"); err != nil {
 		return nil, err
 	}
@@ -513,7 +513,7 @@ func (rp *Parser) parseEnclosure(p *xpp.XMLPullParser) (enclosure *Enclosure, er
 			return enclosure, err
 		}
 
-		if p.Event == xpp.EndTag && p.Name == "enclosure" {
+		if p.Event() == xpp.EndTag && p.Name() == "enclosure" {
 			break
 		}
 	}
@@ -521,7 +521,7 @@ func (rp *Parser) parseEnclosure(p *xpp.XMLPullParser) (enclosure *Enclosure, er
 	return enclosure, nil
 }
 
-func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
+func (rp *Parser) parseImage(p *xpp.Parser) (image *Image, err error) {
 	if err = p.Expect(xpp.StartTag, "image"); err != nil {
 		return nil, err
 	}
@@ -539,7 +539,7 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 		}
 
 		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if name == "url" {
 				result, err := shared.ParseTextURL(p)
@@ -590,7 +590,7 @@ func (rp *Parser) parseImage(p *xpp.XMLPullParser) (image *Image, err error) {
 	return image, nil
 }
 
-func (rp *Parser) parseGUID(p *xpp.XMLPullParser) (guid *GUID, err error) {
+func (rp *Parser) parseGUID(p *xpp.Parser) (guid *GUID, err error) {
 	if err = p.Expect(xpp.StartTag, "guid"); err != nil {
 		return nil, err
 	}
@@ -622,7 +622,7 @@ func (rp *Parser) parseGUID(p *xpp.XMLPullParser) (guid *GUID, err error) {
 	return guid, nil
 }
 
-func (rp *Parser) parseCategory(p *xpp.XMLPullParser) (cat *Category, err error) {
+func (rp *Parser) parseCategory(p *xpp.Parser) (cat *Category, err error) {
 	if err = p.Expect(xpp.StartTag, "category"); err != nil {
 		return nil, err
 	}
@@ -643,7 +643,7 @@ func (rp *Parser) parseCategory(p *xpp.XMLPullParser) (cat *Category, err error)
 	return cat, nil
 }
 
-func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
+func (rp *Parser) parseTextInput(p *xpp.Parser) (*TextInput, error) {
 	if err := p.Expect(xpp.StartTag, "textinput"); err != nil {
 		return nil, err
 	}
@@ -661,7 +661,7 @@ func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
 		}
 
 		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if name == "title" {
 				result, err := shared.ParseText(p)
@@ -700,7 +700,7 @@ func (rp *Parser) parseTextInput(p *xpp.XMLPullParser) (*TextInput, error) {
 	return ti, nil
 }
 
-func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
+func (rp *Parser) parseSkipHours(p *xpp.Parser) ([]string, error) {
 	if err := p.Expect(xpp.StartTag, "skiphours"); err != nil {
 		return nil, err
 	}
@@ -718,7 +718,7 @@ func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
 		}
 
 		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 			if name == "hour" {
 				result, err := shared.ParseText(p)
 				if err != nil {
@@ -738,7 +738,7 @@ func (rp *Parser) parseSkipHours(p *xpp.XMLPullParser) ([]string, error) {
 	return hours, nil
 }
 
-func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
+func (rp *Parser) parseSkipDays(p *xpp.Parser) ([]string, error) {
 	if err := p.Expect(xpp.StartTag, "skipdays"); err != nil {
 		return nil, err
 	}
@@ -756,7 +756,7 @@ func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 		}
 
 		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 			if name == "day" {
 				result, err := shared.ParseText(p)
 				if err != nil {
@@ -776,7 +776,7 @@ func (rp *Parser) parseSkipDays(p *xpp.XMLPullParser) ([]string, error) {
 	return days, nil
 }
 
-func (rp *Parser) parseCloud(p *xpp.XMLPullParser) (*Cloud, error) {
+func (rp *Parser) parseCloud(p *xpp.Parser) (*Cloud, error) {
 	if err := p.Expect(xpp.StartTag, "cloud"); err != nil {
 		return nil, err
 	}
@@ -802,8 +802,8 @@ func (rp *Parser) parseCloud(p *xpp.XMLPullParser) (*Cloud, error) {
 	return cloud, nil
 }
 
-func (rp *Parser) parseVersion(p *xpp.XMLPullParser) (ver string) {
-	name := strings.ToLower(p.Name)
+func (rp *Parser) parseVersion(p *xpp.Parser) (ver string) {
+	name := strings.ToLower(p.Name())
 	if name == "rss" {
 		ver = p.Attribute("version")
 	} else if name == "rdf" {
