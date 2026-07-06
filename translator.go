@@ -548,321 +548,157 @@ type DefaultAtomTranslator struct{}
 // Translate converts an Atom feed into the universal
 // feed type.
 func (t *DefaultAtomTranslator) Translate(feed interface{}) (*Feed, error) {
-	atom, found := feed.(*atom.Feed)
+	atomFeed, found := feed.(*atom.Feed)
 	if !found {
 		return nil, fmt.Errorf("Feed did not match expected type of *atom.Feed")
 	}
 
-	result := &Feed{}
-	result.Title = t.translateFeedTitle(atom)
-	result.Description = t.translateFeedDescription(atom)
-	result.Link = t.translateFeedLink(atom)
-	result.FeedLink = t.translateFeedFeedLink(atom)
-	result.Links = t.translateFeedLinks(atom)
-	result.Updated = t.translateFeedUpdated(atom)
-	result.UpdatedParsed = t.translateFeedUpdatedParsed(atom)
-	result.Author = t.translateFeedAuthor(atom)
-	result.Authors = t.translateFeedAuthors(atom)
-	result.Language = t.translateFeedLanguage(atom)
-	result.Image = t.translateFeedImage(atom)
-	result.Copyright = t.translateFeedCopyright(atom)
-	result.Categories = t.translateFeedCategories(atom)
-	result.Generator = t.translateFeedGenerator(atom)
-	result.Items = t.translateFeedItems(atom)
-	result.Extensions = atom.Extensions
-	result.FeedVersion = atom.Version
-	result.FeedType = "atom"
+	result := &Feed{
+		Title:         atomFeed.Title,
+		Description:   atomFeed.Subtitle,
+		Updated:       atomFeed.Updated,
+		UpdatedParsed: atomFeed.UpdatedParsed,
+		Language:      atomFeed.Language,
+		Copyright:     atomFeed.Rights,
+		Extensions:    atomFeed.Extensions,
+		FeedVersion:   atomFeed.Version,
+		FeedType:      "atom",
+	}
+
+	if l := firstLinkWithRel("alternate", atomFeed.Links); l != nil {
+		result.Link = l.Href
+	}
+	if l := firstLinkWithRel("self", atomFeed.Links); l != nil {
+		result.FeedLink = l.Href
+	}
+	for _, l := range atomFeed.Links {
+		if l.Rel == "" || l.Rel == "alternate" || l.Rel == "self" {
+			result.Links = append(result.Links, l.Href)
+		}
+	}
+
+	if len(atomFeed.Authors) > 0 {
+		result.Authors = atomPersons(atomFeed.Authors)
+		result.Author = result.Authors[0]
+	}
+
+	if atomFeed.Logo != "" {
+		result.Image = &Image{URL: atomFeed.Logo}
+	} else if atomFeed.Icon != "" {
+		result.Image = &Image{URL: atomFeed.Icon}
+	}
+
+	if atomFeed.Generator != nil {
+		generator := atomFeed.Generator.Value
+		if atomFeed.Generator.Version != "" {
+			generator += " v" + atomFeed.Generator.Version
+		}
+		if atomFeed.Generator.URI != "" {
+			generator += " " + atomFeed.Generator.URI
+		}
+		result.Generator = strings.TrimSpace(generator)
+	}
+
+	result.Categories = atomCategories(atomFeed.Categories)
+
+	result.Items = make([]*Item, 0, len(atomFeed.Entries))
+	for _, entry := range atomFeed.Entries {
+		result.Items = append(result.Items, t.translateFeedItem(entry))
+	}
+
 	return result, nil
 }
 
-func (t *DefaultAtomTranslator) translateFeedItem(entry *atom.Entry) (item *Item) {
-	item = &Item{}
-	item.Title = t.translateItemTitle(entry)
-	item.Description = t.translateItemDescription(entry)
-	item.Content = t.translateItemContent(entry)
-	item.Link = t.translateItemLink(entry)
-	item.Links = t.translateItemLinks(entry)
-	item.Updated = t.translateItemUpdated(entry)
-	item.UpdatedParsed = t.translateItemUpdatedParsed(entry)
-	item.Published = t.translateItemPublished(entry)
-	item.PublishedParsed = t.translateItemPublishedParsed(entry)
-	item.Author = t.translateItemAuthor(entry)
-	item.Authors = t.translateItemAuthors(entry)
-	item.GUID = t.translateItemGUID(entry)
-	item.Image = t.translateItemImage(entry)
-	item.Categories = t.translateItemCategories(entry)
-	item.Enclosures = t.translateItemEnclosures(entry)
-	item.Extensions = entry.Extensions
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedTitle(atom *atom.Feed) (title string) {
-	return atom.Title
-}
-
-func (t *DefaultAtomTranslator) translateFeedDescription(atom *atom.Feed) (desc string) {
-	return atom.Subtitle
-}
-
-func (t *DefaultAtomTranslator) translateFeedLink(atom *atom.Feed) (link string) {
-	l := t.firstLinkWithType("alternate", atom.Links)
-	if l != nil {
-		link = l.Href
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedFeedLink(atom *atom.Feed) (link string) {
-	feedLink := t.firstLinkWithType("self", atom.Links)
-	if feedLink != nil {
-		link = feedLink.Href
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedLinks(atom *atom.Feed) (links []string) {
-	for _, l := range atom.Links {
-		if l.Rel == "" || l.Rel == "alternate" || l.Rel == "self" {
-			links = append(links, l.Href)
-		}
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedUpdated(atom *atom.Feed) (updated string) {
-	return atom.Updated
-}
-
-func (t *DefaultAtomTranslator) translateFeedUpdatedParsed(atom *atom.Feed) (updated *time.Time) {
-	return atom.UpdatedParsed
-}
-
-func (t *DefaultAtomTranslator) translateFeedAuthor(atom *atom.Feed) (author *Person) {
-	a := t.firstPerson(atom.Authors)
-	if a != nil {
-		feedAuthor := Person{}
-		feedAuthor.Name = a.Name
-		feedAuthor.Email = a.Email
-		author = &feedAuthor
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedAuthors(atom *atom.Feed) (authors []*Person) {
-	if atom.Authors != nil {
-		authors = make([]*Person, 0, len(atom.Authors))
-
-		for _, a := range atom.Authors {
-			authors = append(authors, &Person{
-				Name:  a.Name,
-				Email: a.Email,
-			})
-		}
+func (t *DefaultAtomTranslator) translateFeedItem(entry *atom.Entry) *Item {
+	item := &Item{
+		Title:         entry.Title,
+		Description:   entry.Summary,
+		Updated:       entry.Updated,
+		UpdatedParsed: entry.UpdatedParsed,
+		GUID:          entry.ID,
+		Extensions:    entry.Extensions,
 	}
 
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedLanguage(atom *atom.Feed) (language string) {
-	return atom.Language
-}
-
-func (t *DefaultAtomTranslator) translateFeedImage(atom *atom.Feed) (image *Image) {
-	if atom.Logo != "" {
-		feedImage := Image{}
-		feedImage.URL = atom.Logo
-		image = &feedImage
-	} else if atom.Icon != "" {
-		feedImage := Image{}
-		feedImage.URL = atom.Icon
-		image = &feedImage
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedCopyright(atom *atom.Feed) (rights string) {
-	return atom.Rights
-}
-
-func (t *DefaultAtomTranslator) translateFeedGenerator(atom *atom.Feed) (generator string) {
-	if atom.Generator != nil {
-		if atom.Generator.Value != "" {
-			generator += atom.Generator.Value
-		}
-		if atom.Generator.Version != "" {
-			generator += " v" + atom.Generator.Version
-		}
-		if atom.Generator.URI != "" {
-			generator += " " + atom.Generator.URI
-		}
-		generator = strings.TrimSpace(generator)
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedCategories(atom *atom.Feed) (categories []string) {
-	if atom.Categories != nil {
-		categories = make([]string, 0, len(atom.Categories))
-		for _, c := range atom.Categories {
-			if c.Label != "" {
-				categories = append(categories, c.Label)
-			} else {
-				categories = append(categories, c.Term)
-			}
-		}
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateFeedItems(atom *atom.Feed) (items []*Item) {
-	items = make([]*Item, 0, len(atom.Entries))
-	for _, entry := range atom.Entries {
-		items = append(items, t.translateFeedItem(entry))
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateItemTitle(entry *atom.Entry) (title string) {
-	return entry.Title
-}
-
-func (t *DefaultAtomTranslator) translateItemDescription(entry *atom.Entry) (desc string) {
-	return entry.Summary
-}
-
-func (t *DefaultAtomTranslator) translateItemContent(entry *atom.Entry) (content string) {
 	if entry.Content != nil {
-		content = entry.Content.Value
+		item.Content = entry.Content.Value
 	}
-	return
-}
 
-func (t *DefaultAtomTranslator) translateItemLink(entry *atom.Entry) (link string) {
-	l := t.firstLinkWithType("alternate", entry.Links)
-	if l != nil {
-		link = l.Href
+	if l := firstLinkWithRel("alternate", entry.Links); l != nil {
+		item.Link = l.Href
 	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateItemLinks(entry *atom.Entry) (links []string) {
 	for _, l := range entry.Links {
 		if l.Rel == "" || l.Rel == "alternate" || l.Rel == "self" {
-			links = append(links, l.Href)
+			item.Links = append(item.Links, l.Href)
 		}
 	}
-	return
-}
 
-func (t *DefaultAtomTranslator) translateItemUpdated(entry *atom.Entry) (updated string) {
-	return entry.Updated
-}
-
-func (t *DefaultAtomTranslator) translateItemUpdatedParsed(entry *atom.Entry) (updated *time.Time) {
-	return entry.UpdatedParsed
-}
-
-func (t *DefaultAtomTranslator) translateItemPublished(entry *atom.Entry) (published string) {
-	published = entry.Published
-	if published == "" {
-		published = entry.Updated
+	// Published falls back to the update time when absent.
+	item.Published = entry.Published
+	if item.Published == "" {
+		item.Published = entry.Updated
 	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateItemPublishedParsed(entry *atom.Entry) (published *time.Time) {
-	published = entry.PublishedParsed
-	if published == nil {
-		published = entry.UpdatedParsed
+	item.PublishedParsed = entry.PublishedParsed
+	if item.PublishedParsed == nil {
+		item.PublishedParsed = entry.UpdatedParsed
 	}
-	return
-}
 
-func (t *DefaultAtomTranslator) translateItemAuthor(entry *atom.Entry) (author *Person) {
-	a := t.firstPerson(entry.Authors)
-	if a != nil {
-		author = &Person{}
-		author.Name = a.Name
-		author.Email = a.Email
+	if len(entry.Authors) > 0 {
+		item.Authors = atomPersons(entry.Authors)
+		item.Author = item.Authors[0]
 	}
-	return
-}
 
-func (t *DefaultAtomTranslator) translateItemAuthors(entry *atom.Entry) (authors []*Person) {
-	if entry.Authors != nil {
-		authors = make([]*Person, 0, len(entry.Authors))
-		for _, a := range entry.Authors {
-			authors = append(authors, &Person{
-				Name:  a.Name,
-				Email: a.Email,
+	item.Categories = atomCategories(entry.Categories)
+
+	for _, l := range entry.Links {
+		if l.Rel == "enclosure" {
+			item.Enclosures = append(item.Enclosures, &Enclosure{
+				URL:    l.Href,
+				Length: l.Length,
+				Type:   l.Type,
 			})
 		}
 	}
-	return
+
+	return item
 }
 
-func (t *DefaultAtomTranslator) translateItemGUID(entry *atom.Entry) (guid string) {
-	return entry.ID
-}
-
-func (t *DefaultAtomTranslator) translateItemImage(entry *atom.Entry) (image *Image) {
-	return nil
-}
-
-func (t *DefaultAtomTranslator) translateItemCategories(entry *atom.Entry) (categories []string) {
-	if entry.Categories != nil {
-		categories = make([]string, 0, len(entry.Categories))
-		for _, c := range entry.Categories {
-			if c.Label != "" {
-				categories = append(categories, c.Label)
-			} else {
-				categories = append(categories, c.Term)
-			}
-		}
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) translateItemEnclosures(entry *atom.Entry) (enclosures []*Enclosure) {
-	if entry.Links != nil {
-		enclosures = make([]*Enclosure, 0, len(entry.Links))
-		for _, e := range entry.Links {
-			if e.Rel == "enclosure" {
-				enclosure := &Enclosure{}
-				enclosure.URL = e.Href
-				enclosure.Length = e.Length
-				enclosure.Type = e.Type
-				enclosures = append(enclosures, enclosure)
-			}
-		}
-
-		if len(enclosures) == 0 {
-			enclosures = nil
-		}
-	}
-	return
-}
-
-func (t *DefaultAtomTranslator) firstLinkWithType(linkType string, links []*atom.Link) *atom.Link {
-	if links == nil {
-		return nil
-	}
-
+// firstLinkWithRel returns the first link carrying the given rel, or nil.
+func firstLinkWithRel(rel string, links []*atom.Link) *atom.Link {
 	for _, link := range links {
-		if link.Rel == linkType {
+		if link.Rel == rel {
 			return link
 		}
 	}
 	return nil
 }
 
-func (t *DefaultAtomTranslator) firstPerson(persons []*atom.Person) (person *atom.Person) {
-	if len(persons) == 0 {
-		return
+// atomPersons converts atom persons to universal Persons.
+func atomPersons(persons []*atom.Person) []*Person {
+	if persons == nil {
+		return nil
 	}
+	out := make([]*Person, 0, len(persons))
+	for _, p := range persons {
+		out = append(out, &Person{Name: p.Name, Email: p.Email})
+	}
+	return out
+}
 
-	person = persons[0]
-	return
+// atomCategories flattens atom categories, using the label when present and
+// the term otherwise.
+func atomCategories(categories []*atom.Category) []string {
+	if categories == nil {
+		return nil
+	}
+	out := make([]string, 0, len(categories))
+	for _, c := range categories {
+		if c.Label != "" {
+			out = append(out, c.Label)
+		} else {
+			out = append(out, c.Term)
+		}
+	}
+	return out
 }
 
 // DefaultJSONTranslator converts an json.Feed struct
