@@ -270,7 +270,7 @@ func ExampleParser_ParseString() {
 	fmt.Println(feed.Title)
 }
 
-func ExampleParserWithBasicAuth_ParseURL() {
+func ExampleParser_ParseURL_basicAuth() {
 	fp := gofeed.NewParser()
 	fp.AuthConfig = &gofeed.Auth{
 		Username: "foo",
