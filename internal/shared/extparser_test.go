@@ -156,3 +156,67 @@ func TestNewXMLParserLeniencyAndCharset(t *testing.T) {
 		t.Errorf("text = %q, want café", text)
 	}
 }
+
+func TestParseCustom(t *testing.T) {
+	doc := `<rss version="2.0">
+		<channel>
+			<item>
+				<event><venue city="Austin">Hall</venue></event>
+				<simple>plain</simple>
+				<simple>again</simple>
+			</item>
+		</channel>
+	</rss>`
+
+	p := NewXMLParser(strings.NewReader(doc))
+	extensions := ext.Extensions{}
+	var parsed []ext.Extension
+	for {
+		tok, err := p.NextToken()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if tok == xpp.EndDocument {
+			break
+		}
+		if tok == xpp.StartTag {
+			switch p.Name() {
+			case "event", "simple":
+				var e ext.Extension
+				var err error
+				extensions, e, err = ParseCustom(extensions, p)
+				if err != nil {
+					t.Fatal(err)
+				}
+				parsed = append(parsed, e)
+			}
+		}
+	}
+
+	if len(parsed) != 3 {
+		t.Fatalf("parsed %d elements, want 3", len(parsed))
+	}
+
+	// Nesting and attributes survive in the tree.
+	events := extensions[CustomPrefix]["event"]
+	if len(events) != 1 {
+		t.Fatalf("event entries = %d, want 1", len(events))
+	}
+	venue := events[0].Children["venue"][0]
+	if venue.Value != "Hall" || venue.Attrs["city"] != "Austin" {
+		t.Fatalf("venue = %+v", venue)
+	}
+
+	// Repetition appends rather than overwrites.
+	if n := len(extensions[CustomPrefix]["simple"]); n != 2 {
+		t.Fatalf("simple entries = %d, want 2", n)
+	}
+
+	// The returned element mirrors what was filed.
+	if parsed[0].Name != "event" || len(parsed[0].Children) != 1 {
+		t.Fatalf("returned element = %+v", parsed[0])
+	}
+	if parsed[1].Value != "plain" || len(parsed[1].Children) != 0 {
+		t.Fatalf("returned simple = %+v", parsed[1])
+	}
+}
