@@ -1,0 +1,12 @@
+<!--
+Description: atom:updated in an rss item is promoted to the item updated date
+-->
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Feed Title</title>
+    <item>
+      <title>Item Title</title>
+      <atom:updated>2020-01-02T15:04:05Z</atom:updated>
+    </item>
+  </channel>
+</rss>

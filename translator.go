@@ -72,6 +72,8 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) (item *Item)
 	item.Links = t.translateItemLinks(rssItem)
 	item.Published = t.translateItemPublished(rssItem)
 	item.PublishedParsed = t.translateItemPublishedParsed(rssItem)
+	item.Updated = t.translateItemUpdated(rssItem)
+	item.UpdatedParsed = t.translateItemUpdatedParsed(rssItem)
 	item.Author = t.translateItemAuthor(rssItem)
 	item.Authors = t.translateItemAuthors(rssItem)
 	item.GUID = t.translateItemGUID(rssItem)
@@ -315,11 +317,17 @@ func (t *DefaultRSSTranslator) translateItemDescription(rssItem *rss.Item) (desc
 	} else if rssItem.ITunesExt != nil && rssItem.ITunesExt.Summary != "" {
 		desc = rssItem.ITunesExt.Summary
 	}
+	if desc == "" {
+		desc = t.atomExtValue(rssItem.Extensions, "summary")
+	}
 	return
 }
 
 func (t *DefaultRSSTranslator) translateItemContent(rssItem *rss.Item) (content string) {
-	return rssItem.Content
+	if rssItem.Content != "" {
+		return rssItem.Content
+	}
+	return t.atomExtValue(rssItem.Extensions, "content")
 }
 
 func (t *DefaultRSSTranslator) translateItemLink(rssItem *rss.Item) (link string) {
@@ -337,14 +345,22 @@ func (t *DefaultRSSTranslator) translateItemUpdated(rssItem *rss.Item) (updated 
 	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
 		updated = t.firstEntry(rssItem.DublinCoreExt.Date)
 	}
+	if updated == "" {
+		updated = t.atomExtValue(rssItem.Extensions, "updated")
+	}
 	return updated
 }
 
 func (t *DefaultRSSTranslator) translateItemUpdatedParsed(rssItem *rss.Item) (updated *time.Time) {
+	updatedText := ""
 	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
-		updatedText := t.firstEntry(rssItem.DublinCoreExt.Date)
-		updatedDate, err := shared.ParseDate(updatedText)
-		if err == nil {
+		updatedText = t.firstEntry(rssItem.DublinCoreExt.Date)
+	}
+	if updatedText == "" {
+		updatedText = t.atomExtValue(rssItem.Extensions, "updated")
+	}
+	if updatedText != "" {
+		if updatedDate, err := shared.ParseDate(updatedText); err == nil {
 			updated = &updatedDate
 		}
 	}
@@ -357,16 +373,22 @@ func (t *DefaultRSSTranslator) translateItemPublished(rssItem *rss.Item) (pubDat
 	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
 		return t.firstEntry(rssItem.DublinCoreExt.Date)
 	}
-	return
+	return t.atomExtValue(rssItem.Extensions, "published")
 }
 
 func (t *DefaultRSSTranslator) translateItemPublishedParsed(rssItem *rss.Item) (pubDate *time.Time) {
 	if rssItem.PubDateParsed != nil {
 		return rssItem.PubDateParsed
-	} else if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
-		pubDateText := t.firstEntry(rssItem.DublinCoreExt.Date)
-		pubDateParsed, err := shared.ParseDate(pubDateText)
-		if err == nil {
+	}
+	pubDateText := ""
+	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Date != nil {
+		pubDateText = t.firstEntry(rssItem.DublinCoreExt.Date)
+	}
+	if pubDateText == "" {
+		pubDateText = t.atomExtValue(rssItem.Extensions, "published")
+	}
+	if pubDateText != "" {
+		if pubDateParsed, err := shared.ParseDate(pubDateText); err == nil {
 			pubDate = &pubDateParsed
 		}
 	}
@@ -396,6 +418,8 @@ func (t *DefaultRSSTranslator) translateItemAuthor(rssItem *rss.Item) (author *P
 		author = &Person{}
 		author.Name = name
 		author.Email = address
+	} else if name, email := t.atomExtChild(rssItem.Extensions, "author", "name"), t.atomExtChild(rssItem.Extensions, "author", "email"); name != "" || email != "" {
+		author = &Person{Name: name, Email: email}
 	}
 	return
 }
@@ -475,6 +499,14 @@ func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categ
 		cats = append(cats, rssItem.DublinCoreExt.Subject...)
 	}
 
+	for _, m := range t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rssItem.Extensions) {
+		for _, c := range m["category"] {
+			if term := c.Attrs["term"]; term != "" {
+				cats = append(cats, term)
+			}
+		}
+	}
+
 	if len(cats) > 0 {
 		categories = cats
 	}
@@ -514,6 +546,32 @@ func (t *DefaultRSSTranslator) extensionsForKeys(keys []string, extensions ext.E
 		}
 	}
 	return
+}
+
+// atomExtValue returns the text of the first matching Atom element embedded in
+// an RSS feed (across the atom/atom10/atom03 namespaces), or "" if absent. This
+// promotes Atom tags in RSS to the universal fields, the same way dc:/itunes:
+// values already are.
+func (t *DefaultRSSTranslator) atomExtValue(exts ext.Extensions, name string) string {
+	for _, m := range t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, exts) {
+		if es, ok := m[name]; ok && len(es) > 0 {
+			return es[0].Value
+		}
+	}
+	return ""
+}
+
+// atomExtChild returns the text of a child of the first matching Atom element
+// (e.g. author > name).
+func (t *DefaultRSSTranslator) atomExtChild(exts ext.Extensions, parent, child string) string {
+	for _, m := range t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, exts) {
+		if ps, ok := m[parent]; ok && len(ps) > 0 {
+			if cs, ok := ps[0].Children[child]; ok && len(cs) > 0 {
+				return cs[0].Value
+			}
+		}
+	}
+	return ""
 }
 
 func (t *DefaultRSSTranslator) firstEntry(entries []string) (value string) {
