@@ -96,7 +96,7 @@ func resolveAttrs(p *xpp.XMLPullParser) error {
 
 // resolve u relative to b
 func XmlBaseResolveUrl(b *url.URL, u string) (*url.URL, error) {
-	relURL, err := url.Parse(u)
+	relURL, err := url.Parse(strings.TrimLeft(u, " "))
 	if err != nil {
 		return nil, err
 	}
