@@ -51,6 +51,17 @@ func TestStripCDATA(t *testing.T) {
 		{"]]>", "]]>"},
 		{"<![CDATA[", "<![CDATA["},
 		{"<![CDATA[testtest", "<![CDATA[testtest"},
+
+		// Mixed text and CDATA: character data before or between CDATA
+		// sections is still character data and must be kept. These were
+		// silently dropped before (see #140).
+		{"before<![CDATA[mid]]>", "beforemid"},
+		{"A<![CDATA[B]]>C", "ABC"},
+		{"<![CDATA[A]]>MID<![CDATA[B]]>", "AMIDB"},
+		{"a<![CDATA[b]]>c<![CDATA[d]]>e", "abcde"},
+		{"&lt;p&gt;<![CDATA[<b>]]>", "<p><b>"},
+		{"x<![CDATA[]]>y", "xy"},
+		{"Breaking: <![CDATA[Big News]]>", "Breaking: Big News"},
 		{`<![CDATA[
     Since this is a CDATA section
     I can use all sorts of reserved characters
