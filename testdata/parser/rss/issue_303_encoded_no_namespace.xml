@@ -1,0 +1,12 @@
+<!--
+Description: an <encoded> element without the content: namespace must not
+abort the parse; it is treated as a custom element (issue #303)
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <encoded>hello</encoded>
+      <title>First</title>
+    </item>
+  </channel>
+</rss>

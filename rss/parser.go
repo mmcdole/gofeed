@@ -356,16 +356,13 @@ func (rp *Parser) parseItem(p *xpp.XMLPullParser) (item *Item, err error) {
 					return nil, err
 				}
 				item.Description = result
-			} else if name == "encoded" {
-				space := strings.TrimSpace(p.Space)
-				prefix := shared.PrefixForNamespace(space, p)
-				if prefix == "content" {
-					result, err := shared.ParseText(p)
-					if err != nil {
-						return nil, err
-					}
-					item.Content = result
+			} else if name == "encoded" &&
+				shared.PrefixForNamespace(strings.TrimSpace(p.Space), p) == "content" {
+				result, err := shared.ParseText(p)
+				if err != nil {
+					return nil, err
 				}
+				item.Content = result
 			} else if name == "link" {
 				result, err := rp.parseLink(p)
 				if err != nil {
