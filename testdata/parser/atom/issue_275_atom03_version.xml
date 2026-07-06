@@ -1,0 +1,7 @@
+<!--
+Description: the atom 0.3 namespace sets FeedVersion 0.3 (issue #275
+coverage)
+-->
+<feed xmlns="http://purl.org/atom/ns#">
+  <title>old</title>
+</feed>

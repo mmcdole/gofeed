@@ -1,0 +1,16 @@
+<!--
+Description: extension and unknown elements at the feed root are skipped, as
+are unknown children of image, textinput, skipHours and skipDays
+(issue #275 coverage)
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <dc:whatever>x</dc:whatever>
+  <unknownroot>y</unknownroot>
+  <channel>
+    <title>t</title>
+    <image><url>http://example.org/i.png</url><junk>z</junk></image>
+    <skipHours><hour>1</hour><junk/></skipHours>
+    <skipDays><day>Monday</day><junk/></skipDays>
+    <textinput><title>ti</title><junk/></textinput>
+  </channel>
+</rdf:RDF>

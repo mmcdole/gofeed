@@ -1,0 +1,36 @@
+<!--
+Description: extensions at feed, entry and source level, categories at feed
+level, unknown elements everywhere, atom 0.3 modified inside source, and
+binary and unknown content types (issue #275 coverage)
+-->
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title>t</title>
+  <category term="cat1" label="Cat"/>
+  <dc:creator>Feed Creator</dc:creator>
+  <unknownfeed>x</unknownfeed>
+  <entry>
+    <title>e1</title>
+    <dc:subject>s</dc:subject>
+    <unknownentry>y</unknownentry>
+    <source>
+      <title>src</title>
+      <modified>2003-12-13T18:30:02Z</modified>
+      <dc:rights>r</dc:rights>
+      <unknownsource>z</unknownsource>
+      <category term="sc"/>
+    </source>
+  </entry>
+  <entry>
+    <title>e2</title>
+    <content type="video/mp4">aGVsbG8=</content>
+  </entry>
+  <entry>
+    <title>e3</title>
+    <content type="application/json">{"a":1}</content>
+  </entry>
+  <entry>
+    <title>e4</title>
+    <author><name>An Author</name><unknownperson>q</unknownperson></author>
+    <content type="application/atom+xml">&lt;x/&gt;</content>
+  </entry>
+</feed>

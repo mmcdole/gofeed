@@ -1,0 +1,66 @@
+{
+  "dcExt": {
+    "creator": [
+      "Chan Creator"
+    ]
+  },
+  "extensions": {
+    "dc": {
+      "creator": [
+        {
+          "name": "creator",
+          "value": "Chan Creator",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "dcExt": {
+        "subject": [
+          "Subj"
+        ]
+      },
+      "itunesExt": {
+        "author": "Item Author"
+      },
+      "extensions": {
+        "custom": {
+          "thing": [
+            {
+              "name": "thing",
+              "value": "val",
+              "attrs": {
+                "attr": "v"
+              },
+              "children": {}
+            }
+          ]
+        },
+        "dc": {
+          "subject": [
+            {
+              "name": "subject",
+              "value": "Subj",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "itunes": {
+          "author": [
+            {
+              "name": "author",
+              "value": "Item Author",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0"
+}

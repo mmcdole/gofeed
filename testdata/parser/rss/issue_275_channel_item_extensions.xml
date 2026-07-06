@@ -1,0 +1,15 @@
+<!--
+Description: dublin core at channel level and itunes, dc and custom
+extensions at item level parse into Extensions plus the mapped
+ITunesExt/DublinCoreExt structs (issue #275 coverage)
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/DTDs/PodCast-1.0.dtd" xmlns:custom="http://example.org/ns">
+  <channel>
+    <dc:creator>Chan Creator</dc:creator>
+    <item>
+      <itunes:author>Item Author</itunes:author>
+      <dc:subject>Subj</dc:subject>
+      <custom:thing attr="v">val</custom:thing>
+    </item>
+  </channel>
+</rss>

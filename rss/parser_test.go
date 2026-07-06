@@ -55,3 +55,10 @@ func TestParser_Parse_CloudTruncated(t *testing.T) {
 }
 
 // TODO: Examples
+
+func TestParser_Parse_UnknownRoot(t *testing.T) {
+	// Neither <rss> nor <rdf>: the parse must fail rather than return an
+	// empty feed.
+	_, err := (&rss.Parser{}).Parse(strings.NewReader(`<foo><channel/></foo>`))
+	assert.Error(t, err)
+}
