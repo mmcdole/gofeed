@@ -28,10 +28,13 @@ const (
 
 // DetectFeedType attempts to determine the type of feed
 // by looking for specific xml elements unique to the
-// various feed types.
+// various feed types. It returns FeedTypeUnknown when the
+// reader fails before the type can be determined.
 func DetectFeedType(feed io.Reader) FeedType {
 	buffer := new(bytes.Buffer)
-	buffer.ReadFrom(feed)
+	if _, err := buffer.ReadFrom(feed); err != nil {
+		return FeedTypeUnknown
+	}
 
 	var firstChar byte
 loop:

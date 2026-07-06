@@ -95,26 +95,21 @@ func NewParser() *Parser {
 // the universal gofeed.Feed.  It takes an
 // io.Reader which should return the xml/json content.
 func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
-	// Wrap the feed io.Reader in a io.TeeReader
-	// so we can capture all the bytes read by the
-	// DetectFeedType function and construct a new
-	// reader with those bytes intact for when we
-	// attempt to parse the feeds.
-	var buf bytes.Buffer
-	tee := io.TeeReader(feed, &buf)
-	feedType := DetectFeedType(tee)
+	// Read the input once up front: detection inspects the bytes and the
+	// format parser reads them again, and reading here surfaces an I/O
+	// error as itself rather than as a failed type detection.
+	data, err := io.ReadAll(feed)
+	if err != nil {
+		return nil, err
+	}
 
-	// Glue the read bytes from the detect function
-	// back into a new reader
-	r := io.MultiReader(&buf, feed)
-
-	switch feedType {
+	switch DetectFeedType(bytes.NewReader(data)) {
 	case FeedTypeAtom:
-		return f.parseAtomFeed(r)
+		return f.parseAtomFeed(bytes.NewReader(data))
 	case FeedTypeRSS:
-		return f.parseRSSFeed(r)
+		return f.parseRSSFeed(bytes.NewReader(data))
 	case FeedTypeJSON:
-		return f.parseJSONFeed(r)
+		return f.parseJSONFeed(bytes.NewReader(data))
 	}
 
 	return nil, ErrFeedTypeNotDetected

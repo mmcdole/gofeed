@@ -6,13 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strings"
 	"sync"
 	"testing"
+	"testing/iotest"
 	"time"
 
 	"github.com/mmcdole/gofeed"
@@ -397,4 +398,14 @@ func TestParserKeepOriginalFeed(t *testing.T) {
 	if orig.Title != "t" {
 		t.Errorf("original feed title = %q, want %q", orig.Title, "t")
 	}
+}
+
+// An I/O error from the reader must surface as itself, not be masked as a
+// failed type detection (issue #311).
+func TestParser_Parse_ReaderError(t *testing.T) {
+	boom := errors.New("boom")
+	r := io.MultiReader(strings.NewReader(`<rss version="2.0"><channel>`), iotest.ErrReader(boom))
+
+	_, err := gofeed.NewParser().Parse(r)
+	assert.ErrorIs(t, err, boom)
 }
