@@ -2,7 +2,6 @@ package shared
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"html"
 	"regexp"
@@ -16,9 +15,6 @@ var (
 	nameEmailRgx = regexp.MustCompile(`^([^@]+)\s+\(([^@]+@[^)]+)\)$`)
 	nameOnlyRgx  = regexp.MustCompile(`^([^@()]+)$`)
 	emailOnlyRgx = regexp.MustCompile(`^([^@()]+@[^@()]+)$`)
-
-	ErrTruncatedEntity         = errors.New("truncated entity")
-	ErrInvalidNumericReference = errors.New("invalid numeric reference")
 )
 
 const CDATA_START = "<![CDATA["
@@ -66,7 +62,7 @@ func ParseText(p *xpp.XMLPullParser) (string, error) {
 		return StripCDATA(result), nil
 	}
 
-	return DecodeEntities(result)
+	return DecodeEntities(result), nil
 }
 
 // ParseTextURL is ParseText for an element whose text is a URL: it resolves the
@@ -94,7 +90,7 @@ func StripCDATA(str string) string {
 		start := indexAt(str, CDATA_START, curr)
 
 		if start == -1 {
-			dec, _ := DecodeEntities(str[curr:])
+			dec := DecodeEntities(str[curr:])
 			buf.Write([]byte(dec))
 			return buf.String()
 		}
@@ -102,7 +98,7 @@ func StripCDATA(str string) string {
 		// Character data before the CDATA section is still character data:
 		// entity-decode it and keep it. Dropping it silently loses any text
 		// that precedes or sits between CDATA sections.
-		dec, _ := DecodeEntities(str[curr:start])
+		dec := DecodeEntities(str[curr:start])
 		buf.Write([]byte(dec))
 
 		end := indexAt(str, CDATA_END, start+len(CDATA_START))
@@ -111,7 +107,7 @@ func StripCDATA(str string) string {
 			// Unterminated CDATA (malformed; encoding/xml would have rejected
 			// it before this point). Keep the remainder, marker and all, rather
 			// than guess where the section was meant to end.
-			dec, _ := DecodeEntities(str[start:])
+			dec := DecodeEntities(str[start:])
 			buf.Write([]byte(dec))
 			return buf.String()
 		}
@@ -127,14 +123,24 @@ func StripCDATA(str string) string {
 	return buf.String()
 }
 
+// maxEntityLen bounds how far past an '&' the terminating ';' may be. The
+// longest named HTML entity is 33 bytes with delimiters
+// ("&CounterClockwiseContourIntegral;"); 64 leaves margin without letting a
+// distant stray ';' make the scan quadratic on ampersand-heavy text.
+const maxEntityLen = 64
+
 // DecodeEntities decodes escaped XML entities
 // in a string and returns the unescaped string
-func DecodeEntities(str string) (string, error) {
+func DecodeEntities(str string) string {
+	idx := strings.IndexByte(str, '&')
+	if idx == -1 {
+		return str
+	}
+
+	var buf bytes.Buffer
 	data := []byte(str)
-	buf := bytes.NewBuffer([]byte{})
 
 	for len(data) > 0 {
-		// Find the next entity
 		idx := bytes.IndexByte(data, '&')
 		if idx == -1 {
 			buf.Write(data)
@@ -144,34 +150,34 @@ func DecodeEntities(str string) (string, error) {
 		buf.Write(data[:idx])
 		data = data[idx:]
 
-		// If there is only the '&' left here
-		if len(data) == 1 {
+		// Find the end of the entity within the bounded window.
+		window := data
+		if len(window) > maxEntityLen {
+			window = window[:maxEntityLen]
+		}
+		end := bytes.IndexByte(window, ';')
+
+		if end == -1 && len(window) == len(data) {
+			// No ';' in the rest of the input; no entity can terminate,
+			// so everything left is literal text.
 			buf.Write(data)
-			return buf.String(), nil
+			break
 		}
 
-		// Find the end of the entity
-		end := bytes.IndexByte(data, ';')
-		if end == -1 {
-			// it's not an entitiy. just a plain old '&' possibly with extra bytes
-			buf.Write(data)
-			return buf.String(), nil
+		// A candidate containing whitespace (or no nearby ';' at all) is not
+		// an entity. Emit the '&' literally and keep scanning: entities later
+		// in the string must still decode.
+		if end == -1 || bytes.ContainsAny(data[1:end], " \t\r\n") {
+			buf.WriteByte('&')
+			data = data[1:]
+			continue
 		}
 
-		// Check if there is a space somewhere within the 'entitiy'.
-		// If there is then skip the whole thing since it's not a real entity.
-		if strings.Contains(string(data[1:end]), " ") {
-			buf.Write(data)
-			return buf.String(), nil
-		} else {
-			buf.WriteString(html.UnescapeString(string(data[0 : end+1])))
-		}
-
-		// Skip the entity
+		buf.WriteString(html.UnescapeString(string(data[:end+1])))
 		data = data[end+1:]
 	}
 
-	return buf.String(), nil
+	return buf.String()
 }
 
 // ParseNameAddress parses name/email strings commonly
