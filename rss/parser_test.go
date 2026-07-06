@@ -45,4 +45,13 @@ func TestParser_Parse(t *testing.T) {
 	}
 }
 
+func TestParser_Parse_CloudTruncated(t *testing.T) {
+	// A stream that ends inside <cloud> must surface the underlying XML
+	// error from the skip to the matching end tag.
+	feed := `<rss version="2.0"><channel><cloud domain="x"><child>`
+	fp := &rss.Parser{}
+	_, err := fp.Parse(strings.NewReader(feed))
+	assert.Error(t, err)
+}
+
 // TODO: Examples

@@ -1,0 +1,10 @@
+<!--
+Description: a <cloud> element with child elements must not abort the
+parse; children are skipped and the attributes kept (issue #304)
+-->
+<rss version="2.0">
+  <channel>
+    <cloud domain="rpc.sys.com" port="80" path="/RPC2" registerProcedure="myCloud.rssPleaseNotify" protocol="xml-rpc"><child>x</child></cloud>
+    <title>Sample Feed</title>
+  </channel>
+</rss>
