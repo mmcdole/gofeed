@@ -8,7 +8,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
-	xpp "github.com/mmcdole/goxpp"
+	xpp "github.com/mmcdole/goxpp/v2"
 )
 
 var (
@@ -29,7 +29,7 @@ type Parser struct{}
 // Parse parses an xml feed into an atom.Feed
 func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	feed = shared.NewControlCharFilterReader(feed)
-	p := xpp.NewXMLPullParser(feed, false, shared.NewReaderLabel)
+	p := shared.NewXMLParser(feed)
 
 	_, err := shared.FindRoot(p)
 	if err != nil {
@@ -39,7 +39,7 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	return ap.parseRoot(p)
 }
 
-func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
+func (ap *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 	if err := p.Expect(xpp.StartTag, "feed"); err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 
 		if tok == xpp.StartTag {
 
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if shared.IsExtension(p) {
 				e, err := shared.ParseExtension(extensions, p)
@@ -197,7 +197,7 @@ func (ap *Parser) parseRoot(p *xpp.XMLPullParser) (*Feed, error) {
 	return atom, nil
 }
 
-func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
+func (ap *Parser) parseEntry(p *xpp.Parser) (*Entry, error) {
 	if err := p.Expect(xpp.StartTag, "entry"); err != nil {
 		return nil, err
 	}
@@ -221,7 +221,7 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 
 		if tok == xpp.StartTag {
 
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if shared.IsExtension(p) {
 				e, err := shared.ParseExtension(extensions, p)
@@ -350,7 +350,7 @@ func (ap *Parser) parseEntry(p *xpp.XMLPullParser) (*Entry, error) {
 	return entry, nil
 }
 
-func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
+func (ap *Parser) parseSource(p *xpp.Parser) (*Source, error) {
 
 	if err := p.Expect(xpp.StartTag, "source"); err != nil {
 		return nil, err
@@ -376,7 +376,7 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 
 		if tok == xpp.StartTag {
 
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if shared.IsExtension(p) {
 				e, err := shared.ParseExtension(extensions, p)
@@ -500,7 +500,7 @@ func (ap *Parser) parseSource(p *xpp.XMLPullParser) (*Source, error) {
 	return source, nil
 }
 
-func (ap *Parser) parseContent(p *xpp.XMLPullParser) (*Content, error) {
+func (ap *Parser) parseContent(p *xpp.Parser) (*Content, error) {
 	c := &Content{}
 	c.Type = p.Attribute("type")
 	c.Src = p.Attribute("src")
@@ -514,7 +514,7 @@ func (ap *Parser) parseContent(p *xpp.XMLPullParser) (*Content, error) {
 	return c, nil
 }
 
-func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error) {
+func (ap *Parser) parsePerson(name string, p *xpp.Parser) (*Person, error) {
 
 	if err := p.Expect(xpp.StartTag, name); err != nil {
 		return nil, err
@@ -534,7 +534,7 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 
 		if tok == xpp.StartTag {
 
-			name := strings.ToLower(p.Name)
+			name := strings.ToLower(p.Name())
 
 			if name == "name" {
 				result, err := ap.parseAtomText(p)
@@ -572,7 +572,7 @@ func (ap *Parser) parsePerson(name string, p *xpp.XMLPullParser) (*Person, error
 	return person, nil
 }
 
-func (ap *Parser) parseLink(p *xpp.XMLPullParser) (*Link, error) {
+func (ap *Parser) parseLink(p *xpp.Parser) (*Link, error) {
 	if err := p.Expect(xpp.StartTag, "link"); err != nil {
 		return nil, err
 	}
@@ -598,7 +598,7 @@ func (ap *Parser) parseLink(p *xpp.XMLPullParser) (*Link, error) {
 	return l, nil
 }
 
-func (ap *Parser) parseCategory(p *xpp.XMLPullParser) (*Category, error) {
+func (ap *Parser) parseCategory(p *xpp.Parser) (*Category, error) {
 	if err := p.Expect(xpp.StartTag, "category"); err != nil {
 		return nil, err
 	}
@@ -618,7 +618,7 @@ func (ap *Parser) parseCategory(p *xpp.XMLPullParser) (*Category, error) {
 	return c, nil
 }
 
-func (ap *Parser) parseGenerator(p *xpp.XMLPullParser) (*Generator, error) {
+func (ap *Parser) parseGenerator(p *xpp.Parser) (*Generator, error) {
 
 	if err := p.Expect(xpp.StartTag, "generator"); err != nil {
 		return nil, err
@@ -651,7 +651,7 @@ func (ap *Parser) parseGenerator(p *xpp.XMLPullParser) (*Generator, error) {
 	return g, nil
 }
 
-func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
+func (ap *Parser) parseAtomText(p *xpp.Parser) (string, error) {
 
 	var text struct {
 		Type     string `xml:"type,attr"`
@@ -660,7 +660,7 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	}
 
 	// get current base URL before it is clobbered by DecodeElement
-	base := p.BaseStack.Top()
+	base := p.BaseURL()
 	err := p.DecodeElement(&text)
 	if err != nil {
 		return "", err
@@ -704,7 +704,7 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	}
 
 	// resolve relative URIs in URI-containing elements according to xml:base
-	name := strings.ToLower(p.Name)
+	name := strings.ToLower(p.Name())
 	if atomUriElements[name] {
 		resolved, err := shared.XmlBaseResolveUrl(base, result)
 		if resolved != nil && err == nil {
@@ -734,11 +734,11 @@ func isBinaryMediaType(t string) bool {
 	return false
 }
 
-func (ap *Parser) parseLanguage(p *xpp.XMLPullParser) string {
+func (ap *Parser) parseLanguage(p *xpp.Parser) string {
 	return p.Attribute("lang")
 }
 
-func (ap *Parser) parseVersion(p *xpp.XMLPullParser) string {
+func (ap *Parser) parseVersion(p *xpp.Parser) string {
 	ver := p.Attribute("version")
 	if ver != "" {
 		return ver

@@ -4,22 +4,22 @@ import (
 	"strings"
 
 	"github.com/mmcdole/gofeed/extensions"
-	"github.com/mmcdole/goxpp"
+	xpp "github.com/mmcdole/goxpp/v2"
 )
 
 // IsExtension returns whether or not the current
 // XML element is an extension element (if it has a
 // non empty prefix)
-func IsExtension(p *xpp.XMLPullParser) bool {
-	prefix := PrefixForNamespace(p.Space, p)
+func IsExtension(p *xpp.Parser) bool {
+	prefix := PrefixForNamespace(p.Space(), p)
 	return !(prefix == "" || prefix == "rss" || prefix == "rdf" || prefix == "content")
 }
 
 // ParseExtension parses the current element of the
 // XMLPullParser as an extension element and updates
 // the extension map
-func ParseExtension(fe ext.Extensions, p *xpp.XMLPullParser) (ext.Extensions, error) {
-	prefix := PrefixForNamespace(p.Space, p)
+func ParseExtension(fe ext.Extensions, p *xpp.Parser) (ext.Extensions, error) {
+	prefix := PrefixForNamespace(p.Space(), p)
 
 	result, err := parseExtensionElement(p)
 	if err != nil {
@@ -31,24 +31,24 @@ func ParseExtension(fe ext.Extensions, p *xpp.XMLPullParser) (ext.Extensions, er
 		fe[prefix] = map[string][]ext.Extension{}
 	}
 	// Ensure the extension element slice exists
-	if _, ok := fe[prefix][p.Name]; !ok {
-		fe[prefix][p.Name] = []ext.Extension{}
+	if _, ok := fe[prefix][p.Name()]; !ok {
+		fe[prefix][p.Name()] = []ext.Extension{}
 	}
 
-	fe[prefix][p.Name] = append(fe[prefix][p.Name], result)
+	fe[prefix][p.Name()] = append(fe[prefix][p.Name()], result)
 	return fe, nil
 }
 
-func parseExtensionElement(p *xpp.XMLPullParser) (e ext.Extension, err error) {
+func parseExtensionElement(p *xpp.Parser) (e ext.Extension, err error) {
 	if err = p.Expect(xpp.StartTag, "*"); err != nil {
 		return e, err
 	}
 
-	e.Name = p.Name
+	e.Name = p.Name()
 	e.Children = map[string][]ext.Extension{}
 	e.Attrs = map[string]string{}
 
-	for _, attr := range p.Attrs {
+	for _, attr := range p.Attrs() {
 		// TODO: Alright that we are stripping
 		// namespace information from attributes ?
 		e.Attrs[attr.Name.Local] = attr.Value
@@ -76,7 +76,7 @@ func parseExtensionElement(p *xpp.XMLPullParser) (e ext.Extension, err error) {
 
 			e.Children[child.Name] = append(e.Children[child.Name], child)
 		} else if tok == xpp.Text {
-			e.Value += p.Text
+			e.Value += p.Text()
 		}
 	}
 
@@ -89,10 +89,10 @@ func parseExtensionElement(p *xpp.XMLPullParser) (e ext.Extension, err error) {
 	return e, nil
 }
 
-func PrefixForNamespace(space string, p *xpp.XMLPullParser) string {
-	// Namespace attribute values may legally carry surrounding whitespace,
-	// and goxpp stores trimmed URIs as the p.Spaces keys. Trim here, once,
-	// so every lookup below (and every caller) agrees on the key.
+func PrefixForNamespace(space string, p *xpp.Parser) string {
+	// Namespace attribute values may legally carry surrounding whitespace.
+	// Trim here, once, so every lookup below (and every caller) agrees on
+	// the key.
 	space = strings.TrimSpace(space)
 
 	// First we check if the global namespace map
@@ -103,9 +103,9 @@ func PrefixForNamespace(space string, p *xpp.XMLPullParser) string {
 		return prefix
 	}
 
-	// Next we check if the feed itself defined this
-	// this namespace and return it if we have a result.
-	if prefix, ok := p.Spaces[space]; ok {
+	// Next we check if the feed itself declared a prefix for this
+	// namespace and return it if we have a result.
+	if prefix, ok := p.PrefixForURI(space); ok {
 		return prefix
 	}
 

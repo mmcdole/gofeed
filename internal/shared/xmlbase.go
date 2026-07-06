@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	xpp "github.com/mmcdole/goxpp"
+	xpp "github.com/mmcdole/goxpp/v2"
 	"golang.org/x/net/html"
 )
 
@@ -47,7 +47,7 @@ var (
 // NextTag is similar to goxpp's NextTag method except it wont throw an error
 // if the next immediate token isnt a Start/EndTag.  Instead, it will continue
 // to consume tokens until it hits a Start/EndTag or EndDocument.
-func NextTag(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
+func NextTag(p *xpp.Parser) (event xpp.EventType, err error) {
 	for {
 		event, err = p.Next()
 		if err != nil {
@@ -80,13 +80,13 @@ func NextTag(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
 }
 
 // resolve relative URI attributes according to xml:base
-func resolveAttrs(p *xpp.XMLPullParser) error {
-	for i, attr := range p.Attrs {
+func resolveAttrs(p *xpp.Parser) error {
+	for i, attr := range p.Attrs() {
 		lowerName := strings.ToLower(attr.Name.Local)
 		if uriAttrs[lowerName] {
-			absURL, err := XmlBaseResolveUrl(p.BaseStack.Top(), attr.Value)
+			absURL, err := XmlBaseResolveUrl(p.BaseURL(), attr.Value)
 			if err == nil && absURL != nil {
-				p.Attrs[i].Value = absURL.String()
+				p.Attrs()[i].Value = absURL.String()
 			}
 			// Continue processing even if URL resolution fails (e.g., for non-HTTP URIs like at://)
 		}

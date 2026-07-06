@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/mmcdole/gofeed/internal/shared"
-	xpp "github.com/mmcdole/goxpp"
 )
 
 // FeedType represents one of the possible feed
@@ -56,14 +55,14 @@ loop:
 
 	if firstChar == '<' {
 		// Check if it's an XML based feed
-		p := xpp.NewXMLPullParser(bytes.NewReader(buffer.Bytes()), false, shared.NewReaderLabel)
+		p := shared.NewXMLParser(bytes.NewReader(buffer.Bytes()))
 
 		_, err := shared.FindRoot(p)
 		if err != nil {
 			return FeedTypeUnknown
 		}
 
-		name := strings.ToLower(p.Name)
+		name := strings.ToLower(p.Name())
 		switch name {
 		case "rdf":
 			return FeedTypeRSS
