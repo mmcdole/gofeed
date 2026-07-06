@@ -8,11 +8,21 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/json"
 	"github.com/mmcdole/gofeed/rss"
 )
+
+// defaultRequestTimeout bounds ParseURL, which would otherwise use a client
+// with no timeout and hang forever on a slow or unresponsive server.
+// ParseURLWithContext callers manage their own context and are not subject to
+// this.
+const defaultRequestTimeout = 30 * time.Second
+
+// ErrResponseTooLarge is returned when a response body exceeds Parser.MaxByteSize.
+var ErrResponseTooLarge = errors.New("gofeed: response body exceeds MaxByteSize")
 
 // ErrFeedTypeNotDetected is returned when the detection system can not figure
 // out the Feed format
@@ -39,9 +49,13 @@ type Parser struct {
 	UserAgent      string
 	AuthConfig     *Auth
 	Client         *http.Client
-	rp             *rss.Parser
-	ap             *atom.Parser
-	jp             *json.Parser
+	// MaxByteSize limits how many bytes ParseURL/ParseURLWithContext will read
+	// from a response body. Zero means no limit. Exceeding it returns
+	// ErrResponseTooLarge rather than silently truncating.
+	MaxByteSize int64
+	rp          *rss.Parser
+	ap          *atom.Parser
+	jp          *json.Parser
 }
 
 // Auth is a structure allowing to
@@ -103,9 +117,12 @@ func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 }
 
 // ParseURL fetches the contents of a given url and
-// attempts to parse the response into the universal feed type.
+// attempts to parse the response into the universal feed type. It applies a
+// default request timeout; use ParseURLWithContext to control cancellation.
 func (f *Parser) ParseURL(feedURL string) (feed *Feed, err error) {
-	return f.ParseURLWithContext(feedURL, context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), defaultRequestTimeout)
+	defer cancel()
+	return f.ParseURLWithContext(feedURL, ctx)
 }
 
 // ParseURLWithContext fetches contents of a given url and
@@ -148,7 +165,28 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 		}
 	}
 
-	return f.Parse(resp.Body)
+	var body io.Reader = resp.Body
+	if f.MaxByteSize > 0 {
+		body = &limitedReader{r: resp.Body, left: f.MaxByteSize}
+	}
+	return f.Parse(body)
+}
+
+// limitedReader returns ErrResponseTooLarge once more than the configured
+// number of bytes has been read, rather than silently truncating (which would
+// produce a corrupt partial parse).
+type limitedReader struct {
+	r    io.Reader
+	left int64
+}
+
+func (l *limitedReader) Read(p []byte) (int, error) {
+	n, err := l.r.Read(p)
+	l.left -= int64(n)
+	if l.left < 0 {
+		return n, ErrResponseTooLarge
+	}
+	return n, err
 }
 
 // ParseString parses a feed XML string and into the
