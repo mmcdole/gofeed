@@ -160,7 +160,6 @@ func ResolveHTML(base *url.URL, relHTML string) (string, error) {
 					if absVal != nil && err == nil {
 						n.Attr[i].Val = absVal.String()
 					}
-					break
 				}
 			}
 		}
