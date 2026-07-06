@@ -223,9 +223,9 @@ fmt.Println(feed.Author) // Valentine Wiggin
 
 ## Dependencies
 
-* [goxpp](https://github.com/mmcdole/goxpp) - XML Pull Parser
-* [goquery](https://github.com/PuerkitoBio/goquery) - Go jQuery-like interface
-* [testify](https://github.com/stretchr/testify) - Unit test enhancements
+* [goxpp](https://github.com/mmcdole/goxpp) - XML pull parser
+* [x/net](https://pkg.go.dev/golang.org/x/net) - charset conversion and HTML parsing
+* [testify](https://github.com/stretchr/testify) - unit test enhancements
 
 ## License
 

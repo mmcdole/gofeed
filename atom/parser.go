@@ -1,14 +1,15 @@
 package atom
 
 import (
+	"bytes"
 	"encoding/base64"
 	"io"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
 	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
 	xpp "github.com/mmcdole/goxpp/v2"
+	"golang.org/x/net/html"
 )
 
 var (
@@ -756,18 +757,53 @@ func (ap *Parser) parseVersion(p *xpp.Parser) string {
 	return ""
 }
 
-func (ap *Parser) stripWrappingDiv(content string) (result string) {
-	result = content
-	r := strings.NewReader(result)
-	doc, err := goquery.NewDocumentFromReader(r)
-	if err == nil {
-		root := doc.Find("body").Children()
-		if root.Is("div") && root.Siblings().Size() == 0 {
-			html, err := root.Unwrap().Html()
-			if err == nil {
-				result = html
-			}
+// stripWrappingDiv removes the wrapping <div> an xhtml text construct
+// carries per RFC 4287 section 3.1.1.3: when the parsed body holds exactly
+// one element child and it is a div, the div's inner HTML is returned.
+// Anything else comes back unchanged.
+func (ap *Parser) stripWrappingDiv(content string) string {
+	doc, err := html.Parse(strings.NewReader(content))
+	if err != nil {
+		return content
+	}
+	body := findElement(doc, "body")
+	if body == nil {
+		return content
+	}
+
+	var div *html.Node
+	for c := body.FirstChild; c != nil; c = c.NextSibling {
+		if c.Type != html.ElementNode {
+			continue
+		}
+		if div != nil || c.Data != "div" {
+			return content
+		}
+		div = c
+	}
+	if div == nil {
+		return content
+	}
+
+	var buf bytes.Buffer
+	for c := div.FirstChild; c != nil; c = c.NextSibling {
+		if err := html.Render(&buf, c); err != nil {
+			return content
 		}
 	}
-	return
+	return buf.String()
+}
+
+// findElement returns the first element with the given name in a depth-first
+// walk of the parsed document.
+func findElement(n *html.Node, name string) *html.Node {
+	if n.Type == html.ElementNode && n.Data == name {
+		return n
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if found := findElement(c, name); found != nil {
+			return found
+		}
+	}
+	return nil
 }

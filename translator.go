@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/mmcdole/gofeed/atom"
 	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
@@ -27,7 +26,14 @@ type Translator interface {
 // This default implementation defines a set of
 // mapping rules between rss.Feed -> Feed
 // for each of the fields in Feed.
-type DefaultRSSTranslator struct{}
+type DefaultRSSTranslator struct {
+	// DisableContentImageScan turns off the fallback that parses item and
+	// feed HTML (content, description) to find a first <img> when no
+	// explicit image is present. The scan runs a full HTML parse per item,
+	// so large feeds may want it off. Default off (the scan runs), matching
+	// historical behavior.
+	DisableContentImageScan bool
+}
 
 // Translate converts an RSS feed into the universal
 // feed type.
@@ -251,6 +257,9 @@ func (t *DefaultRSSTranslator) translateFeedImage(rss *rss.Feed) *Image {
 			}
 		}
 	}
+	if t.DisableContentImageScan {
+		return nil
+	}
 	return firstImageFromHtmlDocument(rss.Description)
 }
 
@@ -465,6 +474,9 @@ func (t *DefaultRSSTranslator) translateItemImage(rssItem *rss.Item) *Image {
 			return &Image{URL: enc.URL}
 		}
 	}
+	if t.DisableContentImageScan {
+		return nil
+	}
 	if img := firstImageFromHtmlDocument(rssItem.Content); img != nil {
 		return img
 	}
@@ -475,16 +487,33 @@ func (t *DefaultRSSTranslator) translateItemImage(rssItem *rss.Item) *Image {
 }
 
 func firstImageFromHtmlDocument(document string) *Image {
-	if doc, err := html.Parse(bytes.NewBufferString(document)); err == nil {
-		doc := goquery.NewDocumentFromNode(doc)
-		for _, node := range doc.FindMatcher(goquery.Single("img[src]")).Nodes {
-			for _, attr := range node.Attr {
-				if attr.Key == "src" {
-					return &Image{
-						URL: attr.Val,
-					}
-				}
+	doc, err := html.Parse(bytes.NewBufferString(document))
+	if err != nil {
+		return nil
+	}
+	if img := firstImgWithSrc(doc); img != nil {
+		for _, attr := range img.Attr {
+			if attr.Key == "src" {
+				return &Image{URL: attr.Val}
 			}
+		}
+	}
+	return nil
+}
+
+// firstImgWithSrc returns the first <img> element in document order that
+// carries a src attribute.
+func firstImgWithSrc(n *html.Node) *html.Node {
+	if n.Type == html.ElementNode && n.Data == "img" {
+		for _, attr := range n.Attr {
+			if attr.Key == "src" {
+				return n
+			}
+		}
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if img := firstImgWithSrc(c); img != nil {
+			return img
 		}
 	}
 	return nil
