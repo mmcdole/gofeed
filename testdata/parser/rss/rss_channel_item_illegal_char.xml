@@ -1,0 +1,10 @@
+<!--
+Description: rss item with an illegal control character in the title
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <title>abcd</title>
+    </item>
+  </channel>
+</rss>
