@@ -1,0 +1,12 @@
+<!--
+Description: feed and entry categories use the label when present and fall
+back to the term
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <category label="Label One" term="term1"/>
+  <category term="term2"/>
+  <entry>
+    <category label="Entry Label" term="eterm1"/>
+    <category term="eterm2"/>
+  </entry>
+</feed>

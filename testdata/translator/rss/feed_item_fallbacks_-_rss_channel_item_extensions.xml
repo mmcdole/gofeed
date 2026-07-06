@@ -1,0 +1,27 @@
+<!--
+Description: item fields fall back to dublin core (title, description, dates,
+author), itunes (summary, image, author, keywords), media:content images,
+dc:subject and embedded atom:category terms
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/DTDs/PodCast-1.0.dtd" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <item>
+      <dc:title>DC Item Title</dc:title>
+      <dc:description>DC Item Description</dc:description>
+      <dc:date>2026-02-03T04:05:06Z</dc:date>
+      <dc:author>Item Author (item@example.org)</dc:author>
+      <media:content url="http://example.org/item-media.png" medium="image"/>
+    </item>
+    <item>
+      <dc:creator>Item Creator</dc:creator>
+      <itunes:summary>Item Itunes Summary</itunes:summary>
+      <itunes:image href="http://example.org/item-itunes.png"/>
+      <itunes:keywords>one,two</itunes:keywords>
+      <dc:subject>Item Subject</dc:subject>
+      <atom:category term="atomterm"/>
+    </item>
+    <item>
+      <itunes:author>Item Itunes Author</itunes:author>
+    </item>
+  </channel>
+</rss>

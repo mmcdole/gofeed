@@ -1,0 +1,16 @@
+{
+  "categories": [
+    "Label One",
+    "term2"
+  ],
+  "items": [
+    {
+      "categories": [
+        "Entry Label",
+        "eterm2"
+      ]
+    }
+  ],
+  "feedType": "atom",
+  "feedVersion": "1.0"
+}

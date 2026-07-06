@@ -1,0 +1,48 @@
+{
+  "author": {
+    "name": "Dave Author",
+    "email": "dave@example.org"
+  },
+  "authors": [
+    {
+      "name": "Dave Author",
+      "email": "dave@example.org"
+    }
+  ],
+  "image": {
+    "url": "http://example.org/media.png"
+  },
+  "dcExt": {
+    "author": [
+      "Dave Author (dave@example.org)"
+    ]
+  },
+  "extensions": {
+    "dc": {
+      "author": [
+        {
+          "name": "author",
+          "value": "Dave Author (dave@example.org)",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    },
+    "media": {
+      "content": [
+        {
+          "name": "content",
+          "value": "",
+          "attrs": {
+            "type": "image/png",
+            "url": "http://example.org/media.png"
+          },
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": [],
+  "feedType": "rss",
+  "feedVersion": "2.0"
+}
