@@ -1,0 +1,13 @@
+<!--
+Description: feed author and image fall back to itunes, and categories merge
+itunes keywords, itunes categories with subcategories, and dc subject
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/DTDs/PodCast-1.0.dtd">
+  <channel>
+    <itunes:author>Itunes Author</itunes:author>
+    <itunes:image href="http://example.org/itunes.png"/>
+    <itunes:keywords>alpha,beta</itunes:keywords>
+    <itunes:category text="Tech"><itunes:category text="Gadgets"/></itunes:category>
+    <dc:subject>Subject</dc:subject>
+  </channel>
+</rss>

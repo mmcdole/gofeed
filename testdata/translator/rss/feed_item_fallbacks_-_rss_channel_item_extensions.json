@@ -1,0 +1,208 @@
+{
+  "items": [
+    {
+      "title": "DC Item Title",
+      "description": "DC Item Description",
+      "updated": "2026-02-03T04:05:06Z",
+      "updatedParsed": "2026-02-03T04:05:06Z",
+      "published": "2026-02-03T04:05:06Z",
+      "publishedParsed": "2026-02-03T04:05:06Z",
+      "author": {
+        "name": "Item Author",
+        "email": "item@example.org"
+      },
+      "authors": [
+        {
+          "name": "Item Author",
+          "email": "item@example.org"
+        }
+      ],
+      "image": {
+        "url": "http://example.org/item-media.png"
+      },
+      "dcExt": {
+        "title": [
+          "DC Item Title"
+        ],
+        "author": [
+          "Item Author (item@example.org)"
+        ],
+        "description": [
+          "DC Item Description"
+        ],
+        "date": [
+          "2026-02-03T04:05:06Z"
+        ]
+      },
+      "extensions": {
+        "dc": {
+          "author": [
+            {
+              "name": "author",
+              "value": "Item Author (item@example.org)",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "date": [
+            {
+              "name": "date",
+              "value": "2026-02-03T04:05:06Z",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "description": [
+            {
+              "name": "description",
+              "value": "DC Item Description",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "title": [
+            {
+              "name": "title",
+              "value": "DC Item Title",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "media": {
+          "content": [
+            {
+              "name": "content",
+              "value": "",
+              "attrs": {
+                "medium": "image",
+                "url": "http://example.org/item-media.png"
+              },
+              "children": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "Item Itunes Summary",
+      "author": {
+        "name": "Item Creator"
+      },
+      "authors": [
+        {
+          "name": "Item Creator"
+        }
+      ],
+      "image": {
+        "url": "http://example.org/item-itunes.png"
+      },
+      "categories": [
+        "one",
+        "two",
+        "Item Subject",
+        "atomterm"
+      ],
+      "dcExt": {
+        "creator": [
+          "Item Creator"
+        ],
+        "subject": [
+          "Item Subject"
+        ]
+      },
+      "itunesExt": {
+        "keywords": "one,two",
+        "summary": "Item Itunes Summary",
+        "image": "http://example.org/item-itunes.png"
+      },
+      "extensions": {
+        "atom": {
+          "category": [
+            {
+              "name": "category",
+              "value": "",
+              "attrs": {
+                "term": "atomterm"
+              },
+              "children": {}
+            }
+          ]
+        },
+        "dc": {
+          "creator": [
+            {
+              "name": "creator",
+              "value": "Item Creator",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "subject": [
+            {
+              "name": "subject",
+              "value": "Item Subject",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "itunes": {
+          "image": [
+            {
+              "name": "image",
+              "value": "",
+              "attrs": {
+                "href": "http://example.org/item-itunes.png"
+              },
+              "children": {}
+            }
+          ],
+          "keywords": [
+            {
+              "name": "keywords",
+              "value": "one,two",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "summary": [
+            {
+              "name": "summary",
+              "value": "Item Itunes Summary",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "author": {
+        "name": "Item Itunes Author"
+      },
+      "authors": [
+        {
+          "name": "Item Itunes Author"
+        }
+      ],
+      "itunesExt": {
+        "author": "Item Itunes Author"
+      },
+      "extensions": {
+        "itunes": {
+          "author": [
+            {
+              "name": "author",
+              "value": "Item Itunes Author",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "feedType": "rss",
+  "feedVersion": "2.0"
+}

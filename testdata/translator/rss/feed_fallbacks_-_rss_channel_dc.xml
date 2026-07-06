@@ -1,0 +1,15 @@
+<!--
+Description: with the plain channel fields absent, feed title, language,
+copyright, updated and author fall back to dublin core, and description to
+itunes summary
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/DTDs/PodCast-1.0.dtd">
+  <channel>
+    <dc:title>DC Title</dc:title>
+    <dc:language>en-us</dc:language>
+    <dc:rights>DC Rights</dc:rights>
+    <dc:date>2026-01-02T15:04:05Z</dc:date>
+    <dc:creator>Jane Creator</dc:creator>
+    <itunes:summary>Itunes Summary</itunes:summary>
+  </channel>
+</rss>

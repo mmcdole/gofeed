@@ -1,0 +1,102 @@
+{
+  "author": {
+    "name": "Itunes Author"
+  },
+  "authors": [
+    {
+      "name": "Itunes Author"
+    }
+  ],
+  "image": {
+    "url": "http://example.org/itunes.png"
+  },
+  "categories": [
+    "alpha",
+    "beta",
+    "Tech",
+    "Gadgets",
+    "Subject"
+  ],
+  "dcExt": {
+    "subject": [
+      "Subject"
+    ]
+  },
+  "itunesExt": {
+    "author": "Itunes Author",
+    "categories": [
+      {
+        "text": "Tech",
+        "subcategory": {
+          "text": "Gadgets"
+        }
+      }
+    ],
+    "keywords": "alpha,beta",
+    "image": "http://example.org/itunes.png"
+  },
+  "extensions": {
+    "dc": {
+      "subject": [
+        {
+          "name": "subject",
+          "value": "Subject",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    },
+    "itunes": {
+      "author": [
+        {
+          "name": "author",
+          "value": "Itunes Author",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "category": [
+        {
+          "name": "category",
+          "value": "",
+          "attrs": {
+            "text": "Tech"
+          },
+          "children": {
+            "category": [
+              {
+                "name": "category",
+                "value": "",
+                "attrs": {
+                  "text": "Gadgets"
+                },
+                "children": {}
+              }
+            ]
+          }
+        }
+      ],
+      "image": [
+        {
+          "name": "image",
+          "value": "",
+          "attrs": {
+            "href": "http://example.org/itunes.png"
+          },
+          "children": {}
+        }
+      ],
+      "keywords": [
+        {
+          "name": "keywords",
+          "value": "alpha,beta",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": [],
+  "feedType": "rss",
+  "feedVersion": "2.0"
+}
