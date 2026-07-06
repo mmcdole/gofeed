@@ -14,7 +14,9 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 	jsonFeed := &Feed{}
 
 	buffer := new(bytes.Buffer)
-	buffer.ReadFrom(feed)
+	if _, err := buffer.ReadFrom(feed); err != nil {
+		return nil, err
+	}
 
 	if err := json.Unmarshal(buffer.Bytes(), jsonFeed); err != nil {
 		return nil, err

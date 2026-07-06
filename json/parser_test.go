@@ -3,11 +3,14 @@ package json_test
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"testing/iotest"
 
 	jsonParser "github.com/mmcdole/gofeed/json"
 	"github.com/stretchr/testify/assert"
@@ -120,3 +123,15 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 }
 
 // TODO: Examples
+
+// An I/O error from the reader must surface as itself, not as a misleading
+// JSON syntax error from a truncated buffer (issue #311).
+func TestParser_Parse_ReaderError(t *testing.T) {
+	boom := errors.New("boom")
+	r := io.MultiReader(strings.NewReader(`{"version":"https://jsonfeed.org/version/1"`), iotest.ErrReader(boom))
+
+	_, err := (&jsonParser.Parser{}).Parse(r)
+	if !errors.Is(err, boom) {
+		t.Fatalf("err = %v, want boom", err)
+	}
+}

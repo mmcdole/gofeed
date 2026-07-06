@@ -6,13 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strings"
 	"sync"
 	"testing"
+	"testing/iotest"
 	"time"
 
 	"github.com/mmcdole/gofeed"
@@ -397,4 +398,38 @@ func TestParserKeepOriginalFeed(t *testing.T) {
 	if orig.Title != "t" {
 		t.Errorf("original feed title = %q, want %q", orig.Title, "t")
 	}
+}
+
+// An I/O error from the reader must surface as itself, not be masked as a
+// failed type detection (issue #311).
+func TestParser_Parse_ReaderError(t *testing.T) {
+	boom := errors.New("boom")
+	r := io.MultiReader(strings.NewReader(`<rss version="2.0"><channel>`), iotest.ErrReader(boom))
+
+	_, err := gofeed.NewParser().Parse(r)
+	assert.ErrorIs(t, err, boom)
+}
+
+// A feed much larger than the detection window must parse completely: the
+// format parser reads from the start of the stream, not from after the peek.
+func TestParser_Parse_LargeFeed(t *testing.T) {
+	var sb strings.Builder
+	sb.WriteString(`<rss version="2.0"><channel><title>big</title>`)
+	for i := 0; i < 2000; i++ {
+		fmt.Fprintf(&sb, `<item><title>item %d</title><guid>g%d</guid></item>`, i, i)
+	}
+	sb.WriteString(`</channel></rss>`)
+
+	feed, err := gofeed.NewParser().Parse(strings.NewReader(sb.String()))
+	assert.NoError(t, err)
+	assert.Len(t, feed.Items, 2000)
+	assert.Equal(t, "item 1999", feed.Items[1999].Title)
+}
+
+// Detection only inspects the first few KB; a root element pushed beyond
+// that window by leading junk is reported as undetected, not misparsed.
+func TestParser_Parse_RootBeyondDetectionWindow(t *testing.T) {
+	pad := "<!-- " + strings.Repeat("x", 8192) + " -->"
+	_, err := gofeed.NewParser().Parse(strings.NewReader(pad + `<rss version="2.0"><channel></channel></rss>`))
+	assert.ErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
 }

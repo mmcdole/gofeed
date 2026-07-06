@@ -2,10 +2,13 @@ package gofeed_test
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"testing"
+	"testing/iotest"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
@@ -57,4 +60,11 @@ func ExampleDetectFeedType() {
 	if feedType == gofeed.FeedTypeRSS {
 		fmt.Println("Wow! This is an RSS feed!")
 	}
+}
+
+// A reader that fails mid-stream must yield FeedTypeUnknown, not a type
+// guessed from the partial prefix (issue #311).
+func TestDetectFeedType_ReaderError(t *testing.T) {
+	r := io.MultiReader(strings.NewReader(`<rss version="2.0"></rss>`), iotest.ErrReader(errors.New("boom")))
+	assert.Equal(t, gofeed.FeedTypeUnknown, gofeed.DetectFeedType(r))
 }
