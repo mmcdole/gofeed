@@ -515,7 +515,7 @@ func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categ
 }
 
 func (t *DefaultRSSTranslator) translateItemEnclosures(rssItem *rss.Item) (enclosures []*Enclosure) {
-	if rssItem.Enclosures != nil && len(rssItem.Enclosures) > 0 {
+	if len(rssItem.Enclosures) > 0 {
 		// Accumulate the enclosures
 		for _, enc := range rssItem.Enclosures {
 			e := &Enclosure{}
@@ -906,7 +906,7 @@ func (t *DefaultAtomTranslator) firstLinkWithType(linkType string, links []*atom
 }
 
 func (t *DefaultAtomTranslator) firstPerson(persons []*atom.Person) (person *atom.Person) {
-	if persons == nil || len(persons) == 0 {
+	if len(persons) == 0 {
 		return
 	}
 

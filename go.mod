@@ -1,13 +1,13 @@
 module github.com/mmcdole/gofeed
 
-go 1.19
+go 1.25.0
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/mmcdole/goxpp v1.2.2
 	github.com/stretchr/testify v1.8.1
 	github.com/urfave/cli v1.22.3
-	golang.org/x/net v0.4.0
+	golang.org/x/net v0.56.0
 )
 
 require (
@@ -17,6 +17,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/text v0.38.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
