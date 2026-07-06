@@ -1,0 +1,8 @@
+<!--
+Description: entry title - unknown non-binary media type is left as text, not base64 decoded
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <title type="application/x-custom">test</title>
+  </entry>
+</feed>

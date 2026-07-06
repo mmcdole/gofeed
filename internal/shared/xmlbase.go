@@ -105,12 +105,16 @@ func XmlBaseResolveUrl(b *url.URL, u string) (*url.URL, error) {
 		return relURL, nil
 	}
 
-	if b.Path != "" && u != "" && b.Path[len(b.Path)-1] != '/' {
+	// Work on a copy: b is the live base held on the parser's stack, so
+	// appending "/" to it here would rewrite the base for every sibling
+	// resolved after the first relative URL in this scope.
+	base := *b
+	if base.Path != "" && u != "" && base.Path[len(base.Path)-1] != '/' {
 		// There's no reason someone would use a path in xml:base if they
 		// didn't mean for it to be a directory
-		b.Path = b.Path + "/"
+		base.Path = base.Path + "/"
 	}
-	absURL := b.ResolveReference(relURL)
+	absURL := base.ResolveReference(relURL)
 	return absURL, nil
 }
 

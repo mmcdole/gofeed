@@ -2,7 +2,8 @@
     "items": [
         {
             "guid": {
-                "value": "<p>abc123</p>"
+                "value": "<p>abc123</p>",
+                "isPermalink": "false"
             }
         }
     ],

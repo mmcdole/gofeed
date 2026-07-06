@@ -692,12 +692,16 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 			if err == nil {
 				result, _ = shared.ResolveHTML(base, result)
 			}
-		} else {
-			decodedStr, err := base64.StdEncoding.DecodeString(result)
-			if err == nil {
-				result = string(decodedStr)
+		} else if lowerMode == "base64" || isBinaryMediaType(lowerType) {
+			// Decode base64 only when the content says so: an explicit Atom 0.3
+			// mode="base64", or a binary media type. Decoding by default
+			// corrupts ordinary text whose type happens to be valid base64
+			// (e.g. "test").
+			if decoded, derr := base64.StdEncoding.DecodeString(result); derr == nil {
+				result = string(decoded)
 			}
 		}
+		// else: text with an unknown/non-binary type, leave it as parsed.
 	}
 
 	// resolve relative URIs in URI-containing elements according to xml:base
@@ -710,6 +714,25 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 	}
 
 	return result, err
+}
+
+// isBinaryMediaType reports whether an Atom content type should be treated as
+// base64-encoded binary. Text and XML types never are.
+func isBinaryMediaType(t string) bool {
+	if t == "" || strings.HasPrefix(t, "text/") || strings.Contains(t, "xml") {
+		return false
+	}
+	if strings.HasPrefix(t, "image/") ||
+		strings.HasPrefix(t, "audio/") ||
+		strings.HasPrefix(t, "video/") {
+		return true
+	}
+	switch t {
+	case "application/octet-stream", "application/pdf", "application/zip",
+		"application/gzip", "application/x-gzip", "application/ogg":
+		return true
+	}
+	return false
 }
 
 func (ap *Parser) parseLanguage(p *xpp.XMLPullParser) string {

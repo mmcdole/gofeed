@@ -596,7 +596,18 @@ func (rp *Parser) parseGUID(p *xpp.XMLPullParser) (guid *GUID, err error) {
 	}
 
 	guid = &GUID{}
-	guid.IsPermalink = p.Attribute("isPermalink")
+	// The RSS 2.0 attribute is "isPermaLink" (note the capital L). XML
+	// attribute names are case sensitive, so read that spelling first and fall
+	// back to the lowercase form some feeds use. When absent it defaults to
+	// true per the spec.
+	isPermalink := p.Attribute("isPermaLink")
+	if isPermalink == "" {
+		isPermalink = p.Attribute("isPermalink")
+	}
+	if isPermalink == "" {
+		isPermalink = "true"
+	}
+	guid.IsPermalink = isPermalink
 
 	result, err := shared.ParseText(p)
 	if err != nil {
