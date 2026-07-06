@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,12 +29,24 @@ func TestDecodeEntities(t *testing.T) {
 		{"&foo", "&foo"},
 		{"&lt", "&lt"},
 		{"&#", "&#"},
+
+		// A bare '&' must not stop later entities from decoding.
+		{"Fish & Chips &amp; more &lt;3", "Fish & Chips & more <3"},
+		{"a & b &amp; c & d &lt;e", "a & b & c & d <e"},
+		{"&unclosed &amp; ok", "&unclosed & ok"},
+		{"& &amp; &", "& & &"},
+
+		// Tab and newline also disqualify an entity candidate.
+		{"a &x\ty; &amp; b", "a &x\ty; & b"},
+		{"a &x\ny; &amp; b", "a &x\ny; & b"},
+
+		// A ';' beyond the entity-length window does not form an entity.
+		{"&" + strings.Repeat("x", 100) + "; &amp;", "&" + strings.Repeat("x", 100) + "; &"},
 	}
 
 	for _, test := range tests {
-		res, err := DecodeEntities(test.str)
-		assert.Nil(t, err, "cannot decode %q", test.str)
-		assert.Equal(t, res, test.res,
+		res := DecodeEntities(test.str)
+		assert.Equal(t, test.res, res,
 			"%q was decoded to %q instead of %q",
 			test.str, res, test.res)
 	}

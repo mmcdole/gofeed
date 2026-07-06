@@ -683,16 +683,14 @@ func (ap *Parser) parseAtomText(p *xpp.XMLPullParser) (string, error) {
 		if lowerType == "text" ||
 			strings.HasPrefix(lowerType, "text/") ||
 			(lowerType == "" && lowerMode == "") {
-			result, err = shared.DecodeEntities(result)
+			result = shared.DecodeEntities(result)
 		} else if strings.Contains(lowerType, "xhtml") {
 			result = ap.stripWrappingDiv(result)
 			result, _ = shared.ResolveHTML(base, result)
 		} else if lowerType == "html" {
 			result = ap.stripWrappingDiv(result)
-			result, err = shared.DecodeEntities(result)
-			if err == nil {
-				result, _ = shared.ResolveHTML(base, result)
-			}
+			result = shared.DecodeEntities(result)
+			result, _ = shared.ResolveHTML(base, result)
 		} else if lowerMode == "base64" || isBinaryMediaType(lowerType) {
 			// Decode base64 only when the content says so: an explicit Atom 0.3
 			// mode="base64", or a binary media type. Decoding by default
