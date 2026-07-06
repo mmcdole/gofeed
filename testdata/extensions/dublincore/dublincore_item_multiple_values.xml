@@ -1,0 +1,15 @@
+<!--
+Description: rss item dublin core with multiple values for a field
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Feed Title</title>
+    <item>
+      <title>Item Title</title>
+      <dc:creator>Alice</dc:creator>
+      <dc:creator>Bob</dc:creator>
+      <dc:subject>One</dc:subject>
+      <dc:subject>Two</dc:subject>
+    </item>
+  </channel>
+</rss>

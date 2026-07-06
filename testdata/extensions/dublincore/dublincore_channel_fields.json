@@ -1,0 +1,93 @@
+{
+    "title": "Feed Title",
+    "updated": "2006-01-02T15:04:05Z",
+    "updatedParsed": "2006-01-02T15:04:05Z",
+    "author": {
+        "name": "Jane Doe"
+    },
+    "authors": [
+        {
+            "name": "Jane Doe"
+        }
+    ],
+    "language": "en-us",
+    "copyright": "Copyright 2006 Example",
+    "categories": [
+        "Technology"
+    ],
+    "dcExt": {
+        "creator": [
+            "Jane Doe"
+        ],
+        "subject": [
+            "Technology"
+        ],
+        "publisher": [
+            "Example Publisher"
+        ],
+        "date": [
+            "2006-01-02T15:04:05Z"
+        ],
+        "language": [
+            "en-us"
+        ],
+        "rights": [
+            "Copyright 2006 Example"
+        ]
+    },
+    "extensions": {
+        "dc": {
+            "creator": [
+                {
+                    "name": "creator",
+                    "value": "Jane Doe",
+                    "attrs": {},
+                    "children": {}
+                }
+            ],
+            "date": [
+                {
+                    "name": "date",
+                    "value": "2006-01-02T15:04:05Z",
+                    "attrs": {},
+                    "children": {}
+                }
+            ],
+            "language": [
+                {
+                    "name": "language",
+                    "value": "en-us",
+                    "attrs": {},
+                    "children": {}
+                }
+            ],
+            "publisher": [
+                {
+                    "name": "publisher",
+                    "value": "Example Publisher",
+                    "attrs": {},
+                    "children": {}
+                }
+            ],
+            "rights": [
+                {
+                    "name": "rights",
+                    "value": "Copyright 2006 Example",
+                    "attrs": {},
+                    "children": {}
+                }
+            ],
+            "subject": [
+                {
+                    "name": "subject",
+                    "value": "Technology",
+                    "attrs": {},
+                    "children": {}
+                }
+            ]
+        }
+    },
+    "items": [],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

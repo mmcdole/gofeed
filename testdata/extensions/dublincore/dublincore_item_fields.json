@@ -1,0 +1,87 @@
+{
+    "title": "Feed Title",
+    "items": [
+        {
+            "title": "Item Title",
+            "description": "An item description",
+            "updated": "2007-02-03T10:20:30Z",
+            "updatedParsed": "2007-02-03T10:20:30Z",
+            "published": "2007-02-03T10:20:30Z",
+            "publishedParsed": "2007-02-03T10:20:30Z",
+            "author": {
+                "name": "John Smith"
+            },
+            "authors": [
+                {
+                    "name": "John Smith"
+                }
+            ],
+            "categories": [
+                "Programming"
+            ],
+            "dcExt": {
+                "creator": [
+                    "John Smith"
+                ],
+                "subject": [
+                    "Programming"
+                ],
+                "description": [
+                    "An item description"
+                ],
+                "date": [
+                    "2007-02-03T10:20:30Z"
+                ],
+                "identifier": [
+                    "urn:uuid:1234"
+                ]
+            },
+            "extensions": {
+                "dc": {
+                    "creator": [
+                        {
+                            "name": "creator",
+                            "value": "John Smith",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ],
+                    "date": [
+                        {
+                            "name": "date",
+                            "value": "2007-02-03T10:20:30Z",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ],
+                    "description": [
+                        {
+                            "name": "description",
+                            "value": "An item description",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ],
+                    "identifier": [
+                        {
+                            "name": "identifier",
+                            "value": "urn:uuid:1234",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ],
+                    "subject": [
+                        {
+                            "name": "subject",
+                            "value": "Programming",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}
