@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -100,16 +101,27 @@ func coerceInt64(raw json.RawMessage) int64 {
 			return i
 		}
 		if fl, err := n.Float64(); err == nil {
-			return int64(fl)
+			return float64ToInt64(fl)
 		}
 	}
 	var s string
 	if err := json.Unmarshal(raw, &s); err == nil {
 		if fl, err := strconv.ParseFloat(strings.TrimSpace(s), 64); err == nil {
-			return int64(fl)
+			return float64ToInt64(fl)
 		}
 	}
 	return 0
+}
+
+// float64ToInt64 converts fl to int64, returning 0 for NaN and values outside
+// the int64 range, where int64(fl) is implementation-defined. 0 matches the
+// fallback for other unusable values. 1<<63 is the first float64 that
+// overflows; -(1<<63) is exactly MinInt64 and still converts.
+func float64ToInt64(fl float64) int64 {
+	if math.IsNaN(fl) || fl >= 1<<63 || fl < -(1<<63) {
+		return 0
+	}
+	return int64(fl)
 }
 
 func isEmptyJSON(raw json.RawMessage) bool {
