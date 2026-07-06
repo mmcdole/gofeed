@@ -69,6 +69,19 @@ func ParseText(p *xpp.XMLPullParser) (string, error) {
 	return DecodeEntities(result)
 }
 
+// ParseTextURL is ParseText for an element whose text is a URL: it resolves the
+// value against the element's xml:base when one is in scope. The base is
+// captured before ParseText runs, because ParseText consumes the element's end
+// tag, which pops the base off the stack.
+func ParseTextURL(p *xpp.XMLPullParser) (string, error) {
+	base := p.BaseStack.Top()
+	s, err := ParseText(p)
+	if err != nil {
+		return "", err
+	}
+	return ResolveURLIfBase(base, s), nil
+}
+
 // StripCDATA removes CDATA tags from the string
 // content outside of CDATA tags is passed via DecodeEntities
 func StripCDATA(str string) string {

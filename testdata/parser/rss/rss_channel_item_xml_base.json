@@ -1,0 +1,19 @@
+{
+    "title": "t",
+    "docs": "http://example.org/feeds/help",
+    "image": {
+        "url": "http://example.org/feeds/logo.png",
+        "title": "x"
+    },
+    "items": [
+        {
+            "title": "i",
+            "link": "http://example.org/feeds/post/1",
+            "links": [
+                "http://example.org/feeds/post/1"
+            ],
+            "comments": "http://example.org/feeds/post/1/comments"
+        }
+    ],
+    "version": "2.0"
+}
