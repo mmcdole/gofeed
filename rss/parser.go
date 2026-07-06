@@ -788,7 +788,12 @@ func (rp *Parser) parseCloud(p *xpp.XMLPullParser) (*Cloud, error) {
 	cloud.RegisterProcedure = p.Attribute("registerProcedure")
 	cloud.Protocol = p.Attribute("protocol")
 
-	shared.NextTag(p)
+	// The spec defines <cloud> as an empty element, but feeds exist with text
+	// or child elements inside it. Skip to the matching end tag rather than
+	// assuming the next tag is it.
+	if err := p.Skip(); err != nil {
+		return nil, err
+	}
 
 	if err := p.Expect(xpp.EndTag, "cloud"); err != nil {
 		return nil, err
