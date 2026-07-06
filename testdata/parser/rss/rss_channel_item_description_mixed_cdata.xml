@@ -1,0 +1,12 @@
+<!--
+Description: rss item description mixing text and a CDATA section - text before the CDATA must be kept (#140)
+-->
+<rss version="2.0">
+  <channel>
+    <title>t</title>
+    <item>
+      <title>i</title>
+      <description>Breaking: <![CDATA[<b>Big News</b>]]> today</description>
+    </item>
+  </channel>
+</rss>

@@ -99,17 +99,29 @@ func StripCDATA(str string) string {
 			return buf.String()
 		}
 
-		end := indexAt(str, CDATA_END, start)
+		// Character data before the CDATA section is still character data:
+		// entity-decode it and keep it. Dropping it silently loses any text
+		// that precedes or sits between CDATA sections.
+		dec, _ := DecodeEntities(str[curr:start])
+		buf.Write([]byte(dec))
+
+		end := indexAt(str, CDATA_END, start+len(CDATA_START))
 
 		if end == -1 {
-			dec, _ := DecodeEntities(str[curr:])
+			// Unterminated CDATA (malformed; encoding/xml would have rejected
+			// it before this point). Keep the remainder, marker and all, rather
+			// than guess where the section was meant to end.
+			dec, _ := DecodeEntities(str[start:])
 			buf.Write([]byte(dec))
 			return buf.String()
 		}
 
+		// CDATA content is taken verbatim (no entity decoding).
 		buf.Write([]byte(str[start+len(CDATA_START) : end]))
 
-		curr = curr + end + len(CDATA_END)
+		// end is an absolute index; advance past the closing ]]> without
+		// re-adding curr (doing so overshoots and drops trailing content).
+		curr = end + len(CDATA_END)
 	}
 
 	return buf.String()
