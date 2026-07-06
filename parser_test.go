@@ -3,6 +3,7 @@ package gofeed_test
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -322,4 +323,49 @@ func TestParserConcurrentParseURL(t *testing.T) {
 		}()
 	}
 	wg.Wait()
+}
+
+func TestParseURLMaxByteSize(t *testing.T) {
+	big := `<rss version="2.0"><channel><title>` + strings.Repeat("x", 200000) + `</title></channel></rss>`
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, big)
+	}))
+	defer srv.Close()
+
+	p := gofeed.NewParser()
+
+	p.MaxByteSize = 1000
+	if _, err := p.ParseURL(srv.URL); !errors.Is(err, gofeed.ErrResponseTooLarge) {
+		t.Errorf("small limit: got %v, want ErrResponseTooLarge", err)
+	}
+
+	p.MaxByteSize = 10_000_000
+	if _, err := p.ParseURL(srv.URL); err != nil {
+		t.Errorf("large limit: unexpected error %v", err)
+	}
+
+	p.MaxByteSize = 0 // unlimited
+	if _, err := p.ParseURL(srv.URL); err != nil {
+		t.Errorf("unlimited: unexpected error %v", err)
+	}
+}
+
+// Confirms request-context cancellation works, which the default ParseURL
+// timeout relies on.
+func TestParseURLContextTimeout(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(2 * time.Second)
+	}))
+	defer srv.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+
+	start := time.Now()
+	if _, err := gofeed.NewParser().ParseURLWithContext(srv.URL, ctx); err == nil {
+		t.Fatal("expected a timeout error")
+	}
+	if elapsed := time.Since(start); elapsed > time.Second {
+		t.Errorf("did not time out promptly: %v", elapsed)
+	}
 }
