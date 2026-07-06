@@ -8,9 +8,10 @@ snippet. That's usually enough to work with.
 
 ## Before opening a pull request
 
-For bug fixes, go ahead and open a PR directly. For new features or behavior
-changes, open an issue first so the design can be discussed before you invest
-time in an implementation.
+Open an issue first — for bug fixes, so the problem is on record and the fix
+has something to reference; for new features or behavior changes, so the
+design can be discussed before you invest time in an implementation. Reference
+the issue from your PR (e.g. `Fixes #123`).
 
 PRs target `master`. CI runs the following on the two most recent Go releases;
 running them locally first saves a round trip:
