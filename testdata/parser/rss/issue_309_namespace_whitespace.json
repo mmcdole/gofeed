@@ -1,0 +1,29 @@
+{
+  "itunesExt": {
+    "author": "Example Author"
+  },
+  "extensions": {
+    "custom": {
+      "tag": [
+        {
+          "name": "tag",
+          "value": "value",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    },
+    "itunes": {
+      "author": [
+        {
+          "name": "author",
+          "value": "Example Author",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": [],
+  "version": "2.0"
+}

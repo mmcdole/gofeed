@@ -11,8 +11,7 @@ import (
 // XML element is an extension element (if it has a
 // non empty prefix)
 func IsExtension(p *xpp.XMLPullParser) bool {
-	space := strings.TrimSpace(p.Space)
-	prefix := PrefixForNamespace(space, p)
+	prefix := PrefixForNamespace(p.Space, p)
 	return !(prefix == "" || prefix == "rss" || prefix == "rdf" || prefix == "content")
 }
 
@@ -91,6 +90,11 @@ func parseExtensionElement(p *xpp.XMLPullParser) (e ext.Extension, err error) {
 }
 
 func PrefixForNamespace(space string, p *xpp.XMLPullParser) string {
+	// Namespace attribute values may legally carry surrounding whitespace,
+	// and goxpp stores trimmed URIs as the p.Spaces keys. Trim here, once,
+	// so every lookup below (and every caller) agrees on the key.
+	space = strings.TrimSpace(space)
+
 	// First we check if the global namespace map
 	// contains an entry for this namespace/prefix.
 	// This way we can use the canonical prefix for this
