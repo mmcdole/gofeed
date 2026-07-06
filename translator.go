@@ -1176,9 +1176,11 @@ func (t *DefaultJSONTranslator) translateItemEnclosures(jsonItem *json.Item) (en
 			e := &Enclosure{}
 			e.URL = attachment.URL
 			e.Type = attachment.MimeType
-			e.Length = fmt.Sprintf("%d", attachment.DurationInSeconds)
+			// RSS enclosure length is the size in bytes, not the duration.
+			if attachment.SizeInBytes > 0 {
+				e.Length = fmt.Sprintf("%d", attachment.SizeInBytes)
+			}
 			// Title is not defined in global enclosure
-			// SizeInBytes is not defined in global enclosure
 			enclosures = append(enclosures, e)
 		}
 	}
