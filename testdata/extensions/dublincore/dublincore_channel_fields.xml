@@ -1,0 +1,14 @@
+<!--
+Description: rss channel dublin core extension fields
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Feed Title</title>
+    <dc:creator>Jane Doe</dc:creator>
+    <dc:subject>Technology</dc:subject>
+    <dc:publisher>Example Publisher</dc:publisher>
+    <dc:date>2006-01-02T15:04:05Z</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>Copyright 2006 Example</dc:rights>
+  </channel>
+</rss>

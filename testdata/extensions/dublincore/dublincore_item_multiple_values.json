@@ -1,0 +1,64 @@
+{
+    "title": "Feed Title",
+    "items": [
+        {
+            "title": "Item Title",
+            "author": {
+                "name": "Alice"
+            },
+            "authors": [
+                {
+                    "name": "Alice"
+                }
+            ],
+            "categories": [
+                "One",
+                "Two"
+            ],
+            "dcExt": {
+                "creator": [
+                    "Alice",
+                    "Bob"
+                ],
+                "subject": [
+                    "One",
+                    "Two"
+                ]
+            },
+            "extensions": {
+                "dc": {
+                    "creator": [
+                        {
+                            "name": "creator",
+                            "value": "Alice",
+                            "attrs": {},
+                            "children": {}
+                        },
+                        {
+                            "name": "creator",
+                            "value": "Bob",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ],
+                    "subject": [
+                        {
+                            "name": "subject",
+                            "value": "One",
+                            "attrs": {},
+                            "children": {}
+                        },
+                        {
+                            "name": "subject",
+                            "value": "Two",
+                            "attrs": {},
+                            "children": {}
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

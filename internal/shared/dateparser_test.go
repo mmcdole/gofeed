@@ -31,3 +31,31 @@ func TestParseDateNamedZones(t *testing.T) {
 		}
 	}
 }
+
+// A representative sample of the supported layouts must parse to the correct
+// instant, across weekday/no-weekday, offset/no-zone, fractional seconds and
+// date-only forms. Result checked in UTC (issue #119).
+func TestParseDateFormats(t *testing.T) {
+	cases := []struct {
+		in      string
+		wantUTC string
+	}{
+		{"Mon, 02 Jan 2006 15:04:05 -0700", "2006-01-02 22:04:05"}, // RFC1123Z
+		{"Mon, 2 Jan 2006 15:04:05 -0700", "2006-01-02 22:04:05"},  // single-digit day
+		{"02 Jan 2006 15:04:05 -0700", "2006-01-02 22:04:05"},      // RFC822Z, no weekday
+		{"2006-01-02T15:04:05-07:00", "2006-01-02 22:04:05"},       // RFC3339 offset
+		{"2006-01-02T15:04:05.500Z", "2006-01-02 15:04:05"},        // fractional seconds
+		{"2006-01-02 15:04:05", "2006-01-02 15:04:05"},             // space separator, no zone
+		{"2006-01-02", "2006-01-02 00:00:00"},                      // date only
+	}
+	for _, c := range cases {
+		got, err := ParseDate(c.in)
+		if err != nil {
+			t.Errorf("%q: unexpected error: %v", c.in, err)
+			continue
+		}
+		if g := got.UTC().Format("2006-01-02 15:04:05"); g != c.wantUTC {
+			t.Errorf("%q -> %s UTC, want %s", c.in, g, c.wantUTC)
+		}
+	}
+}

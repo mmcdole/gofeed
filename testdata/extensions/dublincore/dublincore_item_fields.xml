@@ -1,0 +1,16 @@
+<!--
+Description: rss item dublin core extension fields
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Feed Title</title>
+    <item>
+      <title>Item Title</title>
+      <dc:creator>John Smith</dc:creator>
+      <dc:subject>Programming</dc:subject>
+      <dc:date>2007-02-03T10:20:30Z</dc:date>
+      <dc:description>An item description</dc:description>
+      <dc:identifier>urn:uuid:1234</dc:identifier>
+    </item>
+  </channel>
+</rss>
