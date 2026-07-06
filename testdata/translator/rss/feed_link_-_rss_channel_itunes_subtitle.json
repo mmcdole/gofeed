@@ -1,0 +1,20 @@
+{
+  "itunesExt": {
+    "subtitle": "A show about things"
+  },
+  "extensions": {
+    "itunes": {
+      "subtitle": [
+        {
+          "name": "subtitle",
+          "value": "A show about things",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": [],
+  "feedType": "rss",
+  "feedVersion": "2.0"
+}
