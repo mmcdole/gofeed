@@ -42,6 +42,19 @@ func TestDecodeEntities(t *testing.T) {
 
 		// A ';' beyond the entity-length window does not form an entity.
 		{"&" + strings.Repeat("x", 100) + "; &amp;", "&" + strings.Repeat("x", 100) + "; &"},
+
+		// HTML legacy no-semicolon rules must not decode entity prefixes
+		// inside spans that are not themselves entities.
+		{"?page=1&copy=2;mode=x", "?page=1&copy=2;mode=x"},
+		{"&copy=2;", "&copy=2;"},
+		{"&notit;", "&notit;"},
+		{"&foobar;", "&foobar;"},
+
+		// Real entities, including ones with legacy no-semicolon forms,
+		// still decode when the ';' belongs to them.
+		{"&copy; 2026", "© 2026"},
+		{"&not;x", "¬x"},
+		{"say &quot;hi&quot; &amp; bye", "say \"hi\" & bye"},
 	}
 
 	for _, test := range tests {

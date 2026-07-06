@@ -173,7 +173,21 @@ func DecodeEntities(str string) string {
 			continue
 		}
 
-		buf.WriteString(html.UnescapeString(string(data[:end+1])))
+		// Accept the decode only when it consumed the terminating ';'.
+		// html.UnescapeString applies HTML legacy rules that decode entity
+		// prefixes without a ';' ("&copy=2;" becomes "©=2;"), which corrupts
+		// URLs carrying such query parameters. If stripping the ';' from the
+		// span decodes to the same text, the ';' was not part of an entity;
+		// treat the '&' as literal and keep scanning.
+		span := string(data[:end+1])
+		dec := html.UnescapeString(span)
+		if dec == html.UnescapeString(span[:len(span)-1])+";" {
+			buf.WriteByte('&')
+			data = data[1:]
+			continue
+		}
+
+		buf.WriteString(dec)
 		data = data[end+1:]
 	}
 
