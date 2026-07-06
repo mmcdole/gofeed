@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/mmcdole/goxpp v1.2.2
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.11.1
 	github.com/urfave/cli v1.22.3
 	golang.org/x/net v0.56.0
 )
