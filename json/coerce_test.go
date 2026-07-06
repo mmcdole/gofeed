@@ -46,3 +46,39 @@ func TestFloatSizeCoerced(t *testing.T) {
 		t.Fatalf("duration = %d, want 3600", att.DurationInSeconds)
 	}
 }
+
+// Values outside the int64 range (and NaN) must coerce to 0, the same
+// fallback as other unusable values, not implementation-defined garbage.
+func TestOutOfRangeSizeCoercedToZero(t *testing.T) {
+	f := parseFeed(t, `{"version":"https://jsonfeed.org/version/1","title":"t","items":[{"id":"a","attachments":[{"url":"u","size_in_bytes":1e300,"duration_in_seconds":-1e300}]}]}`)
+	att := (*f.Items[0].Attachments)[0]
+	if att.SizeInBytes != 0 {
+		t.Fatalf("size = %d, want 0", att.SizeInBytes)
+	}
+	if att.DurationInSeconds != 0 {
+		t.Fatalf("duration = %d, want 0", att.DurationInSeconds)
+	}
+}
+
+func TestOutOfRangeStringSizeCoercedToZero(t *testing.T) {
+	f := parseFeed(t, `{"version":"https://jsonfeed.org/version/1","title":"t","items":[{"id":"a","attachments":[{"url":"u","size_in_bytes":"1e300","duration_in_seconds":"NaN"}]}]}`)
+	att := (*f.Items[0].Attachments)[0]
+	if att.SizeInBytes != 0 {
+		t.Fatalf("size = %d, want 0", att.SizeInBytes)
+	}
+	if att.DurationInSeconds != 0 {
+		t.Fatalf("duration = %d, want 0", att.DurationInSeconds)
+	}
+}
+
+// The int64 boundaries themselves stay exact through the integer path.
+func TestInt64BoundarySizes(t *testing.T) {
+	f := parseFeed(t, `{"version":"https://jsonfeed.org/version/1","title":"t","items":[{"id":"a","attachments":[{"url":"u","size_in_bytes":9223372036854775807,"duration_in_seconds":-9223372036854775808}]}]}`)
+	att := (*f.Items[0].Attachments)[0]
+	if att.SizeInBytes != 9223372036854775807 {
+		t.Fatalf("size = %d, want MaxInt64", att.SizeInBytes)
+	}
+	if att.DurationInSeconds != -9223372036854775808 {
+		t.Fatalf("duration = %d, want MinInt64", att.DurationInSeconds)
+	}
+}
