@@ -66,7 +66,9 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 	// Parse actual feed
 	fp := &jsonParser.Parser{}
 	_, err := fp.Parse(bytes.NewReader(f))
-	assert.Contains(t, err.Error(), "expect }")
+	// Invalid JSON must error. Don't pin the exact message: it depends on the
+	// JSON library and changes once custom Unmarshalers are involved.
+	assert.Error(t, err)
 
 	name = "version_json_10"
 	fmt.Printf("Testing %s... ", name)

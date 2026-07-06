@@ -224,3 +224,17 @@ func TestDefaultJSONTranslator_Translate_WrongType(t *testing.T) {
 	assert.Nil(t, af)
 	assert.NotNil(t, err)
 }
+
+// A JSON Feed attachment's size_in_bytes maps to the universal Enclosure.Length
+// (bytes), not its duration.
+func TestJSONAttachmentEnclosureLength(t *testing.T) {
+	in := `{"version":"https://jsonfeed.org/version/1","title":"t","items":[{"id":"a","attachments":[{"url":"u","mime_type":"audio/mpeg","size_in_bytes":5000000,"duration_in_seconds":3600}]}]}`
+	feed, err := gofeed.NewParser().ParseString(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	enc := feed.Items[0].Enclosures[0]
+	if enc.Length != "5000000" {
+		t.Fatalf("enclosure length = %q, want \"5000000\" (bytes, not duration)", enc.Length)
+	}
+}
