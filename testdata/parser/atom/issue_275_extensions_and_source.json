@@ -1,0 +1,87 @@
+{
+  "title": "t",
+  "categories": [
+    {
+      "term": "cat1",
+      "label": "Cat"
+    }
+  ],
+  "entries": [
+    {
+      "title": "e1",
+      "source": {
+        "title": "src",
+        "updated": "2003-12-13T18:30:02Z",
+        "updatedParsed": "2003-12-13T18:30:02Z",
+        "categories": [
+          {
+            "term": "sc"
+          }
+        ],
+        "extensions": {
+          "dc": {
+            "rights": [
+              {
+                "name": "rights",
+                "value": "r",
+                "attrs": {},
+                "children": {}
+              }
+            ]
+          }
+        }
+      },
+      "extensions": {
+        "dc": {
+          "subject": [
+            {
+              "name": "subject",
+              "value": "s",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "e2",
+      "content": {
+        "type": "video/mp4",
+        "value": "hello"
+      }
+    },
+    {
+      "title": "e3",
+      "content": {
+        "type": "application/json",
+        "value": "{\"a\":1}"
+      }
+    },
+    {
+      "title": "e4",
+      "authors": [
+        {
+          "name": "An Author"
+        }
+      ],
+      "content": {
+        "type": "application/atom+xml",
+        "value": "\u0026lt;x/\u0026gt;"
+      }
+    }
+  ],
+  "extensions": {
+    "dc": {
+      "creator": [
+        {
+          "name": "creator",
+          "value": "Feed Creator",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    }
+  },
+  "version": "1.0"
+}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	ext "github.com/mmcdole/gofeed/extensions"
 	"github.com/mmcdole/gofeed/internal/shared"
@@ -41,51 +42,31 @@ func (rp *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 
 	ver := rp.parseVersion(p)
 
-	for {
-		tok, err := shared.NextTag(p)
-		if err != nil {
-			return nil, err
+	err := shared.ForEachChild(p, func(name string) error {
+		// Skip any extensions found in the feed root.
+		if shared.IsExtension(p) {
+			return p.Skip()
 		}
-
-		if tok == xpp.EndTag {
-			break
-		}
-
-		if tok == xpp.StartTag {
-
-			// Skip any extensions found in the feed root.
-			if shared.IsExtension(p) {
-				p.Skip()
-				continue
-			}
-
-			name := strings.ToLower(p.Name())
-
-			if name == "channel" {
-				channel, err = rp.parseChannel(p)
-				if err != nil {
-					return nil, err
-				}
-			} else if name == "item" {
-				item, err := rp.parseItem(p)
-				if err != nil {
-					return nil, err
-				}
+		var err error
+		switch name {
+		case "channel":
+			channel, err = rp.parseChannel(p)
+		case "item":
+			var item *Item
+			if item, err = rp.parseItem(p); err == nil {
 				items = append(items, item)
-			} else if name == "textinput" {
-				textinput, err = rp.parseTextInput(p)
-				if err != nil {
-					return nil, err
-				}
-			} else if name == "image" {
-				image, err = rp.parseImage(p)
-				if err != nil {
-					return nil, err
-				}
-			} else {
-				p.Skip()
 			}
+		case "textinput":
+			textinput, err = rp.parseTextInput(p)
+		case "image":
+			image, err = rp.parseImage(p)
+		default:
+			err = p.Skip()
 		}
+		return err
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	rssErr = p.Expect(xpp.EndTag, "rss")
@@ -127,163 +108,85 @@ func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
 	categories := []*Category{}
 	links := []string{}
 
-	for {
-		tok, err := shared.NextTag(p)
-		if err != nil {
-			return nil, err
+	// parseDate mirrors the historical behavior for pubDate and
+	// lastBuildDate: the raw text is kept even when unparseable, and the
+	// parsed form is normalized to UTC.
+	parseDate := func(text string) *time.Time {
+		if date, err := shared.ParseDate(text); err == nil {
+			utc := date.UTC()
+			return &utc
 		}
+		return nil
+	}
 
-		if tok == xpp.EndTag {
-			break
+	err = shared.ForEachChild(p, func(name string) error {
+		if shared.IsExtension(p) {
+			extensions, err = shared.ParseExtension(extensions, p)
+			return err
 		}
-
-		if tok == xpp.StartTag {
-
-			name := strings.ToLower(p.Name())
-
-			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
-				if err != nil {
-					return nil, err
-				}
-				extensions = ext
-			} else if name == "title" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Title = result
-			} else if name == "description" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Description = result
-			} else if name == "link" {
-				result, err := rp.parseLink(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Link = result
-				links = append(links, result)
-			} else if name == "language" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Language = result
-			} else if name == "copyright" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Copyright = result
-			} else if name == "managingeditor" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.ManagingEditor = result
-			} else if name == "webmaster" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.WebMaster = result
-			} else if name == "pubdate" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.PubDate = result
-				date, err := shared.ParseDate(result)
-				if err == nil {
-					utcDate := date.UTC()
-					rss.PubDateParsed = &utcDate
-				}
-			} else if name == "lastbuilddate" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.LastBuildDate = result
-				date, err := shared.ParseDate(result)
-				if err == nil {
-					utcDate := date.UTC()
-					rss.LastBuildDateParsed = &utcDate
-				}
-			} else if name == "generator" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Generator = result
-			} else if name == "docs" {
-				result, err := shared.ParseTextURL(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Docs = result
-			} else if name == "ttl" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.TTL = result
-			} else if name == "rating" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Rating = result
-			} else if name == "skiphours" {
-				result, err := rp.parseSkipHours(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.SkipHours = result
-			} else if name == "skipdays" {
-				result, err := rp.parseSkipDays(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.SkipDays = result
-			} else if name == "item" {
-				result, err := rp.parseItem(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Items = append(rss.Items, result)
-			} else if name == "cloud" {
-				result, err := rp.parseCloud(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Cloud = result
-			} else if name == "category" {
-				result, err := rp.parseCategory(p)
-				if err != nil {
-					return nil, err
-				}
-				categories = append(categories, result)
-			} else if name == "image" {
-				result, err := rp.parseImage(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.Image = result
-			} else if name == "textinput" {
-				result, err := rp.parseTextInput(p)
-				if err != nil {
-					return nil, err
-				}
-				rss.TextInput = result
-			} else {
-				// Skip element as it isn't an extension and not
-				// part of the spec
-				p.Skip()
+		var err error
+		switch name {
+		case "title":
+			rss.Title, err = shared.ParseText(p)
+		case "description":
+			rss.Description, err = shared.ParseText(p)
+		case "link":
+			if rss.Link, err = rp.parseLink(p); err == nil {
+				links = append(links, rss.Link)
 			}
+		case "language":
+			rss.Language, err = shared.ParseText(p)
+		case "copyright":
+			rss.Copyright, err = shared.ParseText(p)
+		case "managingeditor":
+			rss.ManagingEditor, err = shared.ParseText(p)
+		case "webmaster":
+			rss.WebMaster, err = shared.ParseText(p)
+		case "pubdate":
+			if rss.PubDate, err = shared.ParseText(p); err == nil {
+				rss.PubDateParsed = parseDate(rss.PubDate)
+			}
+		case "lastbuilddate":
+			if rss.LastBuildDate, err = shared.ParseText(p); err == nil {
+				rss.LastBuildDateParsed = parseDate(rss.LastBuildDate)
+			}
+		case "generator":
+			rss.Generator, err = shared.ParseText(p)
+		case "docs":
+			rss.Docs, err = shared.ParseTextURL(p)
+		case "ttl":
+			rss.TTL, err = shared.ParseText(p)
+		case "rating":
+			rss.Rating, err = shared.ParseText(p)
+		case "skiphours":
+			rss.SkipHours, err = rp.parseSkipHours(p)
+		case "skipdays":
+			rss.SkipDays, err = rp.parseSkipDays(p)
+		case "item":
+			var item *Item
+			if item, err = rp.parseItem(p); err == nil {
+				rss.Items = append(rss.Items, item)
+			}
+		case "cloud":
+			rss.Cloud, err = rp.parseCloud(p)
+		case "category":
+			var cat *Category
+			if cat, err = rp.parseCategory(p); err == nil {
+				categories = append(categories, cat)
+			}
+		case "image":
+			rss.Image, err = rp.parseImage(p)
+		case "textinput":
+			rss.TextInput, err = rp.parseTextInput(p)
+		default:
+			// Skip element as it isn't an extension and not part of
+			// the spec.
+			err = p.Skip()
 		}
+		return err
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	if err = p.Expect(xpp.EndTag, "channel"); err != nil {
@@ -324,111 +227,60 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 	enclosures := []*Enclosure{}
 	links := []string{}
 
-	for {
-		tok, err := shared.NextTag(p)
-		if err != nil {
-			return nil, err
+	err = shared.ForEachChild(p, func(name string) error {
+		if shared.IsExtension(p) {
+			extensions, err = shared.ParseExtension(extensions, p)
+			return err
 		}
-
-		if tok == xpp.EndTag {
-			break
-		}
-
-		if tok == xpp.StartTag {
-
-			name := strings.ToLower(p.Name())
-
-			if shared.IsExtension(p) {
-				ext, err := shared.ParseExtension(extensions, p)
-				if err != nil {
-					return nil, err
-				}
-				item.Extensions = ext
-			} else if name == "title" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Title = result
-			} else if name == "description" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Description = result
-			} else if name == "encoded" &&
-				shared.PrefixForNamespace(p.Space(), p) == "content" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Content = result
-			} else if name == "link" {
-				result, err := rp.parseLink(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Link = result
-				links = append(links, result)
-			} else if name == "author" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Author = result
-			} else if name == "comments" {
-				result, err := shared.ParseTextURL(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Comments = result
-			} else if name == "pubdate" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				item.PubDate = result
-				date, err := shared.ParseDate(result)
-				if err == nil {
-					utcDate := date.UTC()
-					item.PubDateParsed = &utcDate
-				}
-			} else if name == "source" {
-				result, err := rp.parseSource(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Source = result
-			} else if name == "enclosure" {
-				result, err := rp.parseEnclosure(p)
-				if err != nil {
-					return nil, err
-				}
-				item.Enclosure = result
-				enclosures = append(enclosures, result)
-			} else if name == "guid" {
-				result, err := rp.parseGUID(p)
-				if err != nil {
-					return nil, err
-				}
-				item.GUID = result
-			} else if name == "category" {
-				result, err := rp.parseCategory(p)
-				if err != nil {
-					return nil, err
-				}
-				categories = append(categories, result)
+		var err error
+		switch name {
+		case "title":
+			item.Title, err = shared.ParseText(p)
+		case "description":
+			item.Description, err = shared.ParseText(p)
+		case "encoded":
+			if shared.PrefixForNamespace(p.Space(), p) == "content" {
+				item.Content, err = shared.ParseText(p)
 			} else {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					continue
-				}
-				if item.Custom == nil {
-					item.Custom = make(map[string]string, 0)
-				}
-				item.Custom[p.Name()] = result
+				err = rp.parseItemCustom(p, item)
 			}
+		case "link":
+			if item.Link, err = rp.parseLink(p); err == nil {
+				links = append(links, item.Link)
+			}
+		case "author":
+			item.Author, err = shared.ParseText(p)
+		case "comments":
+			item.Comments, err = shared.ParseTextURL(p)
+		case "pubdate":
+			if item.PubDate, err = shared.ParseText(p); err == nil {
+				if date, derr := shared.ParseDate(item.PubDate); derr == nil {
+					utc := date.UTC()
+					item.PubDateParsed = &utc
+				}
+			}
+		case "source":
+			item.Source, err = rp.parseSource(p)
+		case "enclosure":
+			var enc *Enclosure
+			if enc, err = rp.parseEnclosure(p); err == nil {
+				item.Enclosure = enc
+				enclosures = append(enclosures, enc)
+			}
+		case "guid":
+			item.GUID, err = rp.parseGUID(p)
+		case "category":
+			var cat *Category
+			if cat, err = rp.parseCategory(p); err == nil {
+				categories = append(categories, cat)
+			}
+		default:
+			err = rp.parseItemCustom(p, item)
 		}
+		return err
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	if len(enclosures) > 0 {
@@ -460,6 +312,21 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 	}
 
 	return item, nil
+}
+
+// parseItemCustom stores an unrecognized item child in the Custom map,
+// keyed by its original-case name. Duplicate names keep the last value.
+func (rp *Parser) parseItemCustom(p *xpp.Parser, item *Item) error {
+	key := p.Name()
+	result, err := shared.ParseText(p)
+	if err != nil {
+		return err
+	}
+	if item.Custom == nil {
+		item.Custom = make(map[string]string)
+	}
+	item.Custom[key] = result
+	return nil
 }
 
 func (rp *Parser) parseLink(p *xpp.Parser) (url string, err error) {
@@ -506,16 +373,14 @@ func (rp *Parser) parseEnclosure(p *xpp.Parser) (enclosure *Enclosure, err error
 	enclosure.Length = p.Attribute("length")
 	enclosure.Type = p.Attribute("type")
 
-	// Ignore any enclosure tag
-	for {
-		_, err := p.Next()
-		if err != nil {
-			return enclosure, err
-		}
+	// The spec defines <enclosure> as an empty element; skip to the
+	// matching end tag so stray children can't desync the parse.
+	if err = p.Skip(); err != nil {
+		return nil, err
+	}
 
-		if p.Event() == xpp.EndTag && p.Name() == "enclosure" {
-			break
-		}
+	if err = p.Expect(xpp.EndTag, "enclosure"); err != nil {
+		return nil, err
 	}
 
 	return enclosure, nil
@@ -528,59 +393,28 @@ func (rp *Parser) parseImage(p *xpp.Parser) (image *Image, err error) {
 
 	image = &Image{}
 
-	for {
-		tok, err := shared.NextTag(p)
-		if err != nil {
-			return image, err
+	err = shared.ForEachChild(p, func(name string) error {
+		var err error
+		switch name {
+		case "url":
+			image.URL, err = shared.ParseTextURL(p)
+		case "title":
+			image.Title, err = shared.ParseText(p)
+		case "link":
+			image.Link, err = shared.ParseTextURL(p)
+		case "width":
+			image.Width, err = shared.ParseText(p)
+		case "height":
+			image.Height, err = shared.ParseText(p)
+		case "description":
+			image.Description, err = shared.ParseText(p)
+		default:
+			err = p.Skip()
 		}
-
-		if tok == xpp.EndTag {
-			break
-		}
-
-		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name())
-
-			if name == "url" {
-				result, err := shared.ParseTextURL(p)
-				if err != nil {
-					return nil, err
-				}
-				image.URL = result
-			} else if name == "title" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				image.Title = result
-			} else if name == "link" {
-				result, err := shared.ParseTextURL(p)
-				if err != nil {
-					return nil, err
-				}
-				image.Link = result
-			} else if name == "width" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				image.Width = result
-			} else if name == "height" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				image.Height = result
-			} else if name == "description" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				image.Description = result
-			} else {
-				p.Skip()
-			}
-		}
+		return err
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	if err = p.Expect(xpp.EndTag, "image"); err != nil {
@@ -650,47 +484,24 @@ func (rp *Parser) parseTextInput(p *xpp.Parser) (*TextInput, error) {
 
 	ti := &TextInput{}
 
-	for {
-		tok, err := shared.NextTag(p)
-		if err != nil {
-			return nil, err
+	err := shared.ForEachChild(p, func(name string) error {
+		var err error
+		switch name {
+		case "title":
+			ti.Title, err = shared.ParseText(p)
+		case "description":
+			ti.Description, err = shared.ParseText(p)
+		case "name":
+			ti.Name, err = shared.ParseText(p)
+		case "link":
+			ti.Link, err = shared.ParseText(p)
+		default:
+			err = p.Skip()
 		}
-
-		if tok == xpp.EndTag {
-			break
-		}
-
-		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name())
-
-			if name == "title" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				ti.Title = result
-			} else if name == "description" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				ti.Description = result
-			} else if name == "name" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				ti.Name = result
-			} else if name == "link" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				ti.Link = result
-			} else {
-				p.Skip()
-			}
-		}
+		return err
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	if err := p.Expect(xpp.EndTag, "textinput"); err != nil {
@@ -707,28 +518,18 @@ func (rp *Parser) parseSkipHours(p *xpp.Parser) ([]string, error) {
 
 	hours := []string{}
 
-	for {
-		tok, err := shared.NextTag(p)
-		if err != nil {
-			return nil, err
+	err := shared.ForEachChild(p, func(name string) error {
+		if name != "hour" {
+			return p.Skip()
 		}
-
-		if tok == xpp.EndTag {
-			break
+		hour, err := shared.ParseText(p)
+		if err == nil {
+			hours = append(hours, hour)
 		}
-
-		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name())
-			if name == "hour" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				hours = append(hours, result)
-			} else {
-				p.Skip()
-			}
-		}
+		return err
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	if err := p.Expect(xpp.EndTag, "skiphours"); err != nil {
@@ -745,28 +546,18 @@ func (rp *Parser) parseSkipDays(p *xpp.Parser) ([]string, error) {
 
 	days := []string{}
 
-	for {
-		tok, err := shared.NextTag(p)
-		if err != nil {
-			return nil, err
+	err := shared.ForEachChild(p, func(name string) error {
+		if name != "day" {
+			return p.Skip()
 		}
-
-		if tok == xpp.EndTag {
-			break
+		day, err := shared.ParseText(p)
+		if err == nil {
+			days = append(days, day)
 		}
-
-		if tok == xpp.StartTag {
-			name := strings.ToLower(p.Name())
-			if name == "day" {
-				result, err := shared.ParseText(p)
-				if err != nil {
-					return nil, err
-				}
-				days = append(days, result)
-			} else {
-				p.Skip()
-			}
-		}
+		return err
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	if err := p.Expect(xpp.EndTag, "skipdays"); err != nil {
