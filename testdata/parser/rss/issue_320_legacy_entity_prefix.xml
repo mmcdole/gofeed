@@ -1,0 +1,9 @@
+<!--
+Description: HTML legacy no-semicolon entities like &copy must not decode
+inside URL query strings; real entities still decode (issue #320)
+-->
+<rss version="2.0">
+  <channel>
+    <title>?page=1&copy=2;mode=x &amp; done</title>
+  </channel>
+</rss>
