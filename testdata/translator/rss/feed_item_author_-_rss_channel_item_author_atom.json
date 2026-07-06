@@ -1,0 +1,49 @@
+{
+    "title": "Feed Title",
+    "items": [
+        {
+            "title": "Item Title",
+            "author": {
+                "name": "John Doe",
+                "email": "john@example.com"
+            },
+            "authors": [
+                {
+                    "name": "John Doe",
+                    "email": "john@example.com"
+                }
+            ],
+            "extensions": {
+                "atom": {
+                    "author": [
+                        {
+                            "name": "author",
+                            "value": "",
+                            "attrs": {},
+                            "children": {
+                                "email": [
+                                    {
+                                        "name": "email",
+                                        "value": "john@example.com",
+                                        "attrs": {},
+                                        "children": {}
+                                    }
+                                ],
+                                "name": [
+                                    {
+                                        "name": "name",
+                                        "value": "John Doe",
+                                        "attrs": {},
+                                        "children": {}
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

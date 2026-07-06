@@ -1,0 +1,25 @@
+{
+    "title": "Feed Title",
+    "items": [
+        {
+            "title": "Item Title",
+            "content": "\u003cp\u003eBody\u003c/p\u003e",
+            "extensions": {
+                "atom": {
+                    "content": [
+                        {
+                            "name": "content",
+                            "value": "\u003cp\u003eBody\u003c/p\u003e",
+                            "attrs": {
+                                "type": "html"
+                            },
+                            "children": {}
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "feedType": "rss",
+    "feedVersion": "2.0"
+}

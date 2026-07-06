@@ -1,0 +1,12 @@
+<!--
+Description: atom:content in an rss item is promoted to the item content
+-->
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Feed Title</title>
+    <item>
+      <title>Item Title</title>
+      <atom:content type="html">&lt;p&gt;Body&lt;/p&gt;</atom:content>
+    </item>
+  </channel>
+</rss>
