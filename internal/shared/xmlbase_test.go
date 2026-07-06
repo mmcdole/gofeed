@@ -31,3 +31,31 @@ func TestXmlBaseResolveUrlResolves(t *testing.T) {
 		t.Errorf("resolved = %q, want %q", got.String(), "http://example.com/a/b/x")
 	}
 }
+
+// Every URI attribute on an element must be resolved, not just the first
+// one encountered.
+func TestResolveHTMLResolvesAllURIAttributes(t *testing.T) {
+	base, _ := url.Parse("http://example.com/dir/")
+
+	got, err := ResolveHTML(base, `<video poster="p.jpg" src="v.mp4"></video>`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := `<video poster="http://example.com/dir/p.jpg" src="http://example.com/dir/v.mp4"></video>`
+	if got != want {
+		t.Errorf("resolved = %q, want %q", got, want)
+	}
+}
+
+func TestResolveHTMLResolvesAcrossElements(t *testing.T) {
+	base, _ := url.Parse("http://example.com/dir/")
+
+	got, err := ResolveHTML(base, `<a href="page.html"><img src="i.png"/></a>`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := `<a href="http://example.com/dir/page.html"><img src="http://example.com/dir/i.png"/></a>`
+	if got != want {
+		t.Errorf("resolved = %q, want %q", got, want)
+	}
+}
