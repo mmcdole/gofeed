@@ -53,9 +53,13 @@ type Parser struct {
 	// from a response body. Zero means no limit. Exceeding it returns
 	// ErrResponseTooLarge rather than silently truncating.
 	MaxByteSize int64
-	rp          *rss.Parser
-	ap          *atom.Parser
-	jp          *json.Parser
+	// KeepOriginalFeed retains the source rss/atom/json feed on the result,
+	// accessible via Feed.OriginalFeed(). Off by default: keeping it holds a
+	// second copy of the feed in memory for the lifetime of the result.
+	KeepOriginalFeed bool
+	rp               *rss.Parser
+	ap               *atom.Parser
+	jp               *json.Parser
 }
 
 // Auth is a structure allowing to
@@ -200,7 +204,9 @@ func (f *Parser) parseAtomFeed(feed io.Reader) (*Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	return f.atomTrans().Translate(af)
+	result, err := f.atomTrans().Translate(af)
+	f.keepOriginal(result, af)
+	return result, err
 }
 
 func (f *Parser) parseRSSFeed(feed io.Reader) (*Feed, error) {
@@ -209,7 +215,9 @@ func (f *Parser) parseRSSFeed(feed io.Reader) (*Feed, error) {
 		return nil, err
 	}
 
-	return f.rssTrans().Translate(rf)
+	result, err := f.rssTrans().Translate(rf)
+	f.keepOriginal(result, rf)
+	return result, err
 }
 
 func (f *Parser) parseJSONFeed(feed io.Reader) (*Feed, error) {
@@ -217,7 +225,17 @@ func (f *Parser) parseJSONFeed(feed io.Reader) (*Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	return f.jsonTrans().Translate(jf)
+	result, err := f.jsonTrans().Translate(jf)
+	f.keepOriginal(result, jf)
+	return result, err
+}
+
+// keepOriginal stashes the source feed on the result when KeepOriginalFeed is
+// set. Gating here keeps the Translator interface free of parse options.
+func (f *Parser) keepOriginal(result *Feed, original interface{}) {
+	if f.KeepOriginalFeed && result != nil {
+		result.originalFeed = original
+	}
 }
 
 // These accessors return a shared default when the corresponding field is

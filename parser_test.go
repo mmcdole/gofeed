@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -367,5 +368,33 @@ func TestParseURLContextTimeout(t *testing.T) {
 	}
 	if elapsed := time.Since(start); elapsed > time.Second {
 		t.Errorf("did not time out promptly: %v", elapsed)
+	}
+}
+
+func TestParserKeepOriginalFeed(t *testing.T) {
+	const feed = `<rss version="2.0"><channel><title>t</title><item><title>i</title></item></channel></rss>`
+
+	// Off by default: OriginalFeed() is nil.
+	p := gofeed.NewParser()
+	f, err := p.ParseString(feed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f.OriginalFeed() != nil {
+		t.Errorf("OriginalFeed() = %T, want nil when KeepOriginalFeed is off", f.OriginalFeed())
+	}
+
+	// On: OriginalFeed() returns the source *rss.Feed.
+	p.KeepOriginalFeed = true
+	f, err = p.ParseString(feed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	orig, ok := f.OriginalFeed().(*rss.Feed)
+	if !ok {
+		t.Fatalf("OriginalFeed() = %T, want *rss.Feed", f.OriginalFeed())
+	}
+	if orig.Title != "t" {
+		t.Errorf("original feed title = %q, want %q", orig.Title, "t")
 	}
 }
