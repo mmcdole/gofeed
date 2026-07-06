@@ -1,0 +1,57 @@
+{
+  "title": "Test Feed",
+  "id": "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
+  "updated": "2003-12-13T18:30:02Z",
+  "updatedParsed": "2003-12-13T18:30:02Z",
+  "entries": [
+    {
+      "title": "Test Entry",
+      "id": "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a",
+      "updated": "2003-12-13T18:30:02Z",
+      "updatedParsed": "2003-12-13T18:30:02Z",
+      "extensions": {
+        "_custom": {
+          "keyword": [
+            {
+              "name": "keyword",
+              "value": "atom",
+              "attrs": {
+                "type": "primary"
+              },
+              "children": {}
+            },
+            {
+              "name": "keyword",
+              "value": "feed",
+              "attrs": {
+                "type": "secondary"
+              },
+              "children": {}
+            }
+          ],
+          "tag": [
+            {
+              "name": "tag",
+              "value": "First Tag",
+              "attrs": {},
+              "children": {}
+            },
+            {
+              "name": "tag",
+              "value": "Second Tag",
+              "attrs": {},
+              "children": {}
+            },
+            {
+              "name": "tag",
+              "value": "Third Tag",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "1.0"
+}

@@ -178,10 +178,14 @@ func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
 			rss.Image, err = rp.parseImage(p)
 		case "textinput":
 			rss.TextInput, err = rp.parseTextInput(p)
-		default:
-			// Skip element as it isn't an extension and not part of
-			// the spec.
+		case "items":
+			// The RSS 1.0 <items> rdf:Seq is a structural list of item
+			// references, not content; skip it rather than capture it.
 			err = p.Skip()
+		default:
+			// Not part of the spec: capture it into the extension map
+			// under the _custom pseudo namespace instead of dropping it.
+			extensions, _, err = shared.ParseCustom(extensions, p)
 		}
 		return err
 	})
@@ -227,6 +231,26 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 	enclosures := []*Enclosure{}
 	links := []string{}
 
+	// captureCustom files an unrecognized child in the extension map under
+	// the _custom pseudo namespace, preserving nesting and attributes, and
+	// keeps the flat Custom map populated for elements without children so
+	// existing Custom reads are unchanged.
+	captureCustom := func(p *xpp.Parser) error {
+		var e ext.Extension
+		var err error
+		extensions, e, err = shared.ParseCustom(extensions, p)
+		if err != nil {
+			return err
+		}
+		if len(e.Children) == 0 {
+			if item.Custom == nil {
+				item.Custom = make(map[string]string)
+			}
+			item.Custom[e.Name] = shared.DecodeEntities(e.Value)
+		}
+		return nil
+	}
+
 	err = shared.ForEachChild(p, func(name string) error {
 		if shared.IsExtension(p) {
 			extensions, err = shared.ParseExtension(extensions, p)
@@ -242,7 +266,7 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 			if shared.PrefixForNamespace(p.Space(), p) == "content" {
 				item.Content, err = shared.ParseText(p)
 			} else {
-				err = rp.parseItemCustom(p, item)
+				err = captureCustom(p)
 			}
 		case "link":
 			if item.Link, err = rp.parseLink(p); err == nil {
@@ -275,7 +299,7 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 				categories = append(categories, cat)
 			}
 		default:
-			err = rp.parseItemCustom(p, item)
+			err = captureCustom(p)
 		}
 		return err
 	})
@@ -312,21 +336,6 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 	}
 
 	return item, nil
-}
-
-// parseItemCustom stores an unrecognized item child in the Custom map,
-// keyed by its original-case name. Duplicate names keep the last value.
-func (rp *Parser) parseItemCustom(p *xpp.Parser, item *Item) error {
-	key := p.Name()
-	result, err := shared.ParseText(p)
-	if err != nil {
-		return err
-	}
-	if item.Custom == nil {
-		item.Custom = make(map[string]string)
-	}
-	item.Custom[key] = result
-	return nil
 }
 
 func (rp *Parser) parseLink(p *xpp.Parser) (url string, err error) {

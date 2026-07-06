@@ -109,7 +109,9 @@ func (ap *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 				atom.Entries = append(atom.Entries, entry)
 			}
 		default:
-			err = p.Skip()
+			// Not part of the spec: capture it into the extension map
+			// under the _custom pseudo namespace instead of dropping it.
+			extensions, _, err = shared.ParseCustom(extensions, p)
 		}
 		return err
 	})
@@ -215,7 +217,9 @@ func (ap *Parser) parseEntry(p *xpp.Parser) (*Entry, error) {
 		case "content":
 			entry.Content, err = ap.parseContent(p)
 		default:
-			err = p.Skip()
+			// Not part of the spec: capture it into the extension map
+			// under the _custom pseudo namespace instead of dropping it.
+			extensions, _, err = shared.ParseCustom(extensions, p)
 		}
 		return err
 	})
@@ -310,7 +314,9 @@ func (ap *Parser) parseSource(p *xpp.Parser) (*Source, error) {
 				categories = append(categories, cat)
 			}
 		default:
-			err = p.Skip()
+			// Not part of the spec: capture it into the extension map
+			// under the _custom pseudo namespace instead of dropping it.
+			extensions, _, err = shared.ParseCustom(extensions, p)
 		}
 		return err
 	})

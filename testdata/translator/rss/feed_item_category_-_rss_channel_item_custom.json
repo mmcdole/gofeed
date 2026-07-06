@@ -1,6 +1,26 @@
 {
   "items": [
     {
+      "extensions": {
+        "_custom": {
+          "apcategory": [
+            {
+              "name": "apcategory",
+              "value": "s",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "test": [
+            {
+              "name": "test",
+              "value": "test",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      },
       "custom": {
         "apcategory": "s",
         "test": "test"

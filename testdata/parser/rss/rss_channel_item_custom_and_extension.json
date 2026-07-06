@@ -1,0 +1,45 @@
+{
+  "items": [
+    {
+      "title": "Test Item",
+      "extensions": {
+        "_custom": {
+          "customTag": [
+            {
+              "name": "customTag",
+              "value": "Custom Content",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "internalId": [
+            {
+              "name": "internalId",
+              "value": "12345",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "media": {
+          "content": [
+            {
+              "name": "content",
+              "value": "",
+              "attrs": {
+                "type": "image/jpeg",
+                "url": "http://example.com/media.jpg"
+              },
+              "children": {}
+            }
+          ]
+        }
+      },
+      "custom": {
+        "customTag": "Custom Content",
+        "internalId": "12345"
+      }
+    }
+  ],
+  "version": "2.0"
+}

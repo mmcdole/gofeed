@@ -1,0 +1,11 @@
+<!--
+Description: rss channel with custom elements
+-->
+<rss version="2.0">
+  <channel>
+    <title>Test Feed</title>
+    <customFeedId>feed-123</customFeedId>
+    <updateFrequency>hourly</updateFrequency>
+    <customMetadata type="internal">Some metadata</customMetadata>
+  </channel>
+</rss>

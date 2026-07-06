@@ -1,0 +1,31 @@
+{
+  "items": [
+    {
+      "extensions": {
+        "_custom": {
+          "htmlContent": [
+            {
+              "name": "htmlContent",
+              "value": "\u003cdiv\u003eSome \u003cb\u003eHTML\u003c/b\u003e content\u003c/div\u003e",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "script": [
+            {
+              "name": "script",
+              "value": "function test() {\n          return \"Hello \u0026 \u003cWorld\u003e\";\n        }",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      },
+      "custom": {
+        "htmlContent": "\u003cdiv\u003eSome \u003cb\u003eHTML\u003c/b\u003e content\u003c/div\u003e",
+        "script": "function test() {\n          return \"Hello \u0026 \u003cWorld\u003e\";\n        }"
+      }
+    }
+  ],
+  "version": "2.0"
+}

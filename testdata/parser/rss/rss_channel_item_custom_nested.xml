@@ -1,0 +1,16 @@
+<!--
+Description: a nested custom element parses into the extension tree with
+children and CDATA text preserved; only childless elements reach the flat
+Custom map (issue #203)
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <event>
+        <venue city="Austin"><![CDATA[The <Old> Hall]]></venue>
+        <date>2026-07-04</date>
+      </event>
+      <simple>plain</simple>
+    </item>
+  </channel>
+</rss>

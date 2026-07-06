@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "extensions": {
+        "_custom": {
+          "customField": [
+            {
+              "name": "customField",
+              "value": "Custom Value",
+              "attrs": {
+                "id": "123",
+                "type": "special"
+              },
+              "children": {}
+            }
+          ],
+          "rating": [
+            {
+              "name": "rating",
+              "value": "8",
+              "attrs": {
+                "reviewer": "John",
+                "scale": "1-10"
+              },
+              "children": {}
+            }
+          ]
+        }
+      },
+      "custom": {
+        "customField": "Custom Value",
+        "rating": "8"
+      }
+    }
+  ],
+  "version": "2.0"
+}
