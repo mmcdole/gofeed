@@ -13,7 +13,5 @@ func NewReaderLabel(label string, input io.Reader) (io.Reader, error) {
 		return nil, err
 	}
 
-	// Wrap the charset decoder reader with a XML sanitizer
-	//clean := NewXMLSanitizerReader(conv)
 	return conv, nil
 }
