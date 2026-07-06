@@ -107,11 +107,20 @@ func (t *DefaultRSSTranslator) translateFeedDescription(rss *rss.Feed) (desc str
 
 func (t *DefaultRSSTranslator) translateFeedLink(rss *rss.Feed) (link string) {
 	if rss.Link != "" {
-		link = rss.Link
-	} else if rss.ITunesExt != nil && rss.ITunesExt.Subtitle != "" {
-		link = rss.ITunesExt.Subtitle
+		return rss.Link
 	}
-	return
+	// Fall back to an embedded atom:link with rel="alternate" (or no rel),
+	// which points at the site the way <link> does.
+	for _, ex := range t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions) {
+		if links, ok := ex["link"]; ok {
+			for _, l := range links {
+				if l.Attrs["rel"] == "" || l.Attrs["rel"] == "alternate" {
+					return l.Attrs["href"]
+				}
+			}
+		}
+	}
+	return ""
 }
 
 func (t *DefaultRSSTranslator) translateFeedFeedLink(rss *rss.Feed) (link string) {

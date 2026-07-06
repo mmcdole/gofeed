@@ -1,0 +1,9 @@
+<!--
+Description: itunes subtitle is prose, not a URL; it must not become the
+feed link (issue #306)
+-->
+<rss version="2.0">
+  <channel>
+    <itunes:subtitle>A show about things</itunes:subtitle>
+  </channel>
+</rss>

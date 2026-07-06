@@ -1,0 +1,9 @@
+<!--
+Description: with no channel link, an embedded atom:link with
+rel="alternate" becomes the feed link (issue #306)
+-->
+<rss version="2.0">
+  <channel>
+    <atom:link href="http://example.org/" rel="alternate" type="text/html"/>
+  </channel>
+</rss>
