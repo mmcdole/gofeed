@@ -1,0 +1,11 @@
+<!--
+Description: namespace declarations with surrounding whitespace in their
+URIs must still map to the canonical prefix (itunes) or the declared
+prefix (custom), not be filed under the raw URI (issue #309)
+-->
+<rss version="2.0" xmlns:itunes=" http://www.itunes.com/DTDs/PodCast-1.0.dtd" xmlns:custom=" http://example.org/ns ">
+  <channel>
+    <itunes:author>Example Author</itunes:author>
+    <custom:tag>value</custom:tag>
+  </channel>
+</rss>
