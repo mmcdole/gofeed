@@ -26,7 +26,7 @@ var ErrResponseTooLarge = errors.New("gofeed: response body exceeds MaxByteSize"
 
 // ErrFeedTypeNotDetected is returned when the detection system can not figure
 // out the Feed format
-var ErrFeedTypeNotDetected = errors.New("Failed to detect feed type")
+var ErrFeedTypeNotDetected = errors.New("failed to detect feed type")
 
 // HTTPError represents an HTTP error returned by a server.
 type HTTPError struct {

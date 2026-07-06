@@ -224,7 +224,7 @@ var timezoneAbbreviations = map[string]int{
 func ParseDate(ds string) (t time.Time, err error) {
 	d := strings.TrimSpace(ds)
 	if d == "" {
-		return t, fmt.Errorf("Date string is empty")
+		return t, fmt.Errorf("date string is empty")
 	}
 	for _, f := range dateFormats {
 		if t, err = time.Parse(f, d); err == nil {
@@ -251,6 +251,6 @@ func ParseDate(ds string) (t time.Time, err error) {
 		return t, nil
 	}
 
-	err = fmt.Errorf("Failed to parse date: %s", ds)
+	err = fmt.Errorf("failed to parse date: %s", ds)
 	return
 }

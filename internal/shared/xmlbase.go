@@ -72,7 +72,7 @@ func NextTag(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
 		}
 
 		if event == xpp.EndDocument {
-			return event, fmt.Errorf("Failed to find NextTag before reaching the end of the document.")
+			return event, fmt.Errorf("failed to find NextTag before reaching the end of the document")
 		}
 
 	}

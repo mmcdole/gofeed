@@ -33,3 +33,7 @@ cmd/ftest/ftest
 
 # Goland specific files
 .idea
+
+# Test coverage output
+coverage.out
+coverage.txt

@@ -17,8 +17,8 @@ var (
 	nameOnlyRgx  = regexp.MustCompile(`^([^@()]+)$`)
 	emailOnlyRgx = regexp.MustCompile(`^([^@()]+@[^@()]+)$`)
 
-	TruncatedEntity         = errors.New("truncated entity")
-	InvalidNumericReference = errors.New("invalid numeric reference")
+	ErrTruncatedEntity         = errors.New("truncated entity")
+	ErrInvalidNumericReference = errors.New("invalid numeric reference")
 )
 
 const CDATA_START = "<![CDATA["
@@ -38,7 +38,7 @@ func FindRoot(p *xpp.XMLPullParser) (event xpp.XMLEventType, err error) {
 		}
 
 		if event == xpp.EndDocument {
-			return event, fmt.Errorf("Failed to find root node before document end.")
+			return event, fmt.Errorf("failed to find root node before document end")
 		}
 	}
 	return
