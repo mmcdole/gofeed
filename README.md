@@ -226,7 +226,6 @@ fmt.Println(feed.Author) // Valentine Wiggin
 * [goxpp](https://github.com/mmcdole/goxpp) - XML Pull Parser
 * [goquery](https://github.com/PuerkitoBio/goquery) - Go jQuery-like interface
 * [testify](https://github.com/stretchr/testify) - Unit test enhancements
-* [jsoniter](https://github.com/json-iterator/go) - Faster JSON Parsing
 
 ## License
 
