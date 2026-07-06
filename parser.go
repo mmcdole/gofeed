@@ -1,6 +1,7 @@
 package gofeed
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"errors"
@@ -91,25 +92,38 @@ func NewParser() *Parser {
 	return &fp
 }
 
+// detectionPeekSize is how many leading bytes Parse inspects to detect the
+// feed type. The root element appears within the first few KB of any real
+// feed; bounding the peek lets the XML parsers stream the rest of the input
+// instead of the whole feed being buffered just for detection. A feed whose
+// root element starts beyond this window is not detected.
+const detectionPeekSize = 4096
+
 // Parse parses a RSS or Atom or JSON feed into
 // the universal gofeed.Feed.  It takes an
 // io.Reader which should return the xml/json content.
+//
+// Only the first few KB are buffered to detect the feed type; RSS and Atom
+// content is then parsed incrementally from the reader. JSON feeds are read
+// fully into memory, as JSON decoding needs the complete document.
 func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
-	// Read the input once up front: detection inspects the bytes and the
-	// format parser reads them again, and reading here surfaces an I/O
-	// error as itself rather than as a failed type detection.
-	data, err := io.ReadAll(feed)
-	if err != nil {
+	// Peek at the start of the stream to detect the feed type, without
+	// consuming it: the format parser below reads from the beginning. A
+	// reader error here surfaces as itself rather than as a failed type
+	// detection; io.EOF just means the whole feed fit inside the window.
+	br := bufio.NewReaderSize(feed, detectionPeekSize)
+	prefix, err := br.Peek(detectionPeekSize)
+	if err != nil && !errors.Is(err, io.EOF) {
 		return nil, err
 	}
 
-	switch DetectFeedType(bytes.NewReader(data)) {
+	switch DetectFeedType(bytes.NewReader(prefix)) {
 	case FeedTypeAtom:
-		return f.parseAtomFeed(bytes.NewReader(data))
+		return f.parseAtomFeed(br)
 	case FeedTypeRSS:
-		return f.parseRSSFeed(bytes.NewReader(data))
+		return f.parseRSSFeed(br)
 	case FeedTypeJSON:
-		return f.parseJSONFeed(bytes.NewReader(data))
+		return f.parseJSONFeed(br)
 	}
 
 	return nil, ErrFeedTypeNotDetected
