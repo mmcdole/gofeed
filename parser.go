@@ -52,6 +52,16 @@ type Auth struct {
 	Password string
 }
 
+// Shared defaults used when the corresponding Parser field is unset. The
+// default translators are stateless and http.Client is safe for concurrent
+// use, so single shared instances are fine and avoid per-parse allocation.
+var (
+	defaultAtomTranslator = &DefaultAtomTranslator{}
+	defaultRSSTranslator  = &DefaultRSSTranslator{}
+	defaultJSONTranslator = &DefaultJSONTranslator{}
+	defaultClient         = &http.Client{}
+)
+
 // NewParser creates a universal feed parser.
 func NewParser() *Parser {
 	fp := Parser{
@@ -172,34 +182,34 @@ func (f *Parser) parseJSONFeed(feed io.Reader) (*Feed, error) {
 	return f.jsonTrans().Translate(jf)
 }
 
+// These accessors return a shared default when the corresponding field is
+// unset. They must not write back to the Parser: doing so races when one Parser
+// is shared across goroutines (a common pattern for crawlers).
+
 func (f *Parser) atomTrans() Translator {
 	if f.AtomTranslator != nil {
 		return f.AtomTranslator
 	}
-	f.AtomTranslator = &DefaultAtomTranslator{}
-	return f.AtomTranslator
+	return defaultAtomTranslator
 }
 
 func (f *Parser) rssTrans() Translator {
 	if f.RSSTranslator != nil {
 		return f.RSSTranslator
 	}
-	f.RSSTranslator = &DefaultRSSTranslator{}
-	return f.RSSTranslator
+	return defaultRSSTranslator
 }
 
 func (f *Parser) jsonTrans() Translator {
 	if f.JSONTranslator != nil {
 		return f.JSONTranslator
 	}
-	f.JSONTranslator = &DefaultJSONTranslator{}
-	return f.JSONTranslator
+	return defaultJSONTranslator
 }
 
 func (f *Parser) httpClient() *http.Client {
 	if f.Client != nil {
 		return f.Client
 	}
-	f.Client = &http.Client{}
-	return f.Client
+	return defaultClient
 }

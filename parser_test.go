@@ -282,3 +282,44 @@ func ExampleParser_ParseURL_basicAuth() {
 	}
 	fmt.Println(feed.Title)
 }
+
+const concurrencyFeed = `<rss version="2.0"><channel><title>t</title><item><title>i</title></item></channel></rss>`
+
+// TestParserConcurrentParseString shares one Parser across goroutines. Before
+// the lazy-init fix this races on the AtomTranslator/RSSTranslator/JSONTranslator
+// fields under -race.
+func TestParserConcurrentParseString(t *testing.T) {
+	p := gofeed.NewParser()
+	var wg sync.WaitGroup
+	for i := 0; i < 16; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if _, err := p.ParseString(concurrencyFeed); err != nil {
+				t.Error(err)
+			}
+		}()
+	}
+	wg.Wait()
+}
+
+// TestParserConcurrentParseURL exercises the httpClient() lazy init the same way.
+func TestParserConcurrentParseURL(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, concurrencyFeed)
+	}))
+	defer srv.Close()
+
+	p := gofeed.NewParser()
+	var wg sync.WaitGroup
+	for i := 0; i < 16; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if _, err := p.ParseURL(srv.URL); err != nil {
+				t.Error(err)
+			}
+		}()
+	}
+	wg.Wait()
+}
