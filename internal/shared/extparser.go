@@ -175,3 +175,25 @@ var canonicalNamespaces = map[string]string{
 	"http://www.w3.org/XML/1998/namespace":                           "xml",
 	"http://podlove.org/simple-chapters":                             "psc",
 }
+
+// CustomPrefix is the pseudo namespace prefix that files non-namespaced
+// unknown elements in the extension map.
+const CustomPrefix = "_custom"
+
+// ParseCustom parses the current element as an arbitrary non-namespaced
+// element and files it in the extension map under CustomPrefix, preserving
+// nesting, attributes and repetition the same way namespaced extensions are
+// kept. The parsed element is also returned so callers can maintain
+// compatibility shims from it.
+func ParseCustom(fe ext.Extensions, p *xpp.Parser) (ext.Extensions, ext.Extension, error) {
+	result, err := parseExtensionElement(p)
+	if err != nil {
+		return nil, ext.Extension{}, err
+	}
+
+	if _, ok := fe[CustomPrefix]; !ok {
+		fe[CustomPrefix] = map[string][]ext.Extension{}
+	}
+	fe[CustomPrefix][result.Name] = append(fe[CustomPrefix][result.Name], result)
+	return fe, result, nil
+}

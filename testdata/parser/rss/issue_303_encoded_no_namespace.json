@@ -2,6 +2,18 @@
   "items": [
     {
       "title": "First",
+      "extensions": {
+        "_custom": {
+          "encoded": [
+            {
+              "name": "encoded",
+              "value": "hello",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      },
       "custom": {
         "encoded": "hello"
       }

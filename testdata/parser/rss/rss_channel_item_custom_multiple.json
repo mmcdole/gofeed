@@ -1,0 +1,53 @@
+{
+  "items": [
+    {
+      "extensions": {
+        "_custom": {
+          "customId": [
+            {
+              "name": "customId",
+              "value": "123",
+              "attrs": {
+                "type": "primary"
+              },
+              "children": {}
+            },
+            {
+              "name": "customId",
+              "value": "456",
+              "attrs": {
+                "type": "secondary"
+              },
+              "children": {}
+            }
+          ],
+          "tag": [
+            {
+              "name": "tag",
+              "value": "First Tag",
+              "attrs": {},
+              "children": {}
+            },
+            {
+              "name": "tag",
+              "value": "Second Tag",
+              "attrs": {},
+              "children": {}
+            },
+            {
+              "name": "tag",
+              "value": "Third Tag",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      },
+      "custom": {
+        "customId": "456",
+        "tag": "Third Tag"
+      }
+    }
+  ],
+  "version": "2.0"
+}

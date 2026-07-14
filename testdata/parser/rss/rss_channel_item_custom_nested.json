@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "extensions": {
+        "_custom": {
+          "event": [
+            {
+              "name": "event",
+              "value": "",
+              "attrs": {},
+              "children": {
+                "date": [
+                  {
+                    "name": "date",
+                    "value": "2026-07-04",
+                    "attrs": {},
+                    "children": {}
+                  }
+                ],
+                "venue": [
+                  {
+                    "name": "venue",
+                    "value": "The \u003cOld\u003e Hall",
+                    "attrs": {
+                      "city": "Austin"
+                    },
+                    "children": {}
+                  }
+                ]
+              }
+            }
+          ],
+          "simple": [
+            {
+              "name": "simple",
+              "value": "plain",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      },
+      "custom": {
+        "simple": "plain"
+      }
+    }
+  ],
+  "version": "2.0"
+}

@@ -32,10 +32,13 @@ type Feed struct {
 	DublinCoreExt   *ext.DublinCoreExtension `json:"dcExt,omitempty"`
 	ITunesExt       *ext.ITunesFeedExtension `json:"itunesExt,omitempty"`
 	Extensions      ext.Extensions           `json:"extensions,omitempty"`
-	Custom          map[string]string        `json:"custom,omitempty"`
-	Items           []*Item                  `json:"items"`
-	FeedType        string                   `json:"feedType"`
-	FeedVersion     string                   `json:"feedVersion"`
+	// Custom is a flat view of non-namespaced unknown elements. Deprecated:
+	// use Extensions[CustomNamespace] (or GetCustomValue), which keeps
+	// nesting, attributes and repeated elements.
+	Custom      map[string]string `json:"custom,omitempty"`
+	Items       []*Item           `json:"items"`
+	FeedType    string            `json:"feedType"`
+	FeedVersion string            `json:"feedVersion"`
 
 	// originalFeed holds the source *rss.Feed, *atom.Feed, or *json.Feed when
 	// the parser was configured with KeepOriginalFeed. It is unexported (and so
@@ -81,7 +84,11 @@ type Item struct {
 	DublinCoreExt   *ext.DublinCoreExtension `json:"dcExt,omitempty"`
 	ITunesExt       *ext.ITunesItemExtension `json:"itunesExt,omitempty"`
 	Extensions      ext.Extensions           `json:"extensions,omitempty"`
-	Custom          map[string]string        `json:"custom,omitempty"`
+	// Custom is a flat view of childless non-namespaced unknown elements,
+	// last value wins. Deprecated: use Extensions[CustomNamespace] (or
+	// GetCustomValue), which keeps nesting, attributes and repeated
+	// elements.
+	Custom map[string]string `json:"custom,omitempty"`
 }
 
 // Person is an individual specified in a feed
