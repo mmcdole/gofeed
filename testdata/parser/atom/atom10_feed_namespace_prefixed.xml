@@ -1,0 +1,16 @@
+<!--
+Description: a prefixed-only Atom 1.0 document uses its namespace URI for
+native element detection while foreign elements with the same local name stay
+in Extensions.
+-->
+<atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <atom:title>Feed</atom:title>
+  <content:title>Foreign</content:title>
+  <atom:link href="https://example.org/feed" rel="self"/>
+  <atom:entry>
+    <atom:title>Entry</atom:title>
+    <atom:source>
+      <atom:title>Source</atom:title>
+    </atom:source>
+  </atom:entry>
+</atom:feed>

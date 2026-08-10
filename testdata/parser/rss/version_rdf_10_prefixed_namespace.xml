@@ -1,0 +1,12 @@
+<!--
+Description: RSS 1.0 native elements and version detection use the namespace
+URI when the RSS vocabulary has a document-defined prefix.
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:r="http://purl.org/rss/1.0/">
+  <r:channel>
+    <r:title>Feed</r:title>
+  </r:channel>
+  <r:item>
+    <r:title>Entry</r:title>
+  </r:item>
+</rdf:RDF>

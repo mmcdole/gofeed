@@ -1,0 +1,11 @@
+<!--
+Description: a prefixed-only Atom 0.3 document uses its namespace URI for
+native element detection and version identification.
+-->
+<a:feed xmlns:a="http://purl.org/atom/ns#">
+  <a:title>Feed</a:title>
+  <a:link href="https://example.org/feed" rel="self"/>
+  <a:entry>
+    <a:title>Entry</a:title>
+  </a:entry>
+</a:feed>

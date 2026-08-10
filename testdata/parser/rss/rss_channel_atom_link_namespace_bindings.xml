@@ -1,0 +1,11 @@
+<!--
+Description: Atom extensions embedded in RSS use canonical extension keys for
+arbitrary prefixes and locally declared default namespaces.
+-->
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom" xmlns:legacy="http://purl.org/atom/ns#">
+  <channel>
+    <a:link href="https://hub.example.org/atom-prefix" rel="hub"/>
+    <link xmlns="http://www.w3.org/2005/Atom" href="https://hub.example.org/default-namespace" rel="hub"/>
+    <legacy:link href="https://hub.example.org/atom03-prefix" rel="hub"/>
+  </channel>
+</rss>

@@ -1,0 +1,42 @@
+{
+  "extensions": {
+    "atom": {
+      "link": [
+        {
+          "name": "link",
+          "value": "",
+          "attrs": {
+            "href": "https://hub.example.org/atom-prefix",
+            "rel": "hub"
+          },
+          "children": {}
+        },
+        {
+          "name": "link",
+          "value": "",
+          "attrs": {
+            "href": "https://hub.example.org/default-namespace",
+            "rel": "hub",
+            "xmlns": "http://www.w3.org/2005/Atom"
+          },
+          "children": {}
+        }
+      ]
+    },
+    "atom03": {
+      "link": [
+        {
+          "name": "link",
+          "value": "",
+          "attrs": {
+            "href": "https://hub.example.org/atom03-prefix",
+            "rel": "hub"
+          },
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": [],
+  "version": "2.0"
+}

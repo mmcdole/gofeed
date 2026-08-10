@@ -1,0 +1,14 @@
+<!--
+Description: Atom elements remain native when the Atom namespace has both a
+prefixed and a default binding, regardless of declaration order.
+-->
+<feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns="http://www.w3.org/2005/Atom">
+  <title>Feed</title>
+  <link href="https://example.org/feed" rel="self"/>
+  <entry>
+    <title>Entry</title>
+    <source>
+      <title>Source</title>
+    </source>
+  </entry>
+</feed>

@@ -1,0 +1,30 @@
+{
+  "title": "Feed",
+  "links": [
+    {
+      "href": "https://example.org/feed",
+      "rel": "self"
+    }
+  ],
+  "entries": [
+    {
+      "title": "Entry",
+      "source": {
+        "title": "Source"
+      }
+    }
+  ],
+  "extensions": {
+    "content": {
+      "title": [
+        {
+          "name": "title",
+          "value": "Foreign",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    }
+  },
+  "version": "1.0"
+}

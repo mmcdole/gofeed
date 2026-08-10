@@ -11,6 +11,17 @@ import (
 	xpp "github.com/mmcdole/goxpp/v2"
 )
 
+// nativeNamespaces identifies the RSS and RDF vocabularies handled directly.
+var nativeNamespaces = []string{
+	"",
+	"rss", // undeclared prefixes are surfaced literally by encoding/xml
+	"rdf",
+	shared.RDFNamespace,
+	shared.RSS10Namespace,
+	shared.RSS09Namespace,
+	shared.RSS09AltNamespace,
+}
+
 // Parser is a RSS Parser
 type Parser struct{}
 
@@ -44,7 +55,7 @@ func (rp *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 
 	err := shared.ForEachChild(p, func(name string) error {
 		// Skip any extensions found in the feed root.
-		if shared.IsExtension(p) {
+		if shared.IsExtension(p, nativeNamespaces...) {
 			return p.Skip()
 		}
 		var err error
@@ -120,7 +131,7 @@ func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
 	}
 
 	err = shared.ForEachChild(p, func(name string) error {
-		if shared.IsExtension(p) {
+		if shared.IsExtension(p, nativeNamespaces...) {
 			extensions, err = shared.ParseExtension(extensions, p)
 			return err
 		}
@@ -228,22 +239,24 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 	links := []string{}
 
 	err = shared.ForEachChild(p, func(name string) error {
-		if shared.IsExtension(p) {
+		var err error
+		// content:encoded is foreign to RSS but maps to item.Content; it must be
+		// claimed here or the extension routing below swallows it.
+		if name == "encoded" && shared.PrefixForNamespace(p.Space(), p) == "content" {
+			item.Content, err = shared.ParseText(p)
+			return err
+		}
+		if shared.IsExtension(p, nativeNamespaces...) {
 			extensions, err = shared.ParseExtension(extensions, p)
 			return err
 		}
-		var err error
 		switch name {
 		case "title":
 			item.Title, err = shared.ParseText(p)
 		case "description":
 			item.Description, err = shared.ParseText(p)
 		case "encoded":
-			if shared.PrefixForNamespace(p.Space(), p) == "content" {
-				item.Content, err = shared.ParseText(p)
-			} else {
-				err = rp.parseItemCustom(p, item)
-			}
+			err = rp.parseItemCustom(p, item)
 		case "link":
 			if item.Link, err = rp.parseLink(p); err == nil {
 				links = append(links, item.Link)
@@ -598,12 +611,29 @@ func (rp *Parser) parseVersion(p *xpp.Parser) (ver string) {
 	if name == "rss" {
 		ver = p.Attribute("version")
 	} else if name == "rdf" {
-		ns := p.Attribute("xmlns")
-		if ns == "http://channel.netscape.com/rdf/simple/0.9/" ||
-			ns == "http://my.netscape.com/rdf/simple/0.9/" {
-			ver = "0.9"
-		} else if ns == "http://purl.org/rss/1.0/" {
-			ver = "1.0"
+		// RSS 0.9 and 1.0 are RDF vocabularies. Their namespace may use
+		// either the default binding or any document-defined prefix.
+		namespaces := p.Namespaces()
+		defaultNamespace := strings.TrimSpace(namespaces[""])
+		known := []struct {
+			namespace string
+			version   string
+		}{
+			{shared.RSS10Namespace, "1.0"},
+			{shared.RSS09Namespace, "0.9"},
+			{shared.RSS09AltNamespace, "0.9"},
+		}
+		for _, candidate := range known {
+			if defaultNamespace == candidate.namespace {
+				return candidate.version
+			}
+		}
+		for _, candidate := range known {
+			for prefix, namespace := range namespaces {
+				if prefix != "" && strings.TrimSpace(namespace) == candidate.namespace {
+					return candidate.version
+				}
+			}
 		}
 	}
 	return

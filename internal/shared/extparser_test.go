@@ -41,15 +41,27 @@ func TestIsExtension(t *testing.T) {
 		element string
 		want    bool
 	}{
-		{"title", false},   // no prefix
-		{"author", true},   // itunes prefix
-		{"encoded", false}, // content prefix is exempt
+		{"title", false},  // no namespace
+		{"author", true},  // iTunes namespace
+		{"encoded", true}, // content namespace
 	}
 	for _, c := range cases {
 		p := parserOn(t, doc, c.element)
-		if got := IsExtension(p); got != c.want {
+		if got := IsExtension(p, ""); got != c.want {
 			t.Errorf("IsExtension(<%s>) = %v, want %v", c.element, got, c.want)
 		}
+	}
+}
+
+func TestIsExtensionUsesResolvedNamespace(t *testing.T) {
+	doc := `<rss xmlns:a="http://www.w3.org/2005/Atom"><channel><a:link/></channel></rss>`
+	p := parserOn(t, doc, "link")
+
+	if IsExtension(p, Atom10Namespace) {
+		t.Error("Atom namespace should be native when the Atom parser supplies it")
+	}
+	if !IsExtension(p, "") {
+		t.Error("Atom namespace should be an extension when the RSS parser supplies only its native namespace")
 	}
 }
 
@@ -75,7 +87,7 @@ func TestParseExtension(t *testing.T) {
 		if tok == xpp.EndDocument {
 			break
 		}
-		if tok == xpp.StartTag && IsExtension(p) {
+		if tok == xpp.StartTag && IsExtension(p, "") {
 			extensions, err = ParseExtension(extensions, p)
 			if err != nil {
 				t.Fatal(err)
@@ -107,8 +119,8 @@ func TestParseExtension(t *testing.T) {
 }
 
 func TestPrefixForNamespace(t *testing.T) {
-	doc := `<rss xmlns:pod="http://www.itunes.com/DTDs/PodCast-1.0.dtd" xmlns:custom="http://example.org/ns">
-		<channel><pod:author>a</pod:author></channel>
+	doc := `<rss xmlns:pod="http://www.itunes.com/DTDs/PodCast-1.0.dtd" xmlns:custom="http://example.org/ns" xmlns:a="http://www.w3.org/2005/Atom" xmlns:legacy="http://purl.org/atom/ns#">
+		<channel><pod:author>a</pod:author><a:link/><legacy:link/></channel>
 	</rss>`
 	p := parserOn(t, doc, "author")
 
@@ -129,6 +141,17 @@ func TestPrefixForNamespace(t *testing.T) {
 	// Space; it maps to itself.
 	if got := PrefixForNamespace("media", p); got != "media" {
 		t.Errorf("undeclared = %q, want media", got)
+	}
+	atom := parserOn(t, doc, "link")
+	if got := PrefixForNamespace(Atom10Namespace, atom); got != "atom" {
+		t.Errorf("Atom canonical = %q, want atom", got)
+	}
+	if got := PrefixForNamespace(Atom03Namespace, atom); got != "atom03" {
+		t.Errorf("Atom 0.3 canonical = %q, want atom03", got)
+	}
+	defaultOnly := parserOn(t, `<root><value xmlns="urn:example"/></root>`, "value")
+	if got := PrefixForNamespace("urn:example", defaultOnly); got != "urn:example" {
+		t.Errorf("default namespace = %q, want urn:example", got)
 	}
 }
 

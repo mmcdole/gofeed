@@ -1,0 +1,15 @@
+{
+  "title": "Feed",
+  "links": [
+    {
+      "href": "https://example.org/feed",
+      "rel": "self"
+    }
+  ],
+  "entries": [
+    {
+      "title": "Entry"
+    }
+  ],
+  "version": "0.3"
+}

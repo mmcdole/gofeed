@@ -1,0 +1,12 @@
+<!--
+Description: the reporter's Atom hub link uses a redundant local default
+namespace and remains in the universal feed's Atom extensions (issue #338).
+-->
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <atom:link href="https://feeds.simplecast.com/dHoohVNH" rel="self" title="MP3 Audio" type="application/atom+xml"/>
+    <atom:link href="https://simplecast.superfeedr.com" rel="hub" xmlns="http://www.w3.org/2005/Atom"/>
+    <title>Conan O’Brien Needs A Friend</title>
+    <link>https://www.siriusxm.com</link>
+  </channel>
+</rss>

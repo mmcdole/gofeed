@@ -14,6 +14,14 @@ import (
 )
 
 var (
+	// nativeNamespaces identifies the official Atom vocabularies. The empty
+	// namespace admits elements from feeds that omit xmlns entirely.
+	nativeNamespaces = []string{
+		"",
+		shared.Atom10Namespace,
+		shared.Atom03Namespace,
+	}
+
 	// Atom elements which contain URIs
 	// https://tools.ietf.org/html/rfc4287
 	atomUriElements = map[string]bool{
@@ -58,7 +66,7 @@ func (ap *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 	extensions := ext.Extensions{}
 
 	err := shared.ForEachChild(p, func(name string) error {
-		if shared.IsExtension(p) {
+		if shared.IsExtension(p, nativeNamespaces...) {
 			var err error
 			extensions, err = shared.ParseExtension(extensions, p)
 			return err
@@ -167,7 +175,7 @@ func (ap *Parser) parseEntry(p *xpp.Parser) (*Entry, error) {
 	extensions := ext.Extensions{}
 
 	err := shared.ForEachChild(p, func(name string) error {
-		if shared.IsExtension(p) {
+		if shared.IsExtension(p, nativeNamespaces...) {
 			var err error
 			extensions, err = shared.ParseExtension(extensions, p)
 			return err
@@ -264,7 +272,7 @@ func (ap *Parser) parseSource(p *xpp.Parser) (*Source, error) {
 	extensions := ext.Extensions{}
 
 	err := shared.ForEachChild(p, func(name string) error {
-		if shared.IsExtension(p) {
+		if shared.IsExtension(p, nativeNamespaces...) {
 			var err error
 			extensions, err = shared.ParseExtension(extensions, p)
 			return err
@@ -563,12 +571,12 @@ func (ap *Parser) parseVersion(p *xpp.Parser) string {
 		return ver
 	}
 
-	ns := p.Attribute("xmlns")
-	if ns == "http://purl.org/atom/ns#" {
+	ns := strings.TrimSpace(p.Space())
+	if ns == shared.Atom03Namespace {
 		return "0.3"
 	}
 
-	if ns == "http://www.w3.org/2005/Atom" {
+	if ns == shared.Atom10Namespace {
 		return "1.0"
 	}
 
