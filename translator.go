@@ -679,7 +679,7 @@ func atomPersons(persons []*atom.Person) []*Person {
 	}
 	out := make([]*Person, 0, len(persons))
 	for _, p := range persons {
-		out = append(out, &Person{Name: p.Name, Email: p.Email})
+		out = append(out, &Person{Name: p.Name, Email: p.Email, URI: p.URI})
 	}
 	return out
 }
