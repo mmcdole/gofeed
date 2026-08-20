@@ -53,18 +53,28 @@ func (rp *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 
 	ver := rp.parseVersion(p)
 
+	// Some feeds stamp a bogus default namespace on <rss>, which every
+	// unprefixed core element then inherits. Treat the root's own resolved
+	// namespace as native for this parse — unless it is a recognized
+	// extension namespace, which keeps deliberate foreign content (Atom,
+	// Dublin Core, ...) routed through extension handling.
+	native := nativeNamespaces
+	if space := strings.TrimSpace(p.Space()); space != "" && !shared.IsCanonicalNamespace(space) {
+		native = append([]string{space}, nativeNamespaces...)
+	}
+
 	err := shared.ForEachChild(p, func(name string) error {
 		// Skip any extensions found in the feed root.
-		if shared.IsExtension(p, nativeNamespaces...) {
+		if shared.IsExtension(p, native...) {
 			return p.Skip()
 		}
 		var err error
 		switch name {
 		case "channel":
-			channel, err = rp.parseChannel(p)
+			channel, err = rp.parseChannel(p, native)
 		case "item":
 			var item *Item
-			if item, err = rp.parseItem(p); err == nil {
+			if item, err = rp.parseItem(p, native); err == nil {
 				items = append(items, item)
 			}
 		case "textinput":
@@ -107,7 +117,7 @@ func (rp *Parser) parseRoot(p *xpp.Parser) (*Feed, error) {
 	return channel, nil
 }
 
-func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
+func (rp *Parser) parseChannel(p *xpp.Parser, native []string) (rss *Feed, err error) {
 	if err = p.Expect(xpp.StartTag, "channel"); err != nil {
 		return nil, err
 	}
@@ -131,7 +141,7 @@ func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
 	}
 
 	err = shared.ForEachChild(p, func(name string) error {
-		if shared.IsExtension(p, nativeNamespaces...) {
+		if shared.IsExtension(p, native...) {
 			extensions, err = shared.ParseExtension(extensions, p)
 			return err
 		}
@@ -175,7 +185,7 @@ func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
 			rss.SkipDays, err = rp.parseSkipDays(p)
 		case "item":
 			var item *Item
-			if item, err = rp.parseItem(p); err == nil {
+			if item, err = rp.parseItem(p, native); err == nil {
 				rss.Items = append(rss.Items, item)
 			}
 		case "cloud":
@@ -227,7 +237,7 @@ func (rp *Parser) parseChannel(p *xpp.Parser) (rss *Feed, err error) {
 	return rss, nil
 }
 
-func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
+func (rp *Parser) parseItem(p *xpp.Parser, native []string) (item *Item, err error) {
 	if err = p.Expect(xpp.StartTag, "item"); err != nil {
 		return nil, err
 	}
@@ -246,7 +256,7 @@ func (rp *Parser) parseItem(p *xpp.Parser) (item *Item, err error) {
 			item.Content, err = shared.ParseText(p)
 			return err
 		}
-		if shared.IsExtension(p, nativeNamespaces...) {
+		if shared.IsExtension(p, native...) {
 			extensions, err = shared.ParseExtension(extensions, p)
 			return err
 		}

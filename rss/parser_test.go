@@ -54,6 +54,16 @@ func TestParser_Parse_CloudTruncated(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestParser_Parse_KnownForeignRootNamespace(t *testing.T) {
+	// Only an unrecognized root default namespace is tolerated as RSS
+	// core; a recognized extension namespace keeps its meaning, so this
+	// channel stays foreign and is skipped.
+	feed := `<rss version="2.0" xmlns="http://www.w3.org/2005/Atom"><channel><title>x</title></channel></rss>`
+	f, err := (&rss.Parser{}).Parse(strings.NewReader(feed))
+	assert.NoError(t, err)
+	assert.Empty(t, f.Title)
+}
+
 // TODO: Examples
 
 func TestParser_Parse_UnknownRoot(t *testing.T) {

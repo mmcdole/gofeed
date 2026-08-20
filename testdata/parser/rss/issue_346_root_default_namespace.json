@@ -1,0 +1,50 @@
+{
+  "title": "suspilne.news",
+  "link": "https://suspilne.media/",
+  "links": [
+    "https://suspilne.media/"
+  ],
+  "description": "Новини України від редакції Суспільне | Новини.",
+  "pubDate": "Fri, 22 Dec 2023 01:04:55 +0200",
+  "pubDateParsed": "2023-12-21T23:04:55Z",
+  "ttl": "5",
+  "extensions": {
+    "atom": {
+      "link": [
+        {
+          "name": "link",
+          "value": "",
+          "attrs": {
+            "href": "https://suspilne.media/rss/ukrnet.rss?",
+            "rel": "self",
+            "type": "application/rss+xml"
+          },
+          "children": {}
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "title": "Торгівля між Росією та Китаєм у 2023 році перевищила 200 млрд доларів — New York Times",
+      "link": "https://suspilne.media/645026-torgivla-miz-rosieu-ta-kitaem-u-2023-roci-perevisila-200-mlrd-dolariv-new-york-times/",
+      "links": [
+        "https://suspilne.media/645026-torgivla-miz-rosieu-ta-kitaem-u-2023-roci-perevisila-200-mlrd-dolariv-new-york-times/"
+      ],
+      "description": "Торгівля між РФ та КНР перевищила 200 млрд доларів за 2023 рік.",
+      "pubDate": "Fri, 22 Dec 2023 01:04:55 +0200",
+      "pubDateParsed": "2023-12-21T23:04:55Z"
+    },
+    {
+      "title": "У Гаазі проходить масштабна конференція",
+      "link": "https://suspilne.media/644990-u-gaazi-prohodit-masstabna-konferencia/",
+      "links": [
+        "https://suspilne.media/644990-u-gaazi-prohodit-masstabna-konferencia/"
+      ],
+      "description": "Конференція у Гаазі.",
+      "pubDate": "Fri, 22 Dec 2023 00:30:00 +0200",
+      "pubDateParsed": "2023-12-21T22:30:00Z"
+    }
+  ],
+  "version": "2.0"
+}
