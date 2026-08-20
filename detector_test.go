@@ -68,3 +68,10 @@ func TestDetectFeedType_ReaderError(t *testing.T) {
 	r := io.MultiReader(strings.NewReader(`<rss version="2.0"></rss>`), iotest.ErrReader(errors.New("boom")))
 	assert.Equal(t, gofeed.FeedTypeUnknown, gofeed.DetectFeedType(r))
 }
+
+// JSON detection must work from a bounded prefix; the JSON parser validates
+// the complete document after detection (issue #344).
+func TestDetectFeedType_JSONPrefix(t *testing.T) {
+	prefix := `{"version":"https://jsonfeed.org/version/1.1","items":[{`
+	assert.Equal(t, gofeed.FeedTypeJSON, gofeed.DetectFeedType(strings.NewReader(prefix)))
+}

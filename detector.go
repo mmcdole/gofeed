@@ -2,7 +2,6 @@ package gofeed
 
 import (
 	"bytes"
-	"encoding/json"
 	"io"
 	"strings"
 
@@ -25,10 +24,10 @@ const (
 	FeedTypeJSON
 )
 
-// DetectFeedType attempts to determine the type of feed
-// by looking for specific xml elements unique to the
-// various feed types. It returns FeedTypeUnknown when the
-// reader fails before the type can be determined.
+// DetectFeedType attempts to determine the type of feed by looking for an XML
+// root element or the start of a JSON object. It does not validate the entire
+// document; the selected format parser performs full validation. It returns
+// FeedTypeUnknown when the reader fails before the type can be determined.
 func DetectFeedType(feed io.Reader) FeedType {
 	buffer := new(bytes.Buffer)
 	if _, err := buffer.ReadFrom(feed); err != nil {
@@ -74,10 +73,7 @@ loop:
 			return FeedTypeUnknown
 		}
 	} else if firstChar == '{' {
-		// Check if document is valid JSON
-		if json.Valid(buffer.Bytes()) {
-			return FeedTypeJSON
-		}
+		return FeedTypeJSON
 	}
 	return FeedTypeUnknown
 }
