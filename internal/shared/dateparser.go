@@ -219,20 +219,63 @@ var timezoneAbbreviations = map[string]int{
 	"EEST": 3 * 3600,
 }
 
+// endsInZoneAbbreviation reports whether d ends in a bare uppercase timezone
+// abbreviation, in a shape that no layout in dateFormats can match.
+//
+// Three to five characters follows time.parseTimeZone's internal rule, and it also
+// excludes every trailing alphabetic token dateFormats layouts end in ("UT"/"Z"/"PM").
+// The only overlap left is a zone name after a numeric offset ("-0700 MST" and its
+// "GMT" sibling),hence the check on the field in front.
+func endsInZoneAbbreviation(d string) bool {
+	i := len(d)
+	for i > 0 && d[i-1] >= 'A' && d[i-1] <= 'Z' {
+		i--
+	}
+	// i == 0 means the whole string is letters, so it carries no date at all.
+	if n := len(d) - i; i == 0 || n < 3 || n > 5 {
+		return false
+	}
+
+	head := strings.TrimRight(d[:i], " ")
+	if j := strings.LastIndexByte(head, ' '); j >= 0 {
+		head = head[j+1:]
+	}
+	return !strings.HasPrefix(head, "+") && !strings.HasPrefix(head, "-")
+}
+
 // ParseDate parses a given date string using a large
 // list of commonly found feed date formats.
-func ParseDate(ds string) (t time.Time, err error) {
+func ParseDate(ds string) (time.Time, error) {
 	d := strings.TrimSpace(ds)
 	if d == "" {
-		return t, fmt.Errorf("date string is empty")
+		return time.Time{}, fmt.Errorf("date string is empty")
 	}
-	for _, f := range dateFormats {
-		if t, err = time.Parse(f, d); err == nil {
-			return
+	// A date ending in a bare zone abbreviation cannot match dateFormats, so
+	// look at the named-zone layouts first. Only the order changes: both lists
+	// are still tried, so a wrong guess costs time and nothing else.
+	namedZoneFirst := endsInZoneAbbreviation(d)
+	if namedZoneFirst {
+		if t, ok := parseNamedZone(d); ok {
+			return t, nil
 		}
 	}
+	for _, f := range dateFormats {
+		if t, err := time.Parse(f, d); err == nil {
+			return t, nil
+		}
+	}
+	if !namedZoneFirst {
+		if t, ok := parseNamedZone(d); ok {
+			return t, nil
+		}
+	}
+
+	return time.Time{}, fmt.Errorf("failed to parse date: %s", ds)
+}
+
+func parseNamedZone(d string) (time.Time, bool) {
 	for _, f := range dateFormatsWithNamedZone {
-		t, err = time.Parse(f, d)
+		t, err := time.Parse(f, d)
 		if err != nil {
 			continue
 		}
@@ -248,9 +291,8 @@ func ParseDate(ds string) (t time.Time, err error) {
 					t.Minute(), t.Second(), t.Nanosecond(), time.FixedZone(name, want))
 			}
 		}
-		return t, nil
+		return t, true
 	}
 
-	err = fmt.Errorf("failed to parse date: %s", ds)
-	return
+	return time.Time{}, false
 }

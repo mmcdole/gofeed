@@ -79,3 +79,40 @@ func TestDateLayoutsRoundTrip(t *testing.T) {
 		}
 	}
 }
+
+// Guards ParseDate's dispatch. UTC covers the layouts whose zone token is a
+// literal "Z" or an RFC3339 "Z07:00"; a named zone covers the ones that end in
+// a real abbreviation.
+func TestNumericLayoutsNeverEndInZone(t *testing.T) {
+	ref := time.Date(2006, time.January, 2, 15, 4, 5, 0, time.UTC)
+	for _, zone := range []*time.Location{time.UTC, time.FixedZone("MST", -7*3600)} {
+		for _, layout := range dateFormats {
+			if s := ref.In(zone).Format(layout); endsInZoneAbbreviation(s) {
+				t.Errorf("layout %q renders %q, which ParseDate would match against the named-zone layouts first", layout, s)
+			}
+		}
+	}
+}
+
+func BenchmarkParseDate(b *testing.B) {
+	cases := []struct {
+		name string
+		in   string
+	}{
+		{"NamedZoneGMT", "Mon, 10 Aug 2026 10:00:00 GMT"},
+		{"NumericOffset", "Mon, 10 Aug 2026 10:00:00 +0000"},
+		{"RFC3339", "2026-08-10T10:00:00Z"},
+		{"Unparseable", "not a date at all"},
+		// Worst case for the dispatch: the predicate fires, so both lists are
+		// exhausted in the reordered order.
+		{"UnparseableZoneTail", "Mon, 99 Xyz 2026 99:99:99 QQQ"},
+	}
+	for _, c := range cases {
+		b.Run(c.name, func(b *testing.B) {
+			b.ReportAllocs()
+			for b.Loop() {
+				_, _ = ParseDate(c.in)
+			}
+		})
+	}
+}
