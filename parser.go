@@ -178,11 +178,24 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 		}
 	}
 
-	var body io.Reader = resp.Body
-	if f.MaxByteSize > 0 {
-		body = &limitedReader{r: resp.Body, left: f.MaxByteSize}
+	if f.MaxByteSize <= 0 {
+		return f.Parse(resp.Body)
 	}
-	return f.Parse(body)
+	body := &limitedReader{r: resp.Body, left: f.MaxByteSize}
+	feed, err = f.Parse(body)
+	if body.err == ErrResponseTooLarge {
+		return nil, ErrResponseTooLarge
+	}
+	if err != nil {
+		return nil, err
+	}
+	// XML parsers stop at the root's closing tag. Check the remaining body
+	// through the same limit before returning success, including any error
+	// that a buffered parser has not observed yet.
+	if _, err = io.Copy(io.Discard, body); err != nil {
+		return nil, err
+	}
+	return feed, nil
 }
 
 // limitedReader returns ErrResponseTooLarge once more than the configured
@@ -191,14 +204,28 @@ func (f *Parser) ParseURLWithContext(feedURL string, ctx context.Context) (feed 
 type limitedReader struct {
 	r    io.Reader
 	left int64
+	err  error
 }
 
 func (l *limitedReader) Read(p []byte) (int, error) {
-	n, err := l.r.Read(p)
-	l.left -= int64(n)
-	if l.left < 0 {
-		return n, ErrResponseTooLarge
+	if len(p) == 0 {
+		return 0, nil
 	}
+	if l.err != nil {
+		return 0, l.err
+	}
+	// Read at most one byte beyond the limit to distinguish overflow from
+	// an exact-size response. The comparison also keeps left+1 from overflowing.
+	if int64(len(p)) > l.left {
+		p = p[:l.left+1]
+	}
+	n, err := l.r.Read(p)
+	if int64(n) > l.left {
+		n = int(l.left)
+		err = ErrResponseTooLarge
+	}
+	l.left -= int64(n)
+	l.err = err
 	return n, err
 }
 
