@@ -18,10 +18,62 @@ import (
 
 	"github.com/mmcdole/gofeed"
 	"github.com/mmcdole/gofeed/internal/testutil"
+	jsonfeed "github.com/mmcdole/gofeed/json"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestParser_NullJSONElements(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		path string
+	}{
+		{"first_item", "items[0]"},
+		{"later_item", "items[1]"},
+		{"first_author", "authors[0]"},
+		{"later_author", "authors[1]"},
+		{"first_item_author", "items[0].authors[0]"},
+		{"later_item_author", "items[1].authors[1]"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			data := testutil.ReadFile(t, "testdata/parser/json/invalid/issue_355_"+tc.name+".json")
+			want := "gofeed: JSON feed " + tc.path + " must not be null"
+			t.Run("json", func(t *testing.T) {
+				feed, err := (&jsonfeed.Parser{}).Parse(bytes.NewReader(data))
+				require.EqualError(t, err, want)
+				require.Nil(t, feed)
+			})
+			t.Run("universal", func(t *testing.T) {
+				feed, err := gofeed.NewParser().Parse(bytes.NewReader(data))
+				require.EqualError(t, err, want)
+				require.Nil(t, feed)
+			})
+		})
+	}
+}
+
+func TestParser_NullOptionalJSONFields(t *testing.T) {
+	for _, items := range []string{"null", `[{"id":"a","content_text":"text","author":null,"authors":null}]`} {
+		t.Run(items, func(t *testing.T) {
+			data := `{"version":"https://jsonfeed.org/version/1.1","title":"Null fields","author":null,"authors":null,"items":` + items + `}`
+			feed, err := gofeed.NewParser().ParseString(data)
+			require.NoError(t, err)
+			require.NotNil(t, feed)
+			require.Nil(t, feed.Author)
+			require.Nil(t, feed.Authors)
+			if items == "null" {
+				require.Empty(t, feed.Items)
+			} else {
+				require.Len(t, feed.Items, 1)
+				require.Equal(t, "a", feed.Items[0].GUID)
+				require.Equal(t, "text", feed.Items[0].Content)
+				require.Nil(t, feed.Items[0].Author)
+				require.Nil(t, feed.Items[0].Authors)
+			}
+		})
+	}
+}
 
 func TestParser_Parse(t *testing.T) {
 	var feedTests = []struct {

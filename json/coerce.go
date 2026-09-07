@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -37,6 +38,23 @@ func (f *Feed) UnmarshalJSON(data []byte) error {
 	}{alias: (*alias)(f)}
 	if err := json.Unmarshal(data, aux); err != nil {
 		return err
+	}
+	// Null array elements decode as nil pointers, which cannot be translated
+	// into items or people. Null optional fields and null arrays remain accepted.
+	for i, author := range f.Authors {
+		if author == nil {
+			return fmt.Errorf("gofeed: JSON feed authors[%d] must not be null", i)
+		}
+	}
+	for i, item := range f.Items {
+		if item == nil {
+			return fmt.Errorf("gofeed: JSON feed items[%d] must not be null", i)
+		}
+		for j, author := range item.Authors {
+			if author == nil {
+				return fmt.Errorf("gofeed: JSON feed items[%d].authors[%d] must not be null", i, j)
+			}
+		}
 	}
 	f.Expired = coerceBool(aux.Expired)
 	return nil
