@@ -1,0 +1,24 @@
+{
+  "extensions": {
+    "x": {
+      "value": [
+        {
+          "name": "value",
+          "value": "before & <raw>&amp; between  after tail",
+          "attrs": {"key": "v"},
+          "children": {
+            "child": [
+              {"name": "child", "value": "child text", "attrs": {}, "children": {}}
+            ]
+          }
+        },
+        {"name": "value", "value": "", "attrs": {}, "children": {}}
+      ],
+      "empty": [
+        {"name": "empty", "value": "", "attrs": {}, "children": {}}
+      ]
+    }
+  },
+  "items": [],
+  "version": "2.0"
+}

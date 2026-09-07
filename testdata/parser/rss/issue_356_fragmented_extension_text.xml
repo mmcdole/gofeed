@@ -1,0 +1,8 @@
+<!-- Extension text preserves token order, entities, interior whitespace and child boundaries. -->
+<rss version="2.0" xmlns:x="urn:example">
+  <channel>
+    <x:value key="v">  before &amp; <![CDATA[<raw>&amp;]]> between <x:child> child <![CDATA[text]]> </x:child> after<!-- ignored --> tail  </x:value>
+    <x:value><![CDATA[ 	 ]]></x:value>
+    <x:empty/>
+  </channel>
+</rss>
