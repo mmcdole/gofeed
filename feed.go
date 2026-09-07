@@ -86,11 +86,11 @@ type Item struct {
 
 // Person is an individual specified in a feed
 // (e.g. an author)
-// to support uri
 type Person struct {
 	Name  string `json:"name,omitempty"`
 	Email string `json:"email,omitempty"`
-	URI   string `json:"uri,omitempty"`
+	// URL is an address associated with the person, including Atom URI references.
+	URL string `json:"url,omitempty"`
 }
 
 // Image is an image that is the artwork for a given

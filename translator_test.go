@@ -268,35 +268,21 @@ func TestDisableContentImageScan(t *testing.T) {
 	assert.Nil(t, out.Items[0].Image)
 }
 
-// test translate person uri
-func TestPersonURI(t *testing.T) {
-	feeds := []struct {
-		name string
-		data string
-		want string
+func TestPersonURLJSON(t *testing.T) {
+	for _, tt := range []struct {
+		name   string
+		person gofeed.Person
+		want   string
 	}{
-		{name: "xml", data: `<feed xmlns="http://www.w3.org/2005/Atom"> <title>Daring Fireball</title><author><name>John Gruber</name>
-	 <uri>http://daringfireball.net/</uri></author> </feed>`,
-			want: "http://daringfireball.net/",
-		},
-	}
-	for _, tt := range feeds {
+		{name: "present", person: gofeed.Person{Name: "Author", URL: "https://example.org/author"}, want: `{"name":"Author","url":"https://example.org/author"}`},
+		{name: "absent", person: gofeed.Person{Name: "Author"}, want: `{"name":"Author"}`},
+	} {
 		t.Run(tt.name, func(t *testing.T) {
-			fp := &atom.Parser{}
-			atom, err := fp.Parse(strings.NewReader(tt.data))
+			got, err := jsonEncoding.Marshal(tt.person)
 			if err != nil {
-				t.Errorf("error %v", err)
-				return
+				t.Fatal(err)
 			}
-			def := gofeed.DefaultAtomTranslator{}
-			feed, err := def.Translate(atom)
-			for _, p := range feed.Authors {
-				if p.URI != tt.want {
-					t.Errorf("test fail %v", p.URI)
-				} else {
-					t.Logf("test pass ")
-				}
-			}
+			assert.JSONEq(t, tt.want, string(got))
 		})
 	}
 }

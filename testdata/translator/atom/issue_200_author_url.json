@@ -1,0 +1,44 @@
+{
+  "author": {
+    "name": "Feed Author",
+    "email": "author@example.org",
+    "url": "https://example.org/authors/feed"
+  },
+  "authors": [
+    {
+      "name": "Feed Author",
+      "email": "author@example.org",
+      "url": "https://example.org/authors/feed"
+    },
+    {
+      "name": "Without URL"
+    },
+    {
+      "name": "Identifier",
+      "url": "urn:example:author"
+    }
+  ],
+  "feedType": "atom",
+  "feedVersion": "1.0",
+  "items": [
+    {
+      "author": {
+        "name": "Entry Author",
+        "url": "https://other.example/author"
+      },
+      "authors": [
+        {
+          "name": "Entry Author",
+          "url": "https://other.example/author"
+        },
+        {
+          "name": "Relative Author",
+          "url": "https://example.org/people/entry"
+        },
+        {
+          "name": "Without URL"
+        }
+      ]
+    }
+  ]
+}
