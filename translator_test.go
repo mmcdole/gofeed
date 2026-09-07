@@ -267,3 +267,22 @@ func TestDisableContentImageScan(t *testing.T) {
 	assert.Nil(t, out.Image)
 	assert.Nil(t, out.Items[0].Image)
 }
+
+func TestPersonURLJSON(t *testing.T) {
+	for _, tt := range []struct {
+		name   string
+		person gofeed.Person
+		want   string
+	}{
+		{name: "present", person: gofeed.Person{Name: "Author", URL: "https://example.org/author"}, want: `{"name":"Author","url":"https://example.org/author"}`},
+		{name: "absent", person: gofeed.Person{Name: "Author"}, want: `{"name":"Author"}`},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := jsonEncoding.Marshal(tt.person)
+			if err != nil {
+				t.Fatal(err)
+			}
+			assert.JSONEq(t, tt.want, string(got))
+		})
+	}
+}
