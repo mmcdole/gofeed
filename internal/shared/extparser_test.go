@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"strconv"
 	"strings"
 	"testing"
 
@@ -8,6 +9,31 @@ import (
 
 	ext "github.com/mmcdole/gofeed/extensions"
 )
+
+func BenchmarkParseExtensionFragmentedText(b *testing.B) {
+	for _, n := range []int{1000, 10000, 40000} {
+		b.Run(strconv.Itoa(n), func(b *testing.B) {
+			doc := `<value xmlns="urn:example">` + strings.Repeat("a<![CDATA[b]]>", n) + `</value>`
+			want := strings.Repeat("ab", n)
+			b.ReportAllocs()
+			b.SetBytes(int64(len(doc)))
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				p := NewXMLParser(strings.NewReader(doc))
+				if _, err := FindRoot(p); err != nil {
+					b.Fatal(err)
+				}
+				extensions, err := ParseExtension(ext.Extensions{}, p)
+				if err != nil {
+					b.Fatal(err)
+				}
+				if got := extensions["urn:example"]["value"][0].Value; got != want {
+					b.Fatal("extension text was not preserved")
+				}
+			}
+		})
+	}
+}
 
 // parserOn returns a NewXMLParser positioned on the first StartTag with the
 // given local name.

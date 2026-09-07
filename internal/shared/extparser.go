@@ -80,6 +80,7 @@ func parseExtensionElement(p *xpp.Parser) (e ext.Extension, err error) {
 		e.Attrs[attr.Name.Local] = attr.Value
 	}
 
+	var value strings.Builder
 	for {
 		tok, err := p.Next()
 		if err != nil {
@@ -102,11 +103,11 @@ func parseExtensionElement(p *xpp.Parser) (e ext.Extension, err error) {
 
 			e.Children[child.Name] = append(e.Children[child.Name], child)
 		} else if tok == xpp.Text {
-			e.Value += p.Text()
+			value.WriteString(p.Text())
 		}
 	}
 
-	e.Value = strings.TrimSpace(e.Value)
+	e.Value = strings.TrimSpace(value.String())
 
 	if err = p.Expect(xpp.EndTag, e.Name); err != nil {
 		return e, err
