@@ -1,0 +1,13 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Null elements",
+  "items": [
+    {
+      "id": "a",
+      "content_text": "text",
+      "authors": [
+        null
+      ]
+    }
+  ]
+}
