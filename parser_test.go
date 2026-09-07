@@ -3,6 +3,7 @@ package gofeed_test
 import (
 	"bytes"
 	"context"
+	stdjson "encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -424,6 +425,38 @@ func TestParser_Parse_LargeFeed(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, feed.Items, 2000)
 	assert.Equal(t, "item 1999", feed.Items[1999].Title)
+}
+
+// JSON feeds larger than the detection window must be classified from their
+// prefix and then validated and decoded from the complete stream (issue #344).
+func TestParser_Parse_LargeJSONFeed(t *testing.T) {
+	content := strings.Repeat("x", 8192)
+	body := fmt.Sprintf(
+		`{"version":"https://jsonfeed.org/version/1.1","title":"big","items":[{"id":"1","content_text":%q}]}`,
+		content,
+	)
+
+	feed, err := gofeed.NewParser().Parse(strings.NewReader(body))
+	assert.NoError(t, err)
+	if assert.NotNil(t, feed) && assert.Len(t, feed.Items, 1) {
+		assert.Equal(t, "json", feed.FeedType)
+		assert.Equal(t, "big", feed.Title)
+		assert.Equal(t, content, feed.Items[0].Content)
+	}
+}
+
+// Once a large JSON document is detected, syntax errors beyond the detection
+// window must come from the JSON parser rather than being masked as a type
+// detection failure.
+func TestParser_Parse_LargeMalformedJSON(t *testing.T) {
+	body := `{"version":"https://jsonfeed.org/version/1.1","items":[{"id":"1","content_text":"` +
+		strings.Repeat("x", 8192) + `"}`
+
+	feed, err := gofeed.NewParser().Parse(strings.NewReader(body))
+	assert.Nil(t, feed)
+	var syntaxError *stdjson.SyntaxError
+	assert.ErrorAs(t, err, &syntaxError)
+	assert.NotErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
 }
 
 // Detection only inspects the first few KB; a root element pushed beyond

@@ -34,6 +34,13 @@ func IsExtension(p *xpp.Parser, nativeNamespaces ...string) bool {
 	return !InNamespace(p, nativeNamespaces...)
 }
 
+// IsCanonicalNamespace reports whether space is a recognized extension
+// namespace (one with a canonical prefix).
+func IsCanonicalNamespace(space string) bool {
+	_, ok := canonicalNamespaces[strings.TrimSpace(space)]
+	return ok
+}
+
 // ParseExtension parses the current element of the
 // XMLPullParser as an extension element and updates
 // the extension map

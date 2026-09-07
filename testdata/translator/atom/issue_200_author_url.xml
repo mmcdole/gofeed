@@ -1,0 +1,11 @@
+<!-- Preserve feed and entry author addresses, including relative and non-HTTP URIs. -->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="https://example.org/">
+  <author><name>Feed Author</name><email>author@example.org</email><uri>authors/feed</uri></author>
+  <author><name>Without URL</name></author>
+  <author><name>Identifier</name><uri>urn:example:author</uri></author>
+  <entry>
+    <author><name>Entry Author</name><uri>https://other.example/author</uri></author>
+    <author xml:base="people/"><name>Relative Author</name><uri>entry</uri></author>
+    <author><name>Without URL</name></author>
+  </entry>
+</feed>

@@ -1,0 +1,27 @@
+<!--
+Description: the reporter's feed declares a bogus default namespace on
+<rss> which every unprefixed core element inherits; those elements must
+still parse as RSS core while atom:link stays an extension (issue #346).
+-->
+<rss xmlns="https://cyber.harvard.edu/rss/rss.html" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title><![CDATA[suspilne.news]]></title>
+    <link>https://suspilne.media/</link>
+    <atom:link href="https://suspilne.media/rss/ukrnet.rss?" rel="self" type="application/rss+xml"/>
+    <description><![CDATA[Новини України від редакції Суспільне | Новини.]]></description>
+    <pubDate>Fri, 22 Dec 2023 01:04:55 +0200</pubDate>
+    <ttl>5</ttl>
+    <item>
+      <title><![CDATA[Торгівля між Росією та Китаєм у 2023 році перевищила 200 млрд доларів — New York Times]]></title>
+      <link>https://suspilne.media/645026-torgivla-miz-rosieu-ta-kitaem-u-2023-roci-perevisila-200-mlrd-dolariv-new-york-times/</link>
+      <description><![CDATA[Торгівля між РФ та КНР перевищила 200 млрд доларів за 2023 рік.]]></description>
+      <pubDate>Fri, 22 Dec 2023 01:04:55 +0200</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[У Гаазі проходить масштабна конференція]]></title>
+      <link>https://suspilne.media/644990-u-gaazi-prohodit-masstabna-konferencia/</link>
+      <description><![CDATA[Конференція у Гаазі.]]></description>
+      <pubDate>Fri, 22 Dec 2023 00:30:00 +0200</pubDate>
+    </item>
+  </channel>
+</rss>
