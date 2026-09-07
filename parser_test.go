@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -18,8 +17,10 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/mmcdole/gofeed/internal/testutil"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParser_Parse(t *testing.T) {
@@ -44,25 +45,20 @@ func TestParser_Parse(t *testing.T) {
 	}
 
 	for _, test := range feedTests {
-		fmt.Printf("Testing %s... ", test.file)
-
-		// Get feed content
-		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := os.ReadFile(path)
-
-		// Get actual value
-		fp := gofeed.NewParser()
-		feed, err := fp.Parse(bytes.NewReader(f))
-
-		if test.hasError {
-			assert.NotNil(t, err)
-			assert.Nil(t, feed)
-		} else {
-			assert.NotNil(t, feed)
-			assert.Nil(t, err)
-			assert.Equal(t, feed.FeedType, test.feedType)
-			assert.Equal(t, feed.Title, test.feedTitle)
-		}
+		t.Run(test.file, func(t *testing.T) {
+			data := testutil.ReadFile(t, "testdata/parser/universal/"+test.file)
+			fp := gofeed.NewParser()
+			feed, err := fp.Parse(bytes.NewReader(data))
+			if test.hasError {
+				assert.Error(t, err)
+				assert.Nil(t, feed)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, feed)
+				assert.Equal(t, test.feedType, feed.FeedType)
+				assert.Equal(t, test.feedTitle, feed.Title)
+			}
+		})
 	}
 }
 
@@ -86,25 +82,20 @@ func TestParser_ParseString(t *testing.T) {
 	}
 
 	for _, test := range feedTests {
-		fmt.Printf("Testing %s... ", test.file)
-
-		// Get feed content
-		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := os.ReadFile(path)
-
-		// Get actual value
-		fp := gofeed.NewParser()
-		feed, err := fp.ParseString(string(f))
-
-		if test.hasError {
-			assert.NotNil(t, err)
-			assert.Nil(t, feed)
-		} else {
-			assert.NotNil(t, feed)
-			assert.Nil(t, err)
-			assert.Equal(t, feed.FeedType, test.feedType)
-			assert.Equal(t, feed.Title, test.feedTitle)
-		}
+		t.Run(test.file, func(t *testing.T) {
+			data := testutil.ReadFile(t, "testdata/parser/universal/"+test.file)
+			fp := gofeed.NewParser()
+			feed, err := fp.ParseString(string(data))
+			if test.hasError {
+				assert.Error(t, err)
+				assert.Nil(t, feed)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, feed)
+				assert.Equal(t, test.feedType, feed.FeedType)
+				assert.Equal(t, test.feedTitle, feed.Title)
+			}
+		})
 	}
 }
 
@@ -128,42 +119,38 @@ func TestParser_ParseURL_Success(t *testing.T) {
 	}
 
 	for _, test := range feedTests {
-		fmt.Printf("Testing %s... ", test.file)
-
-		// Get feed content
-		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := os.ReadFile(path)
-
-		// Get actual value
-		server, client := mockServerResponse(200, string(f), 0)
-		fp := gofeed.NewParser()
-		fp.Client = client
-		feed, err := fp.ParseURL(server.URL)
-
-		if test.hasError {
-			assert.NotNil(t, err)
-			assert.Nil(t, feed)
-		} else {
-			assert.NotNil(t, feed)
-			assert.Nil(t, err)
-			assert.Equal(t, feed.FeedType, test.feedType)
-			assert.Equal(t, feed.Title, test.feedTitle)
-		}
+		t.Run(test.file, func(t *testing.T) {
+			data := testutil.ReadFile(t, "testdata/parser/universal/"+test.file)
+			fp := gofeed.NewParser()
+			server, client := mockServerResponse(t, 200, string(data), 0)
+			fp.Client = client
+			feed, err := fp.ParseURL(server.URL)
+			if test.hasError {
+				assert.Error(t, err)
+				assert.Nil(t, feed)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, feed)
+				assert.Equal(t, test.feedType, feed.FeedType)
+				assert.Equal(t, test.feedTitle, feed.Title)
+			}
+		})
 	}
 }
 
 func TestParser_ParseURLWithContext(t *testing.T) {
-	server, client := mockServerResponse(404, "", 1*time.Minute)
+	server, client := mockServerResponse(t, 404, "", 1*time.Minute)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	fp := gofeed.NewParser()
 	fp.Client = client
 	_, err := fp.ParseURLWithContext(server.URL, ctx)
-	assert.True(t, strings.Contains(err.Error(), ctx.Err().Error()))
+	require.Error(t, err)
+	assert.ErrorIs(t, err, context.DeadlineExceeded)
 }
 
 func TestParser_ParseURL_Failure(t *testing.T) {
-	server, client := mockServerResponse(404, "", 0)
+	server, client := mockServerResponse(t, 404, "", 0)
 	fp := gofeed.NewParser()
 	fp.Client = client
 	feed, err := fp.ParseURL(server.URL)
@@ -174,7 +161,7 @@ func TestParser_ParseURL_Failure(t *testing.T) {
 }
 
 func TestParser_ParseURLWithContextAndBasicAuth(t *testing.T) {
-	server, client := mockServerResponse(404, "", 1*time.Minute)
+	server, client := mockServerResponse(t, 404, "", 1*time.Minute)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	fp := gofeed.NewParser()
@@ -184,44 +171,42 @@ func TestParser_ParseURLWithContextAndBasicAuth(t *testing.T) {
 	}
 	fp.Client = client
 	_, err := fp.ParseURLWithContext(server.URL, ctx)
-	assert.True(t, strings.Contains(err.Error(), ctx.Err().Error()))
+	require.Error(t, err)
+	assert.ErrorIs(t, err, context.DeadlineExceeded)
 }
 
 // to detect race conditions, run with go test -race
 func TestParser_Concurrent(t *testing.T) {
-
-	var feedTests = []string{"atom03_feed.xml", "atom10_feed.xml", "rss_feed.xml", "rss_feed_bom.xml",
-		"rss_feed_leading_spaces.xml", "rdf_feed.xml", "json10_feed.json",
-		"json11_feed.json"}
-
+	files := []string{"atom03_feed.xml", "atom10_feed.xml", "rss_feed.xml", "rss_feed_bom.xml",
+		"rss_feed_leading_spaces.xml", "rdf_feed.xml", "json10_feed.json", "json11_feed.json"}
 	fp := gofeed.NewParser()
 	fp.AtomTranslator = &gofeed.DefaultAtomTranslator{}
 	fp.RSSTranslator = &gofeed.DefaultRSSTranslator{}
 	fp.JSONTranslator = &gofeed.DefaultJSONTranslator{}
-	wg := sync.WaitGroup{}
-	for _, test := range feedTests {
-		fmt.Printf("\nTesting concurrently %s... ", test)
-
-		// Get feed content
-		path := fmt.Sprintf("testdata/parser/universal/%s", test)
-		f, _ := os.ReadFile(path)
-
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			fp.ParseString(string(f))
-		}()
+	for _, file := range files {
+		t.Run(file, func(t *testing.T) {
+			t.Parallel()
+			data := testutil.ReadFile(t, "testdata/parser/universal/"+file)
+			_, err := fp.ParseString(string(data))
+			require.NoError(t, err)
+		})
 	}
-	wg.Wait()
 }
 
 // Test Helpers
 
-func mockServerResponse(code int, body string, delay time.Duration) (*httptest.Server, *http.Client) {
+func mockServerResponse(t *testing.T, code int, body string, delay time.Duration) (*httptest.Server, *http.Client) {
+	t.Helper()
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(delay)
-		w.WriteHeader(code)
+		timer := time.NewTimer(delay)
+		defer timer.Stop()
+		select {
+		case <-timer.C:
+		case <-r.Context().Done():
+			return
+		}
 		w.Header().Set("Content-Type", "application/xml")
+		w.WriteHeader(code)
 		io.WriteString(w, body)
 	}))
 
@@ -232,6 +217,10 @@ func mockServerResponse(code int, body string, delay time.Duration) (*httptest.S
 	}
 
 	client := &http.Client{Transport: transport}
+	t.Cleanup(func() {
+		transport.CloseIdleConnections()
+		server.Close()
+	})
 	return server, client
 }
 
@@ -422,8 +411,10 @@ func TestParser_Parse_LargeFeed(t *testing.T) {
 	sb.WriteString(`</channel></rss>`)
 
 	feed, err := gofeed.NewParser().Parse(strings.NewReader(sb.String()))
-	assert.NoError(t, err)
-	assert.Len(t, feed.Items, 2000)
+	require.NoError(t, err)
+	require.NotNil(t, feed)
+	require.Len(t, feed.Items, 2000)
+	require.NotNil(t, feed.Items[1999])
 	assert.Equal(t, "item 1999", feed.Items[1999].Title)
 }
 
@@ -437,8 +428,9 @@ func TestParser_Parse_LargeJSONFeed(t *testing.T) {
 	)
 
 	feed, err := gofeed.NewParser().Parse(strings.NewReader(body))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	if assert.NotNil(t, feed) && assert.Len(t, feed.Items, 1) {
+		require.NotNil(t, feed.Items[0])
 		assert.Equal(t, "json", feed.FeedType)
 		assert.Equal(t, "big", feed.Title)
 		assert.Equal(t, content, feed.Items[0].Content)

@@ -1,48 +1,17 @@
 package rss_test
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/mmcdole/gofeed/internal/testutil"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParser_Parse(t *testing.T) {
-	files, _ := filepath.Glob("../testdata/parser/rss/*.xml")
-	for _, f := range files {
-		base := filepath.Base(f)
-		name := strings.TrimSuffix(base, filepath.Ext(base))
-
-		fmt.Printf("Testing %s... ", name)
-
-		// Get actual source feed
-		ff := fmt.Sprintf("../testdata/parser/rss/%s.xml", name)
-		f, _ := os.ReadFile(ff)
-
-		// Parse actual feed
-		fp := &rss.Parser{}
-		actual, _ := fp.Parse(bytes.NewReader(f))
-
-		// Get json encoded expected feed result
-		ef := fmt.Sprintf("../testdata/parser/rss/%s.json", name)
-		e, _ := os.ReadFile(ef)
-
-		// Unmarshal expected feed
-		expected := &rss.Feed{}
-		json.Unmarshal(e, &expected)
-
-		if assert.Equal(t, expected, actual, "Feed file %s.xml did not match expected output %s.json", name, name) {
-			fmt.Printf("OK\n")
-		} else {
-			fmt.Printf("Failed\n")
-		}
-	}
+	testutil.RunFixtures(t, "../testdata/parser/rss/*.xml", (&rss.Parser{}).Parse)
 }
 
 func TestParser_Parse_CloudTruncated(t *testing.T) {
@@ -60,11 +29,10 @@ func TestParser_Parse_KnownForeignRootNamespace(t *testing.T) {
 	// channel stays foreign and is skipped.
 	feed := `<rss version="2.0" xmlns="http://www.w3.org/2005/Atom"><channel><title>x</title></channel></rss>`
 	f, err := (&rss.Parser{}).Parse(strings.NewReader(feed))
-	assert.NoError(t, err)
+	require.NoError(t, err)
+	require.NotNil(t, f)
 	assert.Empty(t, f.Title)
 }
-
-// TODO: Examples
 
 func TestParser_Parse_UnknownRoot(t *testing.T) {
 	// Neither <rss> nor <rdf>: the parse must fail rather than return an

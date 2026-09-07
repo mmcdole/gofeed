@@ -31,6 +31,10 @@ an input file (`name.xml` or `name.json`) and the expected parse result
 takes — no test code required. Fixes for reported bugs are conventionally named
 after the issue, e.g. `issue_217_enclosure_children.xml`.
 
+JSON input fixtures use `name_expected.json` for the expected result. The shared
+fixture runner in `internal/testutil` gives each fixture a named subtest and
+checks file reads, parsing, and expected JSON before comparing the full structs.
+
 If your change affects how format-specific fields map to the universal `Feed`
 type, the same pattern applies under `testdata/translator/`.
 
