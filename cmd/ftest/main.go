@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,58 +12,60 @@ import (
 	"github.com/mmcdole/gofeed"
 	"github.com/mmcdole/gofeed/atom"
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/urfave/cli"
 )
 
 func main() {
-	app := cli.NewApp()
-	app.Name = "ftest"
-	app.Usage = "provide a feed file path or url to parse and print"
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "type,t",
-			Value: "universal",
-			Usage: "type of parser (atom, rss, universal)",
-		},
+	if err := run(os.Args[1:], os.Stdout); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
-	app.Action = func(c *cli.Context) {
-		if c.NArg() == 0 {
-			fmt.Println("Missing feed path or url")
-			os.Exit(1)
-		}
+}
 
-		feedType := c.String("type")
-		feedLoc := c.Args()[0]
-
-		fc, err := fetchFeed(feedLoc)
-		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-
-		var feed interface{}
-
-		if strings.EqualFold(feedType, "rss") ||
-			strings.EqualFold(feedType, "r") {
-			p := rss.Parser{}
-			feed, err = p.Parse(strings.NewReader(fc))
-		} else if strings.EqualFold(feedType, "atom") ||
-			strings.EqualFold(feedType, "a") {
-			p := atom.Parser{}
-			feed, err = p.Parse(strings.NewReader(fc))
-		} else {
-			p := gofeed.NewParser()
-			feed, err = p.ParseString(fc)
-		}
-
-		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-
-		fmt.Println(feed)
+func run(args []string, out io.Writer) error {
+	flags := flag.NewFlagSet("ftest", flag.ContinueOnError)
+	// main reports errors once; help is written to the normal output stream.
+	flags.SetOutput(io.Discard)
+	flags.Usage = func() {
+		fmt.Fprintln(out, "Usage: ftest [--type atom|rss|universal] <feed file or URL>")
+		fmt.Fprintln(out, "  --type, -t  type of parser (default universal)")
+		fmt.Fprintln(out, "  --help, -h  show help")
 	}
-	app.Run(os.Args)
+	var feedType string
+	flags.StringVar(&feedType, "type", "universal", "type of parser")
+	flags.StringVar(&feedType, "t", "universal", "type of parser")
+	if len(args) == 1 && args[0] == "help" {
+		flags.Usage()
+		return nil
+	}
+	if err := flags.Parse(args); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return nil
+		}
+		return err
+	}
+	if flags.NArg() == 0 {
+		return errors.New("missing feed path or URL")
+	}
+
+	fc, err := fetchFeed(flags.Arg(0))
+	if err != nil {
+		return err
+	}
+
+	var feed interface{}
+	switch strings.ToLower(feedType) {
+	case "rss", "r":
+		feed, err = (&rss.Parser{}).Parse(strings.NewReader(fc))
+	case "atom", "a":
+		feed, err = (&atom.Parser{}).Parse(strings.NewReader(fc))
+	default:
+		feed, err = gofeed.NewParser().ParseString(fc)
+	}
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintln(out, feed)
+	return err
 }
 
 func fetchFeed(feedLoc string) (string, error) {

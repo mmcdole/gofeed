@@ -2,87 +2,40 @@ package json_test
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 	"testing/iotest"
 
+	"github.com/mmcdole/gofeed/internal/testutil"
 	jsonParser "github.com/mmcdole/gofeed/json"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-// Tests
-
-// TODO: add tests for invalid
-
 func TestParser_Parse(t *testing.T) {
-	files, _ := filepath.Glob("../testdata/parser/json/*.json")
-	for _, f := range files {
-		base := filepath.Base(f)
-		name := strings.TrimSuffix(base, filepath.Ext(base))
-
-		if strings.HasSuffix(name, "expected") {
-			continue
-		}
-
-		fmt.Printf("Testing %s... ", name)
-
-		// Get actual source feed
-		ff := fmt.Sprintf("../testdata/parser/json/%s.json", name)
-		f, _ := os.ReadFile(ff)
-
-		// Parse actual feed
-		fp := &jsonParser.Parser{}
-		actual, _ := fp.Parse(bytes.NewReader(f))
-
-		// Get json encoded expected feed result
-		ef := fmt.Sprintf("../testdata/parser/json/%s_expected.json", name)
-		e, _ := os.ReadFile(ef)
-
-		// Unmarshal expected feed
-		expected := &jsonParser.Feed{}
-		json.Unmarshal(e, &expected)
-
-		if assert.Equal(t, expected, actual, "Feed file %s.json did not match expected output %s.json", name, name) {
-			fmt.Printf("OK\n")
-		} else {
-			fmt.Printf("Failed\n")
-		}
-	}
+	testutil.RunFixtures(t, "../testdata/parser/json/*.json", (&jsonParser.Parser{}).Parse)
 }
 
-// TODO: Remove redundant tests
-func TestParser_ParseInvalidAndStruct(t *testing.T) {
-	name := "invalid"
-	fmt.Printf("Testing %s... ", name)
-
-	// Get actual source feed
-	ff := fmt.Sprintf("../testdata/parser/json/invalid/%s.json", name)
-	fmt.Println(ff)
-	f, _ := os.ReadFile(ff)
-
-	// Parse actual feed
-	fp := &jsonParser.Parser{}
-	_, err := fp.Parse(bytes.NewReader(f))
-	// Invalid JSON must error. Don't pin the exact message: it depends on the
-	// JSON library and changes once custom Unmarshalers are involved.
+func TestParser_ParseInvalid(t *testing.T) {
+	data := testutil.ReadFile(t, "../testdata/parser/json/invalid/invalid.json")
+	_, err := (&jsonParser.Parser{}).Parse(bytes.NewReader(data))
 	assert.Error(t, err)
+}
 
-	name = "version_json_10"
-	fmt.Printf("Testing %s... ", name)
-
-	// Get actual source feed
-	ff = fmt.Sprintf("../testdata/parser/json/%s.json", name)
-	fmt.Println(ff)
-	f, _ = os.ReadFile(ff)
-
-	// Parse actual feed
-	actual, _ := fp.Parse(bytes.NewReader(f))
+func TestParser_ParseStruct(t *testing.T) {
+	data := testutil.ReadFile(t, "../testdata/parser/json/version_json_10.json")
+	actual, err := (&jsonParser.Parser{}).Parse(bytes.NewReader(data))
+	require.NoError(t, err)
+	require.NotNil(t, actual)
+	require.NotNil(t, actual.Author)
+	require.Len(t, actual.Items, 1)
+	require.NotNil(t, actual.Items[0])
+	require.NotNil(t, actual.Items[0].Author)
+	require.Len(t, actual.Items[0].Tags, 2)
+	require.NotNil(t, actual.Items[0].Attachments)
+	require.Len(t, *actual.Items[0].Attachments, 1)
 
 	assert.Equal(t, "1.0", actual.Version)
 	assert.Equal(t, "title", actual.Title)
@@ -121,8 +74,6 @@ func TestParser_ParseInvalidAndStruct(t *testing.T) {
 
 	assert.Contains(t, actual.String(), "https://sample-json-feed.com/attachment")
 }
-
-// TODO: Examples
 
 // An I/O error from the reader must surface as itself, not as a misleading
 // JSON syntax error from a truncated buffer (issue #311).

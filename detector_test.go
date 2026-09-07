@@ -5,12 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"testing"
 	"testing/iotest"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/mmcdole/gofeed/internal/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,20 +31,11 @@ func TestDetectFeedType(t *testing.T) {
 	}
 
 	for _, test := range feedTypeTests {
-		fmt.Printf("Testing %s... ", test.file)
-
-		// Get feed content
-		path := fmt.Sprintf("testdata/parser/universal/%s", test.file)
-		f, _ := os.ReadFile(path)
-
-		// Get actual value
-		actual := gofeed.DetectFeedType(bytes.NewReader(f))
-
-		if assert.Equal(t, actual, test.expected, "Feed file %s did not match expected type %d", test.file, test.expected) {
-			fmt.Printf("OK\n")
-		} else {
-			fmt.Printf("Failed\n")
-		}
+		t.Run(test.file, func(t *testing.T) {
+			data := testutil.ReadFile(t, "testdata/parser/universal/"+test.file)
+			actual := gofeed.DetectFeedType(bytes.NewReader(data))
+			assert.Equal(t, test.expected, actual)
+		})
 	}
 }
 

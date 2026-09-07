@@ -1,110 +1,20 @@
 package ext_test
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/stretchr/testify/assert"
+	"github.com/mmcdole/gofeed/internal/testutil"
 )
 
 func TestITunes_Extensions(t *testing.T) {
-	files, _ := filepath.Glob("../testdata/extensions/itunes/*.xml")
-	for _, f := range files {
-		base := filepath.Base(f)
-		name := strings.TrimSuffix(base, filepath.Ext(base))
-
-		fmt.Printf("Testing %s... ", name)
-
-		// Get actual source feed
-		ff := fmt.Sprintf("../testdata/extensions/itunes/%s.xml", name)
-		f, _ := os.ReadFile(ff)
-
-		// Parse actual feed
-		fp := gofeed.NewParser()
-		actual, _ := fp.Parse(bytes.NewReader(f))
-
-		// Get json encoded expected feed result
-		ef := fmt.Sprintf("../testdata/extensions/itunes/%s.json", name)
-		e, _ := os.ReadFile(ef)
-
-		// Unmarshal expected feed
-		expected := &gofeed.Feed{}
-		json.Unmarshal(e, &expected)
-
-		if assert.Equal(t, expected, actual, "Feed file %s.xml did not match expected output %s.json", name, name) {
-			fmt.Printf("OK\n")
-		} else {
-			fmt.Printf("Failed\n")
-		}
-	}
+	testutil.RunFixtures(t, "../testdata/extensions/itunes/*.xml", gofeed.NewParser().Parse)
 }
 
 func TestMedia_Extensions(t *testing.T) {
-	files, _ := filepath.Glob("../testdata/extensions/media/*.xml")
-	for _, f := range files {
-		base := filepath.Base(f)
-		name := strings.TrimSuffix(base, filepath.Ext(base))
-
-		fmt.Printf("Testing %s... ", name)
-
-		// Get actual source feed
-		ff := fmt.Sprintf("../testdata/extensions/media/%s.xml", name)
-		f, _ := os.ReadFile(ff)
-
-		// Parse actual feed
-		fp := gofeed.NewParser()
-		actual, _ := fp.Parse(bytes.NewReader(f))
-
-		// Get json encoded expected feed result
-		ef := fmt.Sprintf("../testdata/extensions/media/%s.json", name)
-		e, _ := os.ReadFile(ef)
-
-		// Unmarshal expected feed
-		expected := &gofeed.Feed{}
-		json.Unmarshal(e, &expected)
-
-		if assert.Equal(t, expected, actual, "Feed file %s.xml did not match expected output %s.json", name, name) {
-			fmt.Printf("OK\n")
-		} else {
-			fmt.Printf("Failed\n")
-		}
-	}
+	testutil.RunFixtures(t, "../testdata/extensions/media/*.xml", gofeed.NewParser().Parse)
 }
 
 func TestDublinCore_Extensions(t *testing.T) {
-	files, _ := filepath.Glob("../testdata/extensions/dublincore/*.xml")
-	for _, f := range files {
-		base := filepath.Base(f)
-		name := strings.TrimSuffix(base, filepath.Ext(base))
-
-		fmt.Printf("Testing %s... ", name)
-
-		// Get actual source feed
-		ff := fmt.Sprintf("../testdata/extensions/dublincore/%s.xml", name)
-		f, _ := os.ReadFile(ff)
-
-		// Parse actual feed
-		fp := gofeed.NewParser()
-		actual, _ := fp.Parse(bytes.NewReader(f))
-
-		// Get json encoded expected feed result
-		ef := fmt.Sprintf("../testdata/extensions/dublincore/%s.json", name)
-		e, _ := os.ReadFile(ef)
-
-		// Unmarshal expected feed
-		expected := &gofeed.Feed{}
-		json.Unmarshal(e, &expected)
-
-		if assert.Equal(t, expected, actual, "Feed file %s.xml did not match expected output %s.json", name, name) {
-			fmt.Printf("OK\n")
-		} else {
-			fmt.Printf("Failed\n")
-		}
-	}
+	testutil.RunFixtures(t, "../testdata/extensions/dublincore/*.xml", gofeed.NewParser().Parse)
 }
