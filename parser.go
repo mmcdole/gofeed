@@ -126,7 +126,62 @@ func (f *Parser) Parse(feed io.Reader) (*Feed, error) {
 		return f.parseJSONFeed(br)
 	}
 
+	// When the input isn't a recognizable feed the most common cause is that
+	// the response wasn't a feed at all — an HTML login wall, error page, or
+	// bot-protection challenge served in place of it. Say so when we can spot
+	// it, so the error doesn't read as though a real feed failed to parse. The
+	// wrapped error keeps errors.Is(err, ErrFeedTypeNotDetected) working.
+	if looksLikeHTML(prefix) {
+		return nil, fmt.Errorf("%w: got an HTML document, not a feed (the server likely returned an error, login, or bot-protection page)", ErrFeedTypeNotDetected)
+	}
 	return nil, ErrFeedTypeNotDetected
+}
+
+// looksLikeHTML reports whether data begins with an HTML document rather than a
+// feed. It inspects the same leading bytes used for feed detection and is used
+// only to make the "not a feed" error clearer, never to parse anything.
+// Recognized starts are an HTML doctype and the html/head/body root elements,
+// which covers the pages most often returned in place of a feed. An HTML
+// comment (<!-- -->) is deliberately not treated as HTML, since feeds can begin
+// with one.
+func looksLikeHTML(data []byte) bool {
+	// Skip the same leading whitespace and byte order marks DetectFeedType
+	// does, so an indented or BOM-prefixed page is still recognized.
+	trimmed := bytes.TrimLeft(data, " \r\n\t\x00\xEF\xBB\xBF\xFE\xFF")
+
+	// Lowercase a short, bounded prefix for a case-insensitive match; only the
+	// opening tag matters, so a small window is plenty and avoids copying a
+	// large buffer.
+	const window = 64
+	if len(trimmed) > window {
+		trimmed = trimmed[:window]
+	}
+	head := strings.ToLower(string(trimmed))
+
+	if strings.HasPrefix(head, "<!doctype html") {
+		return true
+	}
+	return startsWithTag(head, "html") ||
+		startsWithTag(head, "head") ||
+		startsWithTag(head, "body")
+}
+
+// startsWithTag reports whether head opens with the given tag name, requiring a
+// tag delimiter after it so that, e.g., "html" matches <html> and <html lang>
+// but not a <htmlish> element.
+func startsWithTag(head, tag string) bool {
+	if !strings.HasPrefix(head, "<"+tag) {
+		return false
+	}
+	rest := head[1+len(tag):]
+	if rest == "" {
+		return true
+	}
+	switch rest[0] {
+	case ' ', '\t', '\r', '\n', '>', '/':
+		return true
+	}
+	return false
 }
 
 // ParseURL fetches the contents of a given url and
