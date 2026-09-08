@@ -1,0 +1,24 @@
+{
+    "links": [
+        {
+            "href": "https://example.com/feeds/post",
+            "rel": "alternate"
+        },
+        {
+            "href": "https://example.com/feeds/feed.xml?page=2",
+            "rel": "alternate"
+        }
+    ],
+    "entries": [
+        {
+            "links": [
+                {
+                    "href": "https://example.com/feeds/archive/post",
+                    "rel": "alternate"
+                }
+            ],
+            "summary": "<a href=\"https://example.com/feeds/archive/entry.xml#part\">Read</a>"
+        }
+    ],
+    "version": "1.0"
+}

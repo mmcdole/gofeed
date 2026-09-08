@@ -19,16 +19,31 @@ func TestXmlBaseResolveUrlDoesNotMutateBase(t *testing.T) {
 	}
 }
 
-// A directory-style resolution should still work (the path is treated as a
-// directory), just without mutating the input.
 func TestXmlBaseResolveUrlResolves(t *testing.T) {
-	base, _ := url.Parse("http://example.com/a/b")
-	got, err := XmlBaseResolveUrl(base, "x")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got.String() != "http://example.com/a/b/x" {
-		t.Errorf("resolved = %q, want %q", got.String(), "http://example.com/a/b/x")
+	for _, tt := range []struct {
+		base string
+		ref  string
+		want string
+	}{
+		{"http://example.com/a/b", "x", "http://example.com/a/x"},
+		{"http://example.com/a/b/", "x", "http://example.com/a/b/x"},
+		{"http://example.com/a/b?old=1", "?new=2", "http://example.com/a/b?new=2"},
+		{"http://example.com/a/b?old=1", "#part", "http://example.com/a/b?old=1#part"},
+		{"http://example.com/a/b", "", "http://example.com/a/b"},
+	} {
+		t.Run(tt.base+"/"+tt.ref, func(t *testing.T) {
+			base, err := url.Parse(tt.base)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, err := XmlBaseResolveUrl(base, tt.ref)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got.String() != tt.want {
+				t.Errorf("resolved = %q, want %q", got.String(), tt.want)
+			}
+		})
 	}
 }
 

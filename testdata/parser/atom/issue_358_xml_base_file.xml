@@ -1,0 +1,8 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="https://example.com/feeds/feed.xml">
+  <link href="post"/>
+  <link href="?page=2"/>
+  <entry xml:base="archive/entry.xml">
+    <link href="post"/>
+    <summary type="html">&lt;a href="#part"&gt;Read&lt;/a&gt;</summary>
+  </entry>
+</feed>

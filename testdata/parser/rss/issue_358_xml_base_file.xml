@@ -1,0 +1,7 @@
+<rss version="2.0" xml:base="https://example.com/feeds/feed.xml">
+  <channel>
+    <item><link>post</link></item>
+    <item xml:base="archive/"><link>post</link></item>
+    <item><link>#part</link></item>
+  </channel>
+</rss>

@@ -1,0 +1,8 @@
+{
+    "items": [
+        {"link": "https://example.com/feeds/post", "links": ["https://example.com/feeds/post"]},
+        {"link": "https://example.com/feeds/archive/post", "links": ["https://example.com/feeds/archive/post"]},
+        {"link": "https://example.com/feeds/feed.xml#part", "links": ["https://example.com/feeds/feed.xml#part"]}
+    ],
+    "version": "2.0"
+}
