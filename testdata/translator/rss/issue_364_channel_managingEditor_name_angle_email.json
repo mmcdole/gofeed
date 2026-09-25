@@ -1,0 +1,15 @@
+{
+  "author": {
+    "email": "ed@example.com",
+    "name": "Ed Itor"
+  },
+  "authors": [
+    {
+      "email": "ed@example.com",
+      "name": "Ed Itor"
+    }
+  ],
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": []
+}

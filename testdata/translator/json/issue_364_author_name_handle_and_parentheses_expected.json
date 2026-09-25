@@ -1,0 +1,20 @@
+{
+  "authors": [
+    {
+      "name": "@jack",
+      "url": "https://example.com/jack"
+    }
+  ],
+  "items": [
+    {
+      "authors": [
+        {
+          "name": "Smith & Sons (Ltd)"
+        }
+      ],
+      "guid": "1"
+    }
+  ],
+  "feedType": "json",
+  "feedVersion": "https://jsonfeed.org/version/1.1"
+}

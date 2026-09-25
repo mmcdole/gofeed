@@ -498,9 +498,12 @@ func firstString(entries []string) string {
 }
 
 // personFromText builds a Person from a free-form author string like
-// "Example Name (example@site.com)".
+// "Example Name (example@site.com)", or returns nil when the text is blank.
 func personFromText(text string) *Person {
 	name, address := shared.ParseNameAddress(text)
+	if name == "" && address == "" {
+		return nil
+	}
 	return &Person{Name: name, Email: address}
 }
 
@@ -860,7 +863,6 @@ func jsonPersons(authors []*json.Author) []*Person {
 
 // jsonPerson preserves the author URL alongside the parsed name and email.
 func jsonPerson(author *json.Author) *Person {
-	person := personFromText(author.Name)
-	person.URL = author.URL
-	return person
+	name, address := shared.ParseNameAddress(author.Name)
+	return &Person{Name: name, Email: address, URL: author.URL}
 }

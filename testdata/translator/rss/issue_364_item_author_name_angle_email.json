@@ -1,0 +1,40 @@
+{
+  "feedType": "rss",
+  "feedVersion": "2.0",
+  "items": [
+    {
+      "author": {
+        "email": "john@example.com",
+        "name": "John Doe"
+      },
+      "authors": [
+        {
+          "email": "john@example.com",
+          "name": "John Doe"
+        }
+      ]
+    },
+    {
+      "author": {
+        "email": "john@example.com",
+        "name": "Doe, John"
+      },
+      "authors": [
+        {
+          "email": "john@example.com",
+          "name": "Doe, John"
+        }
+      ]
+    },
+    {
+      "author": {
+        "email": "john@example.com"
+      },
+      "authors": [
+        {
+          "email": "john@example.com"
+        }
+      ]
+    }
+  ]
+}

@@ -145,3 +145,34 @@ brackets or the greater-than sign using concatenated CDATA sections.
 		assert.Equal(t, test.res, res)
 	}
 }
+
+func TestParseNameAddress(t *testing.T) {
+	tests := []struct {
+		in, name, address string
+	}{
+		{"", "", ""},
+		{"   ", "", ""},
+		{"John Doe", "John Doe", ""},
+		{"john@example.com", "", "john@example.com"},
+		{"john@example.com (John Doe)", "John Doe", "john@example.com"},
+		{"John Doe (john@example.com)", "John Doe", "john@example.com"},
+		{"john@example.com (John (JD) Doe)", "John (JD) Doe", "john@example.com"},
+		{"john@example.com (John@Home)", "John@Home", "john@example.com"},
+		// Issue #364: mailbox form and free-text names that are not addresses.
+		{"John Doe <john@example.com>", "John Doe", "john@example.com"},
+		{`"Doe, John" <john@example.com>`, "Doe, John", "john@example.com"},
+		{"<john@example.com>", "", "john@example.com"},
+		{"Smith & Sons (Ltd)", "Smith & Sons (Ltd)", ""},
+		{"@jack", "@jack", ""},
+		{"Jane Doe (@jane)", "Jane Doe (@jane)", ""},
+		{"John (Johnny) Doe", "John (Johnny) Doe", ""},
+		{"Jane <not an address>", "Jane <not an address>", ""},
+		{"John Doe john@example.com", "John Doe john@example.com", ""},
+		{"  John Doe  ", "John Doe", ""},
+	}
+	for _, tt := range tests {
+		name, address := ParseNameAddress(tt.in)
+		assert.Equal(t, tt.name, name, "name for %q", tt.in)
+		assert.Equal(t, tt.address, address, "address for %q", tt.in)
+	}
+}

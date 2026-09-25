@@ -1,0 +1,20 @@
+<!--
+Description: dc:creator names containing parentheses or "@" that are not an
+email address are kept whole as the author name (issue #364).
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <item>
+      <dc:creator>Smith &amp; Sons (Ltd)</dc:creator>
+    </item>
+    <item>
+      <dc:creator>@jack</dc:creator>
+    </item>
+    <item>
+      <dc:creator>Jane Doe (@jane)</dc:creator>
+    </item>
+    <item>
+      <dc:creator>John (Johnny) Doe</dc:creator>
+    </item>
+  </channel>
+</rss>

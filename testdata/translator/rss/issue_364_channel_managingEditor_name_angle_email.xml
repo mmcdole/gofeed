@@ -1,0 +1,9 @@
+<!--
+Description: a channel managingEditor in "Name <email>" form splits into name
+and email (issue #364).
+-->
+<rss version="2.0">
+  <channel>
+    <managingEditor>Ed Itor &lt;ed@example.com&gt;</managingEditor>
+  </channel>
+</rss>

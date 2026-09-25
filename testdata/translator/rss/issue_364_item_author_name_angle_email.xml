@@ -1,0 +1,17 @@
+<!--
+Description: item authors in RFC 5322 mailbox form split into name and email,
+including a quoted display name and a bare angle-bracketed address (issue #364).
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <author>John Doe &lt;john@example.com&gt;</author>
+    </item>
+    <item>
+      <author>"Doe, John" &lt;john@example.com&gt;</author>
+    </item>
+    <item>
+      <author>&lt;john@example.com&gt;</author>
+    </item>
+  </channel>
+</rss>

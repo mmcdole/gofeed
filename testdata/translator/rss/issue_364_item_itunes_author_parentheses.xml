@@ -1,0 +1,11 @@
+<!--
+Description: an itunes:author name containing parentheses is kept whole as the
+author name (issue #364).
+-->
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <item>
+      <itunes:author>This American Life (WBEZ)</itunes:author>
+    </item>
+  </channel>
+</rss>
