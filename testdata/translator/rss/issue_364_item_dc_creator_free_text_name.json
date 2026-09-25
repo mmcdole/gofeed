@@ -1,0 +1,114 @@
+{
+  "items": [
+    {
+      "author": {
+        "name": "Smith & Sons (Ltd)"
+      },
+      "authors": [
+        {
+          "name": "Smith & Sons (Ltd)"
+        }
+      ],
+      "dcExt": {
+        "creator": [
+          "Smith & Sons (Ltd)"
+        ]
+      },
+      "extensions": {
+        "dc": {
+          "creator": [
+            {
+              "name": "creator",
+              "value": "Smith & Sons (Ltd)",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "author": {
+        "name": "@jack"
+      },
+      "authors": [
+        {
+          "name": "@jack"
+        }
+      ],
+      "dcExt": {
+        "creator": [
+          "@jack"
+        ]
+      },
+      "extensions": {
+        "dc": {
+          "creator": [
+            {
+              "name": "creator",
+              "value": "@jack",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "author": {
+        "name": "Jane Doe (@jane)"
+      },
+      "authors": [
+        {
+          "name": "Jane Doe (@jane)"
+        }
+      ],
+      "dcExt": {
+        "creator": [
+          "Jane Doe (@jane)"
+        ]
+      },
+      "extensions": {
+        "dc": {
+          "creator": [
+            {
+              "name": "creator",
+              "value": "Jane Doe (@jane)",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "author": {
+        "name": "John (Johnny) Doe"
+      },
+      "authors": [
+        {
+          "name": "John (Johnny) Doe"
+        }
+      ],
+      "dcExt": {
+        "creator": [
+          "John (Johnny) Doe"
+        ]
+      },
+      "extensions": {
+        "dc": {
+          "creator": [
+            {
+              "name": "creator",
+              "value": "John (Johnny) Doe",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "feedType": "rss",
+  "feedVersion": "2.0"
+}

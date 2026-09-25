@@ -4,17 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"html"
-	"regexp"
 	"strings"
 
 	xpp "github.com/mmcdole/goxpp/v2"
-)
-
-var (
-	emailNameRgx = regexp.MustCompile(`^([^@]+@[^\s]+)\s+\(([^@]+)\)$`)
-	nameEmailRgx = regexp.MustCompile(`^([^@]+)\s+\(([^@]+@[^)]+)\)$`)
-	nameOnlyRgx  = regexp.MustCompile(`^([^@()]+)$`)
-	emailOnlyRgx = regexp.MustCompile(`^([^@()]+@[^@()]+)$`)
 )
 
 const CDATA_START = "<![CDATA["
@@ -194,30 +186,61 @@ func DecodeEntities(str string) string {
 	return buf.String()
 }
 
-// ParseNameAddress parses name/email strings commonly
-// found in RSS feeds of the format "Example Name (example@site.com)"
-// and other variations of this format.
+// ParseNameAddress splits a free-form author string into a name and an email
+// address. It recognizes "email (Name)", "Name (email)", "Name <email>",
+// "<email>" and a bare email; any other text is returned whole as the name so
+// no author is dropped.
 func ParseNameAddress(nameAddressText string) (name string, address string) {
-	if nameAddressText == "" {
+	text := strings.TrimSpace(nameAddressText)
+	if text == "" {
 		return
 	}
 
-	if emailNameRgx.MatchString(nameAddressText) {
-		result := emailNameRgx.FindStringSubmatch(nameAddressText)
-		address = result[1]
-		name = result[2]
-	} else if nameEmailRgx.MatchString(nameAddressText) {
-		result := nameEmailRgx.FindStringSubmatch(nameAddressText)
-		name = result[1]
-		address = result[2]
-	} else if nameOnlyRgx.MatchString(nameAddressText) {
-		result := nameOnlyRgx.FindStringSubmatch(nameAddressText)
-		name = result[1]
-	} else if emailOnlyRgx.MatchString(nameAddressText) {
-		result := emailOnlyRgx.FindStringSubmatch(nameAddressText)
-		address = result[1]
+	switch text[len(text)-1] {
+	case '>':
+		// "Name <email>" or "<email>"
+		if i := strings.LastIndexByte(text, '<'); i >= 0 {
+			if addr := strings.TrimSpace(text[i+1 : len(text)-1]); isEmailAddress(addr) {
+				return unquoteName(strings.TrimSpace(text[:i])), addr
+			}
+		}
+	case ')':
+		// "email (Name)"; the name may itself contain parentheses.
+		if i := strings.IndexByte(text, '('); i > 0 {
+			if addr := strings.TrimSpace(text[:i]); isEmailAddress(addr) {
+				return strings.TrimSpace(text[i+1 : len(text)-1]), addr
+			}
+		}
+		// "Name (email)"
+		if i := strings.LastIndexByte(text, '('); i > 0 {
+			if addr := strings.TrimSpace(text[i+1 : len(text)-1]); isEmailAddress(addr) {
+				return strings.TrimSpace(text[:i]), addr
+			}
+		}
 	}
-	return
+
+	if isEmailAddress(text) {
+		return "", text
+	}
+	return text, ""
+}
+
+// isEmailAddress reports whether s looks like a single email address: one
+// '@' with text on both sides and no whitespace or mailbox punctuation.
+func isEmailAddress(s string) bool {
+	at := strings.IndexByte(s, '@')
+	if at <= 0 || at == len(s)-1 || strings.IndexByte(s[at+1:], '@') >= 0 {
+		return false
+	}
+	return !strings.ContainsAny(s, " \t\r\n<>()\",")
+}
+
+// unquoteName strips the double quotes around an RFC 5322 display name.
+func unquoteName(name string) string {
+	if len(name) >= 2 && name[0] == '"' && name[len(name)-1] == '"' {
+		return strings.TrimSpace(name[1 : len(name)-1])
+	}
+	return name
 }
 
 func indexAt(str, substr string, start int) int {
