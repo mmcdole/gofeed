@@ -510,3 +510,54 @@ func TestParser_Parse_RootBeyondDetectionWindow(t *testing.T) {
 	_, err := gofeed.NewParser().Parse(strings.NewReader(pad + `<rss version="2.0"><channel></channel></rss>`))
 	assert.ErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
 }
+
+// An HTML page served in place of a feed — a login wall, error page, or
+// bot-protection challenge — should report that it wasn't a feed, while still
+// matching ErrFeedTypeNotDetected for callers that check for it (issue #294).
+func TestParser_Parse_HTMLNotFeed(t *testing.T) {
+	pages := []string{
+		"<!DOCTYPE html>\n<html><head><title>Log in</title></head><body>Please sign in</body></html>",
+		`<html lang="en"><body>403 Forbidden</body></html>`,
+		"\n  \t<HTML>\n<BODY>Checking your browser...</BODY>\n</HTML>",
+		"\uFEFF<!doctype html><html></html>",
+		"<head><meta charset=\"utf-8\"></head>",
+	}
+	for _, page := range pages {
+		_, err := gofeed.NewParser().Parse(strings.NewReader(page))
+		assert.ErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
+		assert.Contains(t, err.Error(), "HTML", "page %q should be reported as HTML", page)
+	}
+}
+
+// A non-feed payload that isn't recognizably HTML keeps the plain
+// ErrFeedTypeNotDetected, with no invented HTML detail. In particular a
+// document that merely begins with an XML comment, or an element whose name
+// only starts with "html", must not be mistaken for an HTML page (issue #294).
+func TestParser_Parse_NonHTMLNotFeed(t *testing.T) {
+	inputs := []string{
+		"<note><to>Tove</to><from>Jani</from></note>",
+		"<!-- just a comment --><data>value</data>",
+		"<htmlish>not actually html</htmlish>",
+		"plain text, not markup at all",
+	}
+	for _, in := range inputs {
+		_, err := gofeed.NewParser().Parse(strings.NewReader(in))
+		assert.ErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
+		assert.NotContains(t, err.Error(), "HTML", "input %q should not be reported as HTML", in)
+	}
+}
+
+// The real-world case from the issue: a server answers with 2xx but hands back
+// an HTML challenge page instead of the feed. ParseURL should surface the
+// clearer "not a feed" error rather than a bare detection failure (issue #294).
+func TestParser_ParseURL_HTMLBody(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		io.WriteString(w, "<!DOCTYPE html><html><body>Just a moment...</body></html>")
+	}))
+	defer srv.Close()
+
+	_, err := gofeed.NewParser().ParseURL(srv.URL)
+	assert.ErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
+	assert.Contains(t, err.Error(), "HTML")
+}
