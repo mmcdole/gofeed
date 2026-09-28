@@ -51,6 +51,10 @@ func TestParseDateFormats(t *testing.T) {
 		{"2006-01-02T15:04:05.500Z", "2006-01-02 15:04:05"},        // fractional seconds
 		{"2006-01-02 15:04:05", "2006-01-02 15:04:05"},             // space separator, no zone
 		{"2006-01-02", "2006-01-02 00:00:00"},                      // date only
+		{"2006-01-02t15:04:05Z", "2006-01-02 15:04:05"},            // RFC3339 lower-case t (issue #371)
+		{"2006-01-02T15:04:05z", "2006-01-02 15:04:05"},            // RFC3339 lower-case z (issue #371)
+		{"2006-01-02t15:04:05z", "2006-01-02 15:04:05"},            // RFC3339 lower-case t and z (issue #371)
+		{"2006-01-02 15:04:05z", "2006-01-02 15:04:05"},            // space separator, lower-case z (issue #371)
 	}
 	for _, c := range cases {
 		got, err := ParseDate(c.in)
