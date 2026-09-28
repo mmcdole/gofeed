@@ -243,6 +243,15 @@ func (rp *Parser) parseItem(p *xpp.Parser, native []string) (item *Item, err err
 	}
 
 	item = &Item{}
+	// RSS 1.0 identifies items with rdf:about rather than a <guid> child.
+	if p.Space() == shared.RSS10Namespace {
+		for _, attr := range p.Attrs() {
+			if attr.Name.Space == shared.RDFNamespace && attr.Name.Local == "about" && attr.Value != "" {
+				item.GUID = &GUID{Value: attr.Value}
+				break
+			}
+		}
+	}
 	extensions := ext.Extensions{}
 	categories := []*Category{}
 	enclosures := []*Enclosure{}

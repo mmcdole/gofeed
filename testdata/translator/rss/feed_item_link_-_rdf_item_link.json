@@ -6,7 +6,8 @@
       "link": "http://example.org",
       "links": [
         "http://example.org"
-      ]
+      ],
+      "guid": "http://example.org/entry/1"
     }
   ]
 }
