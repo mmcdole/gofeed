@@ -1,0 +1,38 @@
+{
+  "items": [
+    {
+      "link": "https://example.com/podcast/ep1.html",
+      "links": [
+        "https://example.com/podcast/ep1.html"
+      ],
+      "enclosure": {
+        "url": "https://example.com/podcast/ep1.mp3",
+        "length": "1",
+        "type": "audio/mpeg"
+      },
+      "enclosures": [
+        {
+          "url": "https://example.com/podcast/ep1.mp3",
+          "length": "1",
+          "type": "audio/mpeg"
+        }
+      ],
+      "extensions": {
+        "media": {
+          "content": [
+            {
+              "name": "content",
+              "value": "",
+              "attrs": {
+                "type": "video/mp4",
+                "url": "https://example.com/podcast/ep1.mp4"
+              },
+              "children": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0"
+}

@@ -38,6 +38,7 @@ var (
 		"scheme": true,
 		"src":    true,
 		"uri":    true,
+		"url":    true, // RSS enclosure and media extension URLs
 	}
 )
 
@@ -84,6 +85,10 @@ func resolveAttrs(p *xpp.Parser) error {
 	for i, attr := range p.Attrs() {
 		lowerName := strings.ToLower(attr.Name.Local)
 		if uriAttrs[lowerName] {
+			// Preserve URL attributes unchanged when the feed has no xml:base.
+			if lowerName == "url" && p.BaseURL() == nil {
+				continue
+			}
 			absURL, err := XmlBaseResolveUrl(p.BaseURL(), attr.Value)
 			if err == nil && absURL != nil {
 				p.Attrs()[i].Value = absURL.String()
