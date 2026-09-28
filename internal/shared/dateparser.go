@@ -243,6 +243,37 @@ func endsInZoneAbbreviation(d string) bool {
 	return !strings.HasPrefix(head, "+") && !strings.HasPrefix(head, "-")
 }
 
+// isASCIIDigit reports whether c is an ASCII decimal digit.
+func isASCIIDigit(c byte) bool {
+	return c >= '0' && c <= '9'
+}
+
+// normalizeRFC3339Case uppercases RFC 3339's optional lower-case "t" and "z"
+// (RFC 3339 §5.6) so the existing layouts, which use upper case only, can match.
+// A "t" between two digits is treated as the date-time separator; a trailing
+// "z" after a digit is treated as the UTC designator.
+func normalizeRFC3339Case(d string) string {
+	if !strings.ContainsAny(d, "tz") {
+		return d
+	}
+	b := []byte(d)
+	changed := false
+	for i := 1; i < len(b)-1; i++ {
+		if b[i] == 't' && isASCIIDigit(b[i-1]) && isASCIIDigit(b[i+1]) {
+			b[i] = 'T'
+			changed = true
+		}
+	}
+	if n := len(b); n >= 2 && b[n-1] == 'z' && isASCIIDigit(b[n-2]) {
+		b[n-1] = 'Z'
+		changed = true
+	}
+	if !changed {
+		return d
+	}
+	return string(b)
+}
+
 // ParseDate parses a given date string using a large
 // list of commonly found feed date formats.
 func ParseDate(ds string) (time.Time, error) {
@@ -250,6 +281,7 @@ func ParseDate(ds string) (time.Time, error) {
 	if d == "" {
 		return time.Time{}, fmt.Errorf("date string is empty")
 	}
+	d = normalizeRFC3339Case(d)
 	// A date ending in a bare zone abbreviation cannot match dateFormats, so
 	// look at the named-zone layouts first. Only the order changes: both lists
 	// are still tried, so a wrong guess costs time and nothing else.
