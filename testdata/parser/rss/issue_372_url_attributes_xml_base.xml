@@ -1,0 +1,9 @@
+<rss version="2.0" xml:base="https://example.com/podcast/" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <item>
+      <link>ep1.html</link>
+      <enclosure url="ep1.mp3" type="audio/mpeg" length="1"/>
+      <media:content url="ep1.mp4" type="video/mp4"/>
+    </item>
+  </channel>
+</rss>
