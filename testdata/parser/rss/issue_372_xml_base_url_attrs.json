@@ -1,0 +1,30 @@
+{
+    "items": [
+        {
+            "enclosure": {"url": "https://example.com/podcast/ep1.mp3", "length": "1", "type": "audio/mpeg"},
+            "enclosures": [
+                {"url": "https://example.com/podcast/ep1.mp3", "length": "1", "type": "audio/mpeg"}
+            ],
+            "source": {"title": "Example", "url": "https://example.com/podcast/feed.xml"},
+            "extensions": {
+                "media": {
+                    "content": [
+                        {
+                            "name": "content",
+                            "value": "",
+                            "attrs": {"type": "video/mp4", "url": "https://example.com/podcast/ep1.mp4"},
+                            "children": {}
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "enclosure": {"url": "https://example.com/my episode é.mp3", "length": "1", "type": "audio/mpeg"},
+            "enclosures": [
+                {"url": "https://example.com/my episode é.mp3", "length": "1", "type": "audio/mpeg"}
+            ]
+        }
+    ],
+    "version": "2.0"
+}

@@ -30,16 +30,20 @@ var (
 		"usemap":     true,
 	}
 
-	// List of xml attributes that contain URIs to be resolved relative to
-	// xml:base
-	// From the Atom spec https://tools.ietf.org/html/rfc4287
+	// XML attributes whose values are URI references, resolved relative to
+	// xml:base: href, scheme, src and uri from Atom (RFC 4287), and url from
+	// RSS <enclosure> and <source> and from Media RSS.
 	uriAttrs = map[string]bool{
 		"href":   true,
 		"scheme": true,
 		"src":    true,
 		"uri":    true,
+		"url":    true,
 	}
 )
+
+// xmlWhitespace is the XML 1.0 whitespace set (the S production).
+const xmlWhitespace = " \t\r\n"
 
 // XMLBase.NextTag iterates through the tokens until it reaches a StartTag or
 // EndTag. It resolves urls in tag attributes relative to the current xml:base.
@@ -79,17 +83,25 @@ func NextTag(p *xpp.Parser) (event xpp.EventType, err error) {
 	return
 }
 
-// resolve relative URI attributes according to xml:base
+// resolveAttrs trims surrounding XML whitespace from URI attributes and, when
+// an xml:base is in scope, resolves them against it. Without a base the
+// trimmed value is kept as written, never normalized by url.Parse.
 func resolveAttrs(p *xpp.Parser) error {
-	for i, attr := range p.Attrs() {
-		lowerName := strings.ToLower(attr.Name.Local)
-		if uriAttrs[lowerName] {
-			absURL, err := XmlBaseResolveUrl(p.BaseURL(), attr.Value)
-			if err == nil && absURL != nil {
-				p.Attrs()[i].Value = absURL.String()
-			}
-			// Continue processing even if URL resolution fails (e.g., for non-HTTP URIs like at://)
+	base := p.BaseURL()
+	attrs := p.Attrs()
+	for i, attr := range attrs {
+		if !uriAttrs[strings.ToLower(attr.Name.Local)] {
+			continue
 		}
+		v := strings.Trim(attr.Value, xmlWhitespace)
+		if base != nil {
+			// An empty reference resolves to the base itself (RFC 3986 5.2).
+			// A value url.Parse rejects is kept unresolved.
+			if abs, err := XmlBaseResolveUrl(base, v); err == nil {
+				v = abs.String()
+			}
+		}
+		attrs[i].Value = v
 	}
 	return nil
 }

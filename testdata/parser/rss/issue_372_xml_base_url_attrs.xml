@@ -1,0 +1,17 @@
+<!--
+Description: url attributes on enclosure, source and media:content resolve
+against xml:base; without a base they are trimmed but otherwise kept as
+written (issue #372)
+-->
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <item xml:base="https://example.com/podcast/">
+      <enclosure url="ep1.mp3" type="audio/mpeg" length="1"/>
+      <source url="feed.xml">Example</source>
+      <media:content url="ep1.mp4" type="video/mp4"/>
+    </item>
+    <item>
+      <enclosure url=" https://example.com/my episode é.mp3 " type="audio/mpeg" length="1"/>
+    </item>
+  </channel>
+</rss>
