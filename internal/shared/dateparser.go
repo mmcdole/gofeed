@@ -243,6 +243,22 @@ func endsInZoneAbbreviation(d string) bool {
 	return !strings.HasPrefix(head, "+") && !strings.HasPrefix(head, "-")
 }
 
+// normalizeRFC3339 upper-cases the "t" separator and trailing "z" of an
+// RFC 3339 date-time, which RFC 3339 5.6 allows in lower case but time.Parse
+// only matches in upper case. Other strings are returned unchanged.
+func normalizeRFC3339(d string) string {
+	if len(d) < 11 || d[4] != '-' || d[7] != '-' || (d[10] != 't' && d[10] != 'T') {
+		return d
+	}
+	if d[10] == 't' {
+		d = d[:10] + "T" + d[11:]
+	}
+	if strings.HasSuffix(d, "z") {
+		d = d[:len(d)-1] + "Z"
+	}
+	return d
+}
+
 // ParseDate parses a given date string using a large
 // list of commonly found feed date formats.
 func ParseDate(ds string) (time.Time, error) {
@@ -250,6 +266,7 @@ func ParseDate(ds string) (time.Time, error) {
 	if d == "" {
 		return time.Time{}, fmt.Errorf("date string is empty")
 	}
+	d = normalizeRFC3339(d)
 	// A date ending in a bare zone abbreviation cannot match dateFormats, so
 	// look at the named-zone layouts first. Only the order changes: both lists
 	// are still tried, so a wrong guess costs time and nothing else.
