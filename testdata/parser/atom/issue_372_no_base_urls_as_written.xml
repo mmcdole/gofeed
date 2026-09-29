@@ -1,0 +1,12 @@
+<!--
+Description: without an xml:base, URI elements and attributes are kept as
+written rather than percent-encoded; attributes are trimmed (issue #372)
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>urn:example:café</id>
+  <logo>https://example.com/logo é.png</logo>
+  <entry>
+    <id>tag:example.com,2026:entry é</id>
+    <link href=" https://example.com/entry é "/>
+  </entry>
+</feed>

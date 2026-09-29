@@ -1,0 +1,13 @@
+{
+    "id": "urn:example:café",
+    "logo": "https://example.com/logo é.png",
+    "entries": [
+        {
+            "id": "tag:example.com,2026:entry é",
+            "links": [
+                {"href": "https://example.com/entry é", "rel": "alternate"}
+            ]
+        }
+    ],
+    "version": "1.0"
+}

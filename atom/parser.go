@@ -533,10 +533,7 @@ func (ap *Parser) parseAtomText(p *xpp.Parser) (string, error) {
 	// resolve relative URIs in URI-containing elements according to xml:base
 	name := strings.ToLower(p.Name())
 	if atomUriElements[name] {
-		resolved, err := shared.XmlBaseResolveUrl(base, result)
-		if resolved != nil && err == nil {
-			result = resolved.String()
-		}
+		result = shared.ResolveURLIfBase(base, result)
 	}
 
 	return result, err
