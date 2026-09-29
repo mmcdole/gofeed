@@ -2,7 +2,12 @@
     "items": [
         {
             "link": "http://example.org",
-            "links": [ "http://example.org" ]
+            "links": [
+                "http://example.org"
+            ],
+            "guid": {
+                "value": "http://example.org/entry/1"
+            }
         }
     ],
     "version": "1.0"

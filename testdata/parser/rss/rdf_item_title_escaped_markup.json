@@ -1,7 +1,10 @@
 {
     "items": [
         {
-            "title": "<p>Item Title</p>"
+            "title": "<p>Item Title</p>",
+            "guid": {
+                "value": "http://example.org/entry/1"
+            }
         }
     ],
     "version": "1.0"

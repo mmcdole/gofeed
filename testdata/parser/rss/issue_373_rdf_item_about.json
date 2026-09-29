@@ -1,0 +1,15 @@
+{
+    "title": "Example",
+    "items": [
+        {
+            "title": "First",
+            "guid": {
+                "value": "https://example.org/items/1"
+            }
+        },
+        {
+            "title": "Second"
+        }
+    ],
+    "version": "1.0"
+}

@@ -6,7 +6,10 @@
         "http://example.org",
         "http://example2.org",
         "http://example3.org"
-      ]
+      ],
+      "guid": {
+        "value": "http://example.org/entry/1"
+      }
     }
   ],
   "version": "1.0"

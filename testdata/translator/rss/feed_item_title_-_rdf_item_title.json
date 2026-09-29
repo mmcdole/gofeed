@@ -3,7 +3,8 @@
   "feedVersion": "1.0",
   "items": [
     {
-      "title": "Item Title"
+      "title": "Item Title",
+      "guid": "http://example.org/entry/1"
     }
   ]
 }
