@@ -64,6 +64,27 @@ func TestParseDateFormats(t *testing.T) {
 	}
 }
 
+// RFC 3339 5.6 allows the "T" separator and "Z" designator in lower case
+// (issue #371).
+func TestParseDateRFC3339LowerCase(t *testing.T) {
+	for _, in := range []string{
+		"2006-01-02t15:04:05Z",
+		"2006-01-02T15:04:05z",
+		"2006-01-02t15:04:05z",
+		"2006-01-02t15:04:05.500z",
+		"2006-01-02t17:04:05+02:00",
+	} {
+		got, err := ParseDate(in)
+		if err != nil {
+			t.Errorf("%q: unexpected error: %v", in, err)
+			continue
+		}
+		if g := got.UTC().Format("2006-01-02 15:04:05"); g != "2006-01-02 15:04:05" {
+			t.Errorf("%q -> %s UTC, want 2006-01-02 15:04:05", in, g)
+		}
+	}
+}
+
 // Every layout must be able to parse its own rendering of the reference time.
 // A malformed layout (like an hour written as 14) consumes fields twice and
 // can never match anything (issue #308).

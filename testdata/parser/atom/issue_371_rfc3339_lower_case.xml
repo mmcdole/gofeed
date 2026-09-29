@@ -1,0 +1,11 @@
+<!--
+Description: RFC 3339 dates with a lower-case "t" separator or "z"
+designator parse like their upper-case forms (issue #371)
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <updated>2006-01-02t15:04:05z</updated>
+  <entry>
+    <published>2006-01-02t15:04:05Z</published>
+    <updated>2006-01-02T15:04:05z</updated>
+  </entry>
+</feed>
