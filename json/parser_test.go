@@ -3,6 +3,7 @@ package json_test
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"strings"
 	"testing"
@@ -84,5 +85,14 @@ func TestParser_Parse_ReaderError(t *testing.T) {
 	_, err := (&jsonParser.Parser{}).Parse(r)
 	if !errors.Is(err, boom) {
 		t.Fatalf("err = %v, want boom", err)
+	}
+}
+
+func TestParser_ParseInvalidUTF8BOM(t *testing.T) {
+	for _, prefix := range []string{"\xef", "\xef\xbb", "\xef\xbb\xbf\xef\xbb\xbf"} {
+		t.Run(fmt.Sprintf("%x", prefix), func(t *testing.T) {
+			_, err := (&jsonParser.Parser{}).Parse(strings.NewReader(prefix + `{"title":"feed"}`))
+			require.Error(t, err)
+		})
 	}
 }
