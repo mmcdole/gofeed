@@ -510,3 +510,13 @@ func TestParser_Parse_RootBeyondDetectionWindow(t *testing.T) {
 	_, err := gofeed.NewParser().Parse(strings.NewReader(pad + `<rss version="2.0"><channel></channel></rss>`))
 	assert.ErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
 }
+
+func TestParser_ParseJSONUTF8BOM(t *testing.T) {
+	data := testutil.ReadFile(t, "testdata/parser/json/issue_366_utf8_bom.json")
+	require.Equal(t, gofeed.FeedTypeJSON, gofeed.DetectFeedType(bytes.NewReader(data)))
+	expected, err := gofeed.NewParser().Parse(bytes.NewReader(data[3:]))
+	require.NoError(t, err)
+	actual, err := gofeed.NewParser().Parse(bytes.NewReader(data))
+	require.NoError(t, err)
+	assert.Equal(t, expected, actual)
+}
