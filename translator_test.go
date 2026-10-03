@@ -138,3 +138,80 @@ func TestPersonURLJSON(t *testing.T) {
 		})
 	}
 }
+
+// JSON Feed items without their own authors inherit the feed's top-level
+// authors (JSON Feed 1.1) or author (JSON Feed 1.0).
+func TestJSONFeedItemAuthorFallback(t *testing.T) {
+	t.Run("JSON Feed 1.1 top-level authors fallback", func(t *testing.T) {
+		in := `{"version":"https://jsonfeed.org/version/1.1","title":"t",
+ "authors":[{"name":"Ann","url":"https://example.com/ann"}],
+ "items":[{"id":"1","content_text":"x","authors":[{"name":"Bob"}]},
+          {"id":"2","content_text":"x"},
+          {"id":"3","content_text":"x","authors":[]}]}`
+
+		feed, err := gofeed.NewParser().ParseString(in)
+		require.NoError(t, err)
+		require.NotNil(t, feed)
+		require.Len(t, feed.Authors, 1)
+		assert.Equal(t, "Ann", feed.Authors[0].Name)
+
+		require.Len(t, feed.Items, 3)
+
+		// Item 1 specifies authors, should not inherit
+		require.Len(t, feed.Items[0].Authors, 1)
+		assert.Equal(t, "Bob", feed.Items[0].Authors[0].Name)
+
+		// Item 2 specifies no authors, should inherit feed authors
+		require.Len(t, feed.Items[1].Authors, 1)
+		assert.Equal(t, "Ann", feed.Items[1].Authors[0].Name)
+		assert.Equal(t, "https://example.com/ann", feed.Items[1].Authors[0].URL)
+
+		// Item 3 explicitly specifies empty authors, should not inherit
+		assert.Empty(t, feed.Items[2].Authors)
+	})
+
+	t.Run("JSON Feed 1.0 top-level author fallback", func(t *testing.T) {
+		in := `{"version":"https://jsonfeed.org/version/1","title":"t",
+ "author":{"name":"Ann","url":"https://example.com/ann"},
+ "items":[{"id":"1","content_text":"x","author":{"name":"Bob"}},
+          {"id":"2","content_text":"x"}]}`
+
+		feed, err := gofeed.NewParser().ParseString(in)
+		require.NoError(t, err)
+		require.NotNil(t, feed)
+		require.NotNil(t, feed.Author)
+		assert.Equal(t, "Ann", feed.Author.Name)
+		require.Len(t, feed.Authors, 1)
+		assert.Equal(t, "Ann", feed.Authors[0].Name)
+
+		require.Len(t, feed.Items, 2)
+
+		// Item 1 specifies author, should not inherit
+		require.NotNil(t, feed.Items[0].Author)
+		assert.Equal(t, "Bob", feed.Items[0].Author.Name)
+		require.Len(t, feed.Items[0].Authors, 1)
+		assert.Equal(t, "Bob", feed.Items[0].Authors[0].Name)
+
+		// Item 2 specifies no author, should inherit feed author
+		require.NotNil(t, feed.Items[1].Author)
+		assert.Equal(t, "Ann", feed.Items[1].Author.Name)
+		assert.Equal(t, "https://example.com/ann", feed.Items[1].Author.URL)
+		require.Len(t, feed.Items[1].Authors, 1)
+		assert.Equal(t, "Ann", feed.Items[1].Authors[0].Name)
+	})
+
+	t.Run("Feed without authors leaves item authors nil", func(t *testing.T) {
+		in := `{"version":"https://jsonfeed.org/version/1.1","title":"t",
+ "items":[{"id":"1","content_text":"x"}]}`
+
+		feed, err := gofeed.NewParser().ParseString(in)
+		require.NoError(t, err)
+		require.NotNil(t, feed)
+		assert.Nil(t, feed.Author)
+		assert.Nil(t, feed.Authors)
+
+		require.Len(t, feed.Items, 1)
+		assert.Nil(t, feed.Items[0].Author)
+		assert.Nil(t, feed.Items[0].Authors)
+	})
+}

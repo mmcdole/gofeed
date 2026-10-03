@@ -766,7 +766,7 @@ func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
 
 	result.Items = make([]*Item, 0, len(jsonFeed.Items))
 	for _, i := range jsonFeed.Items {
-		result.Items = append(result.Items, t.translateFeedItem(i))
+		result.Items = append(result.Items, t.translateFeedItem(i, result))
 	}
 
 	// TODO UserComment is missing in global Feed
@@ -778,7 +778,7 @@ func (t *DefaultJSONTranslator) Translate(feed interface{}) (*Feed, error) {
 	return result, nil
 }
 
-func (t *DefaultJSONTranslator) translateFeedItem(jsonItem *json.Item) *Item {
+func (t *DefaultJSONTranslator) translateFeedItem(jsonItem *json.Item, feed *Feed) *Item {
 	item := &Item{
 		GUID:        jsonItem.ID,
 		Link:        jsonItem.URL,
@@ -824,6 +824,11 @@ func (t *DefaultJSONTranslator) translateFeedItem(jsonItem *json.Item) *Item {
 		item.Authors = jsonPersons(jsonItem.Authors)
 	} else if item.Author != nil {
 		item.Authors = []*Person{item.Author}
+	}
+
+	if jsonItem.Author == nil && jsonItem.Authors == nil && feed != nil {
+		item.Author = feed.Author
+		item.Authors = feed.Authors
 	}
 
 	if len(jsonItem.Tags) > 0 {
