@@ -134,6 +134,17 @@ func (t *DefaultRSSTranslator) translateFeedItem(rssItem *rss.Item) *Item {
 		item.Links = append(item.Links, rssItem.Links...)
 	}
 
+	// Fall back to an embedded atom:link for items that carry only an
+	// <atom:link>, mirroring how feed-level links are handled. Without this an
+	// item whose only link is <atom:link rel="alternate"> gets an empty
+	// Item.Link and Item.Links (see #369).
+	if item.Link == "" {
+		item.Link = t.translateItemAtomLink(rssItem)
+	}
+	if len(item.Links) == 0 {
+		item.Links = t.translateItemAtomLinks(rssItem)
+	}
+
 	item.Published = t.translateItemPublished(rssItem)
 	item.PublishedParsed = t.translateItemPublishedParsed(rssItem)
 	item.Updated = t.translateItemUpdated(rssItem)
@@ -192,6 +203,36 @@ func (t *DefaultRSSTranslator) translateFeedLinks(rss *rss.Feed) (links []string
 	}
 	atomExtensions := t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
 	for _, ex := range atomExtensions {
+		if lks, ok := ex["link"]; ok {
+			for _, l := range lks {
+				if l.Attrs["rel"] == "" || l.Attrs["rel"] == "alternate" || l.Attrs["rel"] == "self" {
+					links = append(links, l.Attrs["href"])
+				}
+			}
+		}
+	}
+	return
+}
+
+// translateItemAtomLink returns the href of an item's embedded atom:link with
+// rel="alternate" (or no rel), used when the item has no plain <link>. See #369.
+func (t *DefaultRSSTranslator) translateItemAtomLink(rssItem *rss.Item) string {
+	for _, ex := range t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rssItem.Extensions) {
+		if links, ok := ex["link"]; ok {
+			for _, l := range links {
+				if l.Attrs["rel"] == "" || l.Attrs["rel"] == "alternate" {
+					return l.Attrs["href"]
+				}
+			}
+		}
+	}
+	return ""
+}
+
+// translateItemAtomLinks collects the hrefs of an item's embedded atom:links
+// (rel alternate/self/none), used when the item has no plain <link>. See #369.
+func (t *DefaultRSSTranslator) translateItemAtomLinks(rssItem *rss.Item) (links []string) {
+	for _, ex := range t.extensionsForKeys([]string{"atom", "atom10", "atom03"}, rssItem.Extensions) {
 		if lks, ok := ex["link"]; ok {
 			for _, l := range lks {
 				if l.Attrs["rel"] == "" || l.Attrs["rel"] == "alternate" || l.Attrs["rel"] == "self" {
