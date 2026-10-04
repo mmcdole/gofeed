@@ -249,6 +249,22 @@ func (t *DefaultRSSTranslator) translateFeedImage(rss *rss.Feed) *Image {
 	return firstImageFromHtmlDocument(rss.Description)
 }
 
+// splitKeywords splits a comma-separated iTunes keywords string into individual
+// categories, trimming surrounding whitespace from each and dropping empty
+// entries. This mirrors how a plain <category> contributes a trimmed value, so
+// "news, politics" yields "news","politics" (not " politics") and "a,,c" does
+// not yield an empty category.
+func splitKeywords(keywords string) []string {
+	parts := strings.Split(keywords, ",")
+	result := make([]string, 0, len(parts))
+	for _, p := range parts {
+		if p = strings.TrimSpace(p); p != "" {
+			result = append(result, p)
+		}
+	}
+	return result
+}
+
 // translateFeedCategories merges plain channel categories with itunes
 // keywords, itunes categories (and subcategories) and dc:subject values.
 func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categories []string) {
@@ -261,8 +277,7 @@ func (t *DefaultRSSTranslator) translateFeedCategories(rss *rss.Feed) (categorie
 	}
 
 	if rss.ITunesExt != nil && rss.ITunesExt.Keywords != "" {
-		keywords := strings.Split(rss.ITunesExt.Keywords, ",")
-		cats = append(cats, keywords...)
+		cats = append(cats, splitKeywords(rss.ITunesExt.Keywords)...)
 	}
 
 	if rss.ITunesExt != nil && rss.ITunesExt.Categories != nil {
@@ -414,8 +429,7 @@ func (t *DefaultRSSTranslator) translateItemCategories(rssItem *rss.Item) (categ
 	}
 
 	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Keywords != "" {
-		keywords := strings.Split(rssItem.ITunesExt.Keywords, ",")
-		cats = append(cats, keywords...)
+		cats = append(cats, splitKeywords(rssItem.ITunesExt.Keywords)...)
 	}
 
 	if rssItem.DublinCoreExt != nil && rssItem.DublinCoreExt.Subject != nil {
