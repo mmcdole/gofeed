@@ -25,6 +25,7 @@ func NewReaderLabel(label string, input io.Reader) (io.Reader, error) {
 func NewXMLParser(r io.Reader) *xpp.Parser {
 	d := xml.NewDecoder(r)
 	d.Strict = false
+	d.Entity = xml.HTMLEntity
 	d.CharsetReader = NewReaderLabel
 	return xpp.New(d)
 }

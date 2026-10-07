@@ -114,6 +114,10 @@ func TestParser_Parse(t *testing.T) {
 	}
 }
 
+func TestParser_ParseHTMLEntities(t *testing.T) {
+	testutil.RunFixtures(t, "testdata/parser/universal/issue_368_html_entities.xml", gofeed.NewParser().Parse)
+}
+
 func TestParser_ParseString(t *testing.T) {
 	var feedTests = []struct {
 		file      string
