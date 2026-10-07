@@ -54,6 +54,62 @@ func parserOn(t *testing.T, doc, name string) *xpp.Parser {
 	}
 }
 
+func TestParseExtensionHTMLEntities(t *testing.T) {
+	cases := []struct {
+		name string
+		text string
+		want string
+	}{
+		{"named", "Caf&eacute;", "Café"},
+		{"decimal", "Caf&#233;", "Café"},
+		{"hexadecimal", "Caf&#xE9;", "Café"},
+		{"escaped named", "Caf&amp;eacute;", "Caf&eacute;"},
+		{"numeric ampersand", "Caf&#38;eacute;", "Caf&eacute;"},
+		{"escaped numeric", "Caf&amp;#233;", "Caf&#233;"},
+		{"CDATA", "<![CDATA[Caf&eacute;]]>", "Caf&eacute;"},
+		{"mixed CDATA", "Caf<![CDATA[&eacute;]]> &eacute;", "Caf&eacute; é"},
+		{"HTML names", "&copy; &euro; x&nbsp;y", "© € x\u00a0y"},
+		{"unknown", "&notAnEntity;", "&notAnEntity;"},
+		{"bare ampersand", "Rock & roll", "Rock & roll"},
+		{"XML names", "&amp; &lt; &gt; &quot; &apos;", "& < > \" '"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			doc := `<value xmlns="urn:example">` + c.text + `</value>`
+			p := parserOn(t, doc, "value")
+			extensions, err := ParseExtension(ext.Extensions{}, p)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := extensions["urn:example"]["value"][0].Value; got != c.want {
+				t.Errorf("extension text = %q, want %q", got, c.want)
+			}
+		})
+	}
+}
+
+func TestParseExtensionHTMLAttributesAndChildren(t *testing.T) {
+	doc := `<value xmlns="urn:example" label="Caf&eacute;" literal="Caf&amp;eacute;">
+		<child label="Zo&euml;">Zo&euml;</child>
+	</value>`
+	p := parserOn(t, doc, "value")
+	extensions, err := ParseExtension(ext.Extensions{}, p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	value := extensions["urn:example"]["value"][0]
+	if got := value.Attrs["label"]; got != "Café" {
+		t.Errorf("label = %q, want Café", got)
+	}
+	if got := value.Attrs["literal"]; got != "Caf&eacute;" {
+		t.Errorf("literal = %q, want Caf&eacute;", got)
+	}
+	child := value.Children["child"][0]
+	if child.Value != "Zoë" || child.Attrs["label"] != "Zoë" {
+		t.Errorf("child = %+v, want decoded text and label", child)
+	}
+}
+
 func TestIsExtension(t *testing.T) {
 	doc := `<rss xmlns:itunes="http://www.itunes.com/DTDs/PodCast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 		<channel>

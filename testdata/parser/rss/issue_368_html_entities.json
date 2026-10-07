@@ -1,0 +1,194 @@
+{
+  "title": "Café",
+  "categories": [
+    {
+      "value": "Café"
+    }
+  ],
+  "dcExt": {
+    "creator": [
+      "Café"
+    ],
+    "subject": [
+      "Café"
+    ]
+  },
+  "itunesExt": {
+    "author": "Café",
+    "categories": [
+      {
+        "text": "Café"
+      }
+    ],
+    "owner": {
+      "email": "zoe@example.com",
+      "name": "Zoë"
+    }
+  },
+  "extensions": {
+    "dc": {
+      "creator": [
+        {
+          "name": "creator",
+          "value": "Café",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "subject": [
+        {
+          "name": "subject",
+          "value": "Café",
+          "attrs": {},
+          "children": {}
+        }
+      ]
+    },
+    "itunes": {
+      "author": [
+        {
+          "name": "author",
+          "value": "Café",
+          "attrs": {},
+          "children": {}
+        }
+      ],
+      "category": [
+        {
+          "name": "category",
+          "value": "",
+          "attrs": {
+            "text": "Café"
+          },
+          "children": {}
+        }
+      ],
+      "owner": [
+        {
+          "name": "owner",
+          "value": "",
+          "attrs": {},
+          "children": {
+            "email": [
+              {
+                "name": "email",
+                "value": "zoe@example.com",
+                "attrs": {},
+                "children": {}
+              }
+            ],
+            "name": [
+              {
+                "name": "name",
+                "value": "Zoë",
+                "attrs": {},
+                "children": {}
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "title": "Café",
+      "categories": [
+        {
+          "value": "Café"
+        }
+      ],
+      "dcExt": {
+        "creator": [
+          "Café"
+        ],
+        "subject": [
+          "Café"
+        ]
+      },
+      "itunesExt": {
+        "author": "Café"
+      },
+      "extensions": {
+        "dc": {
+          "creator": [
+            {
+              "name": "creator",
+              "value": "Café",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "subject": [
+            {
+              "name": "subject",
+              "value": "Café",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "itunes": {
+          "author": [
+            {
+              "name": "author",
+              "value": "Café",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Café",
+      "categories": [
+        {
+          "value": "Café"
+        }
+      ],
+      "dcExt": {
+        "creator": [
+          "Café"
+        ],
+        "subject": [
+          "Café"
+        ]
+      },
+      "itunesExt": {
+        "author": "Café"
+      },
+      "extensions": {
+        "dc": {
+          "creator": [
+            {
+              "name": "creator",
+              "value": "Café",
+              "attrs": {},
+              "children": {}
+            }
+          ],
+          "subject": [
+            {
+              "name": "subject",
+              "value": "Café",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        },
+        "itunes": {
+          "author": [
+            {
+              "name": "author",
+              "value": "Café",
+              "attrs": {},
+              "children": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.0"
+}

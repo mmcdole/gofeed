@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/DTDs/PodCast-1.0.dtd">
+  <channel>
+    <title>Caf&eacute;</title>
+    <category>Caf&eacute;</category>
+    <dc:creator>Caf&eacute;</dc:creator>
+    <dc:subject>Caf&eacute;</dc:subject>
+    <itunes:author>Caf&eacute;</itunes:author>
+    <itunes:owner>
+      <itunes:name>Zo&euml;</itunes:name>
+      <itunes:email>zoe@example.com</itunes:email>
+    </itunes:owner>
+    <itunes:category text="Caf&eacute;"/>
+    <item>
+      <title>Caf&eacute;</title>
+      <category>Caf&eacute;</category>
+      <dc:creator>Caf&eacute;</dc:creator>
+      <dc:subject>Caf&eacute;</dc:subject>
+      <itunes:author>Caf&eacute;</itunes:author>
+    </item>
+    <item>
+      <title>Caf&#233;</title>
+      <category>Caf&#233;</category>
+      <dc:creator>Caf&#233;</dc:creator>
+      <dc:subject>Caf&#233;</dc:subject>
+      <itunes:author>Caf&#233;</itunes:author>
+    </item>
+  </channel>
+</rss>
