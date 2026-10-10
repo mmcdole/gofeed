@@ -6,6 +6,8 @@ import (
 	"io"
 )
 
+var utf8BOM = []byte("\xef\xbb\xbf")
+
 // Parser is an JSON Feed Parser
 type Parser struct{}
 
@@ -18,7 +20,8 @@ func (ap *Parser) Parse(feed io.Reader) (*Feed, error) {
 		return nil, err
 	}
 
-	if err := json.Unmarshal(buffer.Bytes(), jsonFeed); err != nil {
+	b := bytes.TrimPrefix(buffer.Bytes(), utf8BOM)
+	if err := json.Unmarshal(b, jsonFeed); err != nil {
 		return nil, err
 	}
 	return jsonFeed, nil

@@ -510,3 +510,24 @@ func TestParser_Parse_RootBeyondDetectionWindow(t *testing.T) {
 	_, err := gofeed.NewParser().Parse(strings.NewReader(pad + `<rss version="2.0"><channel></channel></rss>`))
 	assert.ErrorIs(t, err, gofeed.ErrFeedTypeNotDetected)
 }
+
+// A JSON feed with a leading UTF-8 byte order mark must be detected as JSON
+// and parse successfully without error (issue #366).
+func TestParser_Parse_JSON_BOM(t *testing.T) {
+	doc := "\uFEFF" + `{"version":"https://jsonfeed.org/version/1.1","title":"J","items":[{"id":"1","content_text":"x"}]}`
+
+	feed, err := gofeed.NewParser().Parse(strings.NewReader(doc))
+	require.NoError(t, err)
+	require.NotNil(t, feed)
+	assert.Equal(t, "json", feed.FeedType)
+	assert.Equal(t, "J", feed.Title)
+	assert.Len(t, feed.Items, 1)
+
+	feedStr, err := gofeed.NewParser().ParseString(doc)
+	require.NoError(t, err)
+	require.NotNil(t, feedStr)
+	assert.Equal(t, "json", feedStr.FeedType)
+	assert.Equal(t, "J", feedStr.Title)
+	assert.Len(t, feedStr.Items, 1)
+}
+

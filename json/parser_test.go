@@ -86,3 +86,52 @@ func TestParser_Parse_ReaderError(t *testing.T) {
 		t.Fatalf("err = %v, want boom", err)
 	}
 }
+
+func TestParser_Parse_BOM(t *testing.T) {
+	feedJSON := `{"version":"https://jsonfeed.org/version/1.1","title":"Test Feed","items":[{"id":"1","content_text":"hello"}]}`
+
+	expected, err := (&jsonParser.Parser{}).Parse(strings.NewReader(feedJSON))
+	require.NoError(t, err)
+
+	for _, tc := range []struct {
+		name string
+		data []byte
+	}{
+		{
+			name: "bytes BOM prefix",
+			data: append([]byte("\xef\xbb\xbf"), []byte(feedJSON)...),
+		},
+		{
+			name: "string BOM prefix",
+			data: []byte("\uFEFF" + feedJSON),
+		},
+		{
+			name: "BOM with leading whitespace",
+			data: append([]byte("\xef\xbb\xbf   \n"), []byte(feedJSON)...),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			actual, err := (&jsonParser.Parser{}).Parse(bytes.NewReader(tc.data))
+			require.NoError(t, err)
+			assert.Equal(t, expected, actual)
+		})
+	}
+}
+
+func TestParser_Parse_BOMFixture(t *testing.T) {
+	data := testutil.ReadFile(t, "../testdata/parser/json/version_json_10.json")
+	expected, err := (&jsonParser.Parser{}).Parse(bytes.NewReader(data))
+	require.NoError(t, err)
+
+	bomData := append([]byte("\xef\xbb\xbf"), data...)
+	actual, err := (&jsonParser.Parser{}).Parse(bytes.NewReader(bomData))
+	require.NoError(t, err)
+	assert.Equal(t, expected, actual)
+}
+
+func TestParser_Parse_BOMInvalid(t *testing.T) {
+	bomInvalid := []byte("\xef\xbb\xbf{invalid json")
+	_, err := (&jsonParser.Parser{}).Parse(bytes.NewReader(bomInvalid))
+	assert.Error(t, err)
+}
+
