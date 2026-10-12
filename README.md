@@ -1,6 +1,6 @@
 # gofeed
 
-[![CI](https://github.com/mmcdole/gofeed/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/mmcdole/gofeed/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/mmcdole/gofeed/branch/master/graph/badge.svg)](https://codecov.io/gh/mmcdole/gofeed) [![Go Reference](https://pkg.go.dev/badge/github.com/mmcdole/gofeed.svg)](https://pkg.go.dev/github.com/mmcdole/gofeed) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![CI](https://github.com/mmcdole/gofeed/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/mmcdole/gofeed/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/mmcdole/gofeed/branch/master/graph/badge.svg)](https://codecov.io/gh/mmcdole/gofeed) [![Go Reference](https://pkg.go.dev/badge/github.com/mmcdole/gofeed.svg)](https://pkg.go.dev/github.com/mmcdole/gofeed) [![inspect.software](https://raw.githubusercontent.com/inspect-software/badges/main/v1/m/mmcdole/gofeed.svg)](https://inspect.software/software/mmcdole/gofeed) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 # Gofeed: A Robust Feed Parser for Golang
 
