@@ -1,0 +1,11 @@
+<!--
+Description: an RFC 3339 date writing midnight at the end of a day as hour 24
+parses as the start of the next day, rather than not parsing at all
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <updated>2025-12-07T24:00:00Z</updated>
+  <entry>
+    <published>2025-12-07T24:00:00+02:00</published>
+    <updated>2025-12-07t24:00:00z</updated>
+  </entry>
+</feed>

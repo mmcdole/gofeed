@@ -1,0 +1,15 @@
+<!--
+Description: a pubDate writing midnight at the end of a day as hour 24 parses
+as the start of the next day, rather than not parsing at all
+-->
+<rss version="2.0">
+  <channel>
+    <pubDate>Wed, 31 Dec 2025 24:00:00 GMT</pubDate>
+    <item>
+      <pubDate>Sun, 07 Dec 2025 24:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <pubDate>Sun, 07 Dec 2025 24:00:00 EST</pubDate>
+    </item>
+  </channel>
+</rss>
