@@ -1,0 +1,15 @@
+{
+    "pubDate": "Wed, 31 Dec 2025 24:00:00 GMT",
+    "pubDateParsed": "2026-01-01T00:00:00Z",
+    "items": [
+        {
+          "pubDate": "Sun, 07 Dec 2025 24:00:00 GMT",
+          "pubDateParsed": "2025-12-08T00:00:00Z"
+        },
+        {
+          "pubDate": "Sun, 07 Dec 2025 24:00:00 EST",
+          "pubDateParsed": "2025-12-08T05:00:00Z"
+        }
+    ],
+    "version": "2.0"
+}

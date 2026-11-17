@@ -259,6 +259,26 @@ func normalizeRFC3339(d string) string {
 	return d
 }
 
+// normalizeEndOfDayHour rewrites an hour of 24 to 00, reporting whether it
+// found one. Feeds occasionally write midnight at the end of a day that way,
+// e.g. "Sun, 07 Dec 2025 24:00:00 GMT", which means the start of the next day,
+// so the caller adds the day back. RFC 3339 5.7 notes that ISO 8601 permits
+// it while restricting its own hour to 00-23; time.Parse likewise rejects 24
+// as out of range, so no layout here can match one.
+//
+// The hour is the field in front of the first colon, so a minute, second, day
+// or year of 24 is left alone, as is a 24 preceded by another digit.
+func normalizeEndOfDayHour(d string) (string, bool) {
+	i := strings.IndexByte(d, ':')
+	if i < 2 || d[i-2] != '2' || d[i-1] != '4' {
+		return d, false
+	}
+	if i > 2 && d[i-3] >= '0' && d[i-3] <= '9' {
+		return d, false
+	}
+	return d[:i-2] + "00" + d[i:], true
+}
+
 // ParseDate parses a given date string using a large
 // list of commonly found feed date formats.
 func ParseDate(ds string) (time.Time, error) {
@@ -267,27 +287,43 @@ func ParseDate(ds string) (time.Time, error) {
 		return time.Time{}, fmt.Errorf("date string is empty")
 	}
 	d = normalizeRFC3339(d)
+	if t, ok := parseLayouts(d); ok {
+		return t, nil
+	}
+	// Retried only after every layout has already failed, so no date that
+	// parses today can change meaning.
+	if n, ok := normalizeEndOfDayHour(d); ok {
+		if t, ok := parseLayouts(n); ok {
+			return t.AddDate(0, 0, 1), nil
+		}
+	}
+
+	return time.Time{}, fmt.Errorf("failed to parse date: %s", ds)
+}
+
+// parseLayouts tries d against every supported layout.
+func parseLayouts(d string) (time.Time, bool) {
 	// A date ending in a bare zone abbreviation cannot match dateFormats, so
 	// look at the named-zone layouts first. Only the order changes: both lists
 	// are still tried, so a wrong guess costs time and nothing else.
 	namedZoneFirst := endsInZoneAbbreviation(d)
 	if namedZoneFirst {
 		if t, ok := parseNamedZone(d); ok {
-			return t, nil
+			return t, true
 		}
 	}
 	for _, f := range dateFormats {
 		if t, err := time.Parse(f, d); err == nil {
-			return t, nil
+			return t, true
 		}
 	}
 	if !namedZoneFirst {
 		if t, ok := parseNamedZone(d); ok {
-			return t, nil
+			return t, true
 		}
 	}
 
-	return time.Time{}, fmt.Errorf("failed to parse date: %s", ds)
+	return time.Time{}, false
 }
 
 func parseNamedZone(d string) (time.Time, bool) {
