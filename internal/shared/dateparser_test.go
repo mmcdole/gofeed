@@ -64,6 +64,32 @@ func TestParseDateFormats(t *testing.T) {
 	}
 }
 
+// RFC 5322 4.3 maps two-digit years 50 through 99 to 1900 through 1999,
+// while Go's time.Parse maps 00 through 68 to 2000 through 2068 (issue #387).
+func TestParseDateRFC5322TwoDigitYears(t *testing.T) {
+	cases := []struct {
+		in      string
+		wantUTC string
+	}{
+		{"Mon, 02 Aug 49 12:00:00 -0000", "2049-08-02 12:00:00"},
+		{"Mon, 02 Aug 50 12:00:00 -0000", "1950-08-02 12:00:00"},
+		{"Mon, 02 Aug 68 12:00:00 -0000", "1968-08-02 12:00:00"},
+		{"Mon, 02 Aug 69 12:00:00 -0000", "1969-08-02 12:00:00"},
+		{"02 Aug 50 12:00 MST", "1950-08-02 19:00:00"},
+		{"Monday, 02-Aug-50 12:00:00 MST", "1950-08-02 19:00:00"},
+	}
+	for _, c := range cases {
+		got, err := ParseDate(c.in)
+		if err != nil {
+			t.Errorf("%q: unexpected error: %v", c.in, err)
+			continue
+		}
+		if g := got.UTC().Format("2006-01-02 15:04:05"); g != c.wantUTC {
+			t.Errorf("%q -> %s UTC, want %s", c.in, g, c.wantUTC)
+		}
+	}
+}
+
 // RFC 3339 5.6 allows the "T" separator and "Z" designator in lower case
 // (issue #371).
 func TestParseDateRFC3339LowerCase(t *testing.T) {
