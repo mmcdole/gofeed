@@ -259,6 +259,20 @@ func normalizeRFC3339(d string) string {
 	return d
 }
 
+// correctRFC5322TwoDigitYear converts Go's two-digit-year pivot to the pivot
+// required by RFC 5322 4.3 for RFC 822, RFC 850 and RFC 5322 date layouts.
+// Go maps years 00 through 68 to 2000 through 2068, while the RFC maps years
+// 50 through 99 to 1900 through 1999. Years 69 through 99 already agree.
+func correctRFC5322TwoDigitYear(layout string, t time.Time) time.Time {
+	if !strings.Contains(layout, "Jan 06") && !strings.Contains(layout, "-Jan-06") {
+		return t
+	}
+	if t.Year() >= 2050 && t.Year() <= 2068 {
+		return t.AddDate(-100, 0, 0)
+	}
+	return t
+}
+
 // ParseDate parses a given date string using a large
 // list of commonly found feed date formats.
 func ParseDate(ds string) (time.Time, error) {
@@ -278,7 +292,7 @@ func ParseDate(ds string) (time.Time, error) {
 	}
 	for _, f := range dateFormats {
 		if t, err := time.Parse(f, d); err == nil {
-			return t, nil
+			return correctRFC5322TwoDigitYear(f, t), nil
 		}
 	}
 	if !namedZoneFirst {
@@ -296,6 +310,7 @@ func parseNamedZone(d string) (time.Time, bool) {
 		if err != nil {
 			continue
 		}
+		t = correctRFC5322TwoDigitYear(f, t)
 
 		// time.Parse gives an unknown zone abbreviation a zero offset, and its
 		// handling of known ones is host-dependent. If we recognise the

@@ -1,0 +1,10 @@
+<!--
+Description: two-digit RFC 5322 years 50 through 68 map to 1950 through 1968 (issue #387)
+-->
+<rss version="2.0">
+  <channel>
+    <item>
+      <pubDate>Mon, 02 Aug 50 12:00:00 -0000</pubDate>
+    </item>
+  </channel>
+</rss>
